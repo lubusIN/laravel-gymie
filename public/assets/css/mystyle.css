@@ -1,0 +1,158 @@
+/* Helpers */
+.margin-right-10{
+	margin-right: 10px
+}
+
+.AutoFitResponsive{
+	width: 100%;
+}
+
+/*******************************
+* Overrides ********************
+********************************/
+body{
+	background: #757575  url('../img/web/bg.jpg') !important;
+}
+
+/* Global - Master */
+.auth-page, header .logo, .leftside, .leftside .widget .footer {
+    background: #000000;
+}
+
+.nav-profile .tools{
+	margin-bottom: 0;
+}
+
+.fa-7x {
+	font-size: 7em !important;
+}
+
+.center-icons {
+    position: absolute;
+    top: 28%;
+    left: 43%;
+    margin-top: 125px;
+    margin-left: -20px;
+}
+
+/* Pagination */
+.gymie_paging_info{
+    padding-top: 8px;
+}
+
+.gymie_paging ul.pagination {
+    margin: 2px 0;
+    white-space: nowrap;
+}
+
+
+
+/* Dashboard Tabs */
+.panel > .panel-body.with-nav-tabs{
+	padding: 10px;
+}
+
+.panel-body.with-nav-tabs .table > tbody > tr:first-child > td{
+	border-top: none;
+}
+
+.table-sub-data{
+	float: left;
+	clear: both;
+	padding: 5px 0;
+}
+
+.tab-empty-panel {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sms-empty-panel {
+    min-height: 191px;
+}
+
+/* Select2 */
+.select2-container--default .select2-selection--single{
+	border: 1px solid #eee;
+	height: 35px;
+	padding: 4px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+	top: 5px;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true]{
+	background-color: #fafafa;
+	color: #000;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected=true]:hover{
+	color: #000;
+}
+
+.select2-dropdown{
+	border: 1px solid #eee;
+}
+
+span.show-data {
+	font-size: 14px;
+}
+
+/*Enquiries Show View */
+.followup-label{
+    margin-top: 14px;
+    font-size: 105%;
+}
+
+.followup-time{
+	margin-top: 14px;
+}
+
+/*Labels*/
+.label{
+	font-size: 90%;
+}
+
+.sort{
+	margin: 11px 22px 10px;
+	font-weight: bold;
+}
+
+.sort-column{
+	margin-top: 10px;
+}
+
+.daterange-padding{
+	padding: 7px 10px;
+}
+
+.total-count{
+	margin-top: 0px;
+}
+
+.page-head-btn{
+    position: relative;
+    top: -4px;
+    margin-left: 10px;
+}
+
+.no-line-height{
+	line-height: inherit;
+}
+
+.margin-right-11{
+	margin-right: 11px !important;
+}
+
+/* Data Grids */
+.table-bordered > tbody > tr > td,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > td,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > thead > tr > th {
+    vertical-align: middle;
+}

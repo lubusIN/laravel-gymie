@@ -1,0 +1,22 @@
+@media print{
+	.fixed-leftside .rightside {
+    margin-left: 0px;
+	}
+
+	@page{ 
+		margin: 0; 
+	}
+
+  	body{ 
+  		margin: 10px; 
+  	}
+
+  	.panel{
+  		box-shadow: none;
+    	-webkit-box-shadow: none;
+  	}
+
+  	.padding-md{
+  		padding: 0 !important;
+  	} 	
+}
