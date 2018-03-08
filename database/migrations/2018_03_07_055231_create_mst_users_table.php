@@ -19,7 +19,6 @@ class CreateMstUsersTable extends Migration {
 			$table->string('email')->unique('users_email_unique');
 			$table->string('password', 60);
 			$table->boolean('status');
-			$table->string('photo', 50);
 			$table->string('remember_token', 100)->nullable();
 			$table->timestamps();
 		});

@@ -17,6 +17,8 @@ class Sms_trigger extends Model
     		'updated_by'
     ];
 
+    const CREATED_AT = null;
+
     //Eloquence Search mapping
     use Eloquence;
 
