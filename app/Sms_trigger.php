@@ -11,11 +11,13 @@ class Sms_trigger extends Model
 
     protected $fillable = [
             'name',
-    		'alias',
+            'alias',
             'message',
-    		'status',
-    		'updated_by'
+            'status',
+            'updated_by',
     ];
+
+    const CREATED_AT = null;
 
     //Eloquence Search mapping
     use Eloquence;
@@ -27,11 +29,11 @@ class Sms_trigger extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo('App\User','created_by');
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo('App\User','updated_by');
+        return $this->belongsTo('App\User', 'updated_by');
     }
 }

@@ -1,17 +1,18 @@
-<?php 
+<?php
+
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Zizaco\Entrust\EntrustRole;
 
 class Role_user extends Model
 {
+    protected $table = 'role_user';
 
-	protected $table = 'role_user';
+    public $timestamps = false;
 
     protected $fillable = [
-    		'user_id',
-    		'role_id',
+            'user_id',
+            'role_id',
     ];
 
     public function User()
@@ -23,5 +24,4 @@ class Role_user extends Model
     {
         return $this->belongsTo('App\Role');
     }
-
 }

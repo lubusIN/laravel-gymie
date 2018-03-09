@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected function schedule(Schedule $schedule)
-    {   
+    {
         $schedule->command('reshoot:offlineSms')
                  ->hourly();
 
@@ -53,8 +53,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('expense:alert')
                  ->dailyAt('10:30')
                  ->when(function () {
-                    return (\Utilities::getSetting('primary_contact') != null);
-                });
+                     return \Utilities::getSetting('primary_contact') != null;
+                 });
 
         $schedule->command('pending:invoice')
                  ->dailyAt('11:00');

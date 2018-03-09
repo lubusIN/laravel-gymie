@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Auth;
 use App\ExpenseCategory;
-use App\Http\Controllers\Controller;
-use App\Http\Requests;
-use Lubus\Constants\Status;
+use Illuminate\Http\Request;
 
 class ExpenseCategoriesController extends Controller
 {
@@ -15,8 +12,8 @@ class ExpenseCategoriesController extends Controller
     {
         $this->middleware('auth');
     }
-   
-	/**
+
+    /**
      * Display a listing of the resource.
      *
      * @return Response
@@ -24,10 +21,10 @@ class ExpenseCategoriesController extends Controller
     public function index()
     {
         $expenseCategories = ExpenseCategory::paginate(10);
-    	$expenseCategoriesTotal = ExpenseCategory::all();
+        $expenseCategoriesTotal = ExpenseCategory::all();
         $count = $expenseCategoriesTotal->count();
 
-    	return view('expenseCategories.index', compact('expenseCategories','count'));
+        return view('expenseCategories.index', compact('expenseCategories', 'count'));
     }
 
     /**
@@ -38,22 +35,22 @@ class ExpenseCategoriesController extends Controller
      */
     public function show()
     {
-    	$expenseCategory = ExpenseCategory::findOrFail($id);
+        $expenseCategory = ExpenseCategory::findOrFail($id);
 
-    	return view('expenseCategories.show', compact('expenseCategory'));
+        return view('expenseCategories.show', compact('expenseCategory'));
     }
 
-     /**
+    /**
      * Show the form for creating a new resource.
      *
      * @return Response
      */
     public function create()
     {
-    	return view('expenseCategories.create');
+        return view('expenseCategories.create');
     }
-    
-     /**
+
+    /**
      * Store a newly created resource in storage.
      *
      * @return Response
@@ -69,19 +66,20 @@ class ExpenseCategoriesController extends Controller
 
         $expenseCategory->save();
         flash()->success('Expense Category was successfully added');
-    	return redirect('expenses/categories'); 
+
+        return redirect('expenses/categories');
     }
 
     public function edit($id)
     {
-        $expenseCategory=ExpenseCategory::findOrFail($id);
+        $expenseCategory = ExpenseCategory::findOrFail($id);
 
         return view('expenseCategories.edit', compact('expenseCategory'));
     }
 
     public function update($id, Request $request)
     {
-        $expenseCategory=ExpenseCategory::findOrFail($id);
+        $expenseCategory = ExpenseCategory::findOrFail($id);
 
         $expenseCategory->update($request->all());
 
@@ -89,9 +87,10 @@ class ExpenseCategoriesController extends Controller
 
         $expenseCategory->save();
         flash()->success('Category was successfully updated');
+
         return redirect('expenses/categories');
-    }    
-    
+    }
+
     public function archive($id, Request $request)
     {
         ExpenseCategory::destroy($id);

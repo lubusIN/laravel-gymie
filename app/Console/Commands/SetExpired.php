@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Subscription;
 use Carbon\Carbon;
+use App\Subscription;
+use Illuminate\Console\Command;
 
 class SetExpired extends Command
 {
@@ -39,6 +39,6 @@ class SetExpired extends Command
      */
     public function handle()
     {
-        Subscription::where('end_date','<',Carbon::today())->where('status','=',\constSubscription::onGoing)->update(['status' => \constSubscription::Expired]);
+        Subscription::where('end_date', '<', Carbon::today())->where('status', '=', \constSubscription::onGoing)->update(['status' => \constSubscription::Expired]);
     }
 }

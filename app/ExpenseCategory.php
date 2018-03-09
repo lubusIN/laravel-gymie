@@ -12,28 +12,28 @@ class ExpenseCategory extends Model
     protected $fillable = [
             'name',
             'total_expense',
-    		'status',
-    		'created_by',
-    		'updated_by'
+            'status',
+            'created_by',
+            'updated_by',
     ];
 
     public function scopeExcludeArchive($query)
     {
-       return $query->where('status','!=', \constStatus::Archive);
+        return $query->where('status', '!=', \constStatus::Archive);
     }
 
     public function Expenses()
     {
-        return $this->hasMany('App\Expense','category_id');
+        return $this->hasMany('App\Expense', 'category_id');
     }
 
     public function createdBy()
     {
-        return $this->belongsTo('app\User','created_by');
+        return $this->belongsTo('app\User', 'created_by');
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo('app\User','updated_by');
+        return $this->belongsTo('app\User', 'updated_by');
     }
 }

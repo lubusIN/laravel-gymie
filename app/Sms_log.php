@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Carbon\Carbon;
@@ -15,12 +16,12 @@ class Sms_log extends Model
             'message',
             'status',
             'sender_id',
-            'send_time'
+            'send_time',
     ];
 
     public $timestamps = false;
-    
-    protected $dates  = ['send_time'];
+
+    protected $dates = ['send_time'];
 
     //Eloquence Search mapping
     use Eloquence;
@@ -33,6 +34,6 @@ class Sms_log extends Model
 
     public function scopeDashboardLogs($query)
     {
-    	return $query->where('send_time','<=',Carbon::now())->take(5)->orderBy('send_time','desc');
+        return $query->where('send_time', '<=', Carbon::now())->take(5)->orderBy('send_time', 'desc');
     }
 }

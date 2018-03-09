@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Carbon\Carbon;
 use App\Sms_log;
+use Illuminate\Console\Command;
 
 class ReshootOfflineSms extends Command
 {
@@ -39,21 +38,15 @@ class ReshootOfflineSms extends Command
      */
     public function handle()
     {
-        try
-        {
-            $logs = Sms_log::where('status','=','offline')->get();
+        try {
+            $logs = Sms_log::where('status', '=', 'offline')->get();
 
-            foreach($logs as $log)
-            {
+            foreach ($logs as $log) {
                 $text = urldecode($log->message);
                 $sender_id = $log->sender_id;
-                \Utilities::retrySms($sender_id,$log->number,$text,$log);
+                \Utilities::retrySms($sender_id, $log->number, $text, $log);
             }
-        }        
-        catch(\Exception $e)
-        {
-
+        } catch (\Exception $e) {
         }
-
     }
 }
