@@ -5,7 +5,7 @@
 <a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie/build-status/master"><img src="https://img.shields.io/scrutinizer/build/g/lubusIN/laravel-gymie.svg?style=flat-square" alt="Build Status"></a>
 <a href="https://styleci.io/repos/123349662"><img src="https://styleci.io/repos/123349662/shield" alt="StyleCI Status"></a>
 <a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie"><img src="https://img.shields.io/scrutinizer/g/lubusin/laravel-gymie.svg?style=flat-square" alt="Scrutinizer Code Quality"></a>
-<a href="https://github.com/lubusIN/laravel-gymie/blob/master/LICENSE.md"><img src="https://poser.pugx.org/lubusin/laravel-mojo/license?format=flat-square" alt="License"></a>
+<a href="https://github.com/lubusIN/laravel-gymie/blob/master/LICENSE.md"><img src="https://poser.pugx.org/lubusin/laravel-gymie/license?format=flat-square" alt="License"></a>
 <a href="https://github.com/lubusin/laravel-gymie/blob/master/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
 </p>
 
