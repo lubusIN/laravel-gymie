@@ -11,7 +11,7 @@
 
 ----------
 
-Laravel based web application for Gym & club management. Currently used by several fitness centers for more info visit https://www.gymie.in
+Laravel based web application for gym & club management. Currently being used by many fitness centers. For more information, visit - https://www.gymie.in
  
 ![gymie-device-mockup](https://user-images.githubusercontent.com/1039236/36820312-3f709262-1d13-11e8-8ee6-0529120b8ac1.png)
 
@@ -19,7 +19,7 @@ Laravel based web application for Gym & club management. Currently used by sever
 
 > ***Note:***
 >
-> Currently we are in process of polishing the code to be ready for general use check [issues](https://github.com/lubusIN/laravel-gymie/issues) & [milestone](https://github.com/lubusIN/laravel-gymie/milestones) to know more about upcoming changes, features and improvements.
+> Currently, we are in the process of polishing the code to be ready for general use. Check [issues](https://github.com/lubusIN/laravel-gymie/issues) & [milestone](https://github.com/lubusIN/laravel-gymie/milestones) to know more about upcoming changes, features and improvements.
 
 ## Requirements
 - PHP >= 7.1.3
