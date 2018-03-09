@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Requests\Request;
 
 class LoginRequest extends Request
-
 {
- 
     /**
      * Get the validation rules that apply to the request.
      *
@@ -19,7 +17,7 @@ class LoginRequest extends Request
             'email' => 'required', 'password' => 'required',
         ];
     }
- 
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,5 +27,4 @@ class LoginRequest extends Request
     {
         return true;
     }
- 
 }

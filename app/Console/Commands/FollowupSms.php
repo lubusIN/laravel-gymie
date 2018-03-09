@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Followup;
-use App\Sms_trigger;
 use Carbon\Carbon;
+use App\Sms_trigger;
+use Illuminate\Console\Command;
 
 class FollowupSms extends Command
 {
@@ -40,18 +40,17 @@ class FollowupSms extends Command
      */
     public function handle()
     {
-        $followups = Followup::where('due_date','=',Carbon::today())->get();
+        $followups = Followup::where('due_date', '=', Carbon::today())->get();
 
-        $sms_trigger = Sms_trigger::where('alias','=','followup')->first();
-        $message = $sms_trigger->message;        
+        $sms_trigger = Sms_trigger::where('alias', '=', 'followup')->first();
+        $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
         $sender_id = \Utilities::getSetting('sms_sender_id');
         $gym_name = \Utilities::getSetting('gym_name');
 
-        foreach ($followups as $followup) 
-        {
-            $sms_text = sprintf($message,$followup->enquiry->name,$gym_name);
-            \Utilities::Sms($sender_id,$followup->enquiry->contact,$sms_text,$sms_status);
+        foreach ($followups as $followup) {
+            $sms_text = sprintf($message, $followup->enquiry->name, $gym_name);
+            \Utilities::Sms($sender_id, $followup->enquiry->contact, $sms_text, $sms_status);
         }
     }
 }

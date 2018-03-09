@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Http\Middleware;
 
-use Closure;
 use Auth;
+use Closure;
 
 class Owner
 {
@@ -13,17 +14,14 @@ class Owner
      * @param  \Closure  $next
      * @return mixed
      */
-    
-    public function handle($request, Closure $next,$permissions)
+    public function handle($request, Closure $next, $permissions)
     {
-        if (!Auth::User()->can($permissions)) 
-        {
-            if (Auth::User()->id != $request->route('user_id')) 
-            {
+        if (! Auth::User()->can($permissions)) {
+            if (Auth::User()->id != $request->route('user_id')) {
                 abort(403);
             }
         }
-       
+
         return $next($request);
     }
 }

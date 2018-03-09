@@ -2,47 +2,46 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\Enquiry;
+use Illuminate\Database\Eloquent\Model;
 
 class Followup extends Model
 {
-	protected $table = 'trn_enquiry_followups';
+    protected $table = 'trn_enquiry_followups';
 
-	protected $fillable = [
-		'enquiry_id',
-		'followup_by',
-		'due_date',
-		'status',
-		'outcome',
-		'created_by',
-    	'updated_by',
-	];
+    protected $fillable = [
+        'enquiry_id',
+        'followup_by',
+        'due_date',
+        'status',
+        'outcome',
+        'created_by',
+        'updated_by',
+    ];
 
-	protected $dates  = ['created_at', 'updated_at', 'due_date'];
+    protected $dates = ['created_at', 'updated_at', 'due_date'];
 
-	public function Enquiry()
-	{
-		return $this->belongsTo('App\Enquiry','enquiry_id');
-	}
-
-	public function scopeReminders($query)
-	{
-		return $query->leftJoin('mst_enquiries','trn_enquiry_followups.enquiry_id','=','mst_enquiries.id')
-					 ->select('trn_enquiry_followups.*','mst_enquiries.status')
-					 ->where('trn_enquiry_followups.due_date','<=',Carbon::today())
-					 ->where('trn_enquiry_followups.status','=',\constFollowUpStatus::Pending)
-					 ->where('mst_enquiries.status','=',\constEnquiryStatus::Lead);
-	}
-
-	public function createdBy()
+    public function Enquiry()
     {
-        return $this->belongsTo('App\User','created_by');
+        return $this->belongsTo('App\Enquiry', 'enquiry_id');
+    }
+
+    public function scopeReminders($query)
+    {
+        return $query->leftJoin('mst_enquiries', 'trn_enquiry_followups.enquiry_id', '=', 'mst_enquiries.id')
+                     ->select('trn_enquiry_followups.*', 'mst_enquiries.status')
+                     ->where('trn_enquiry_followups.due_date', '<=', Carbon::today())
+                     ->where('trn_enquiry_followups.status', '=', \constFollowUpStatus::Pending)
+                     ->where('mst_enquiries.status', '=', \constEnquiryStatus::Lead);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo('App\User','updated_by');
+        return $this->belongsTo('App\User', 'updated_by');
     }
 }

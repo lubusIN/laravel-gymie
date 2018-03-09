@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Auth;
 use App\Service;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Lubus\Constants\Status;
+use Illuminate\Http\Request;
 
 class ServicesController extends Controller
 {
@@ -15,21 +12,22 @@ class ServicesController extends Controller
     {
         $this->middleware('auth');
     }
-	/**
+
+    /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-     public function index(Request $request)
-     {
+    public function index(Request $request)
+    {
         $services = Service::search('"'.$request->input('search').'"')->paginate(10);
         $serviceTotal = Service::search('"'.$request->input('search').'"')->get();
         $count = $serviceTotal->count();
 
-    	return view('services.index', compact('services','count'));
-     }
+        return view('services.index', compact('services', 'count'));
+    }
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -37,22 +35,22 @@ class ServicesController extends Controller
      */
     public function show()
     {
-    	$service = Service::findOrFail($id);
+        $service = Service::findOrFail($id);
 
-    	return view('services.show', compact('service'));
+        return view('services.show', compact('service'));
     }
 
-     /**
+    /**
      * Show the form for creating a new resource.
      *
      * @return Response
      */
     public function create()
     {
-    	return view('services.create');
+        return view('services.create');
     }
-    
-     /**
+
+    /**
      * Store a newly created resource in storage.
      *
      * @return Response
@@ -71,7 +69,7 @@ class ServicesController extends Controller
 
         flash()->success('Service was successfully created');
 
-    	return redirect('plans/services/all'); 
+        return redirect('plans/services/all');
     }
 
     public function edit($id)
@@ -83,13 +81,13 @@ class ServicesController extends Controller
 
     public function update($id, Request $request)
     {
-
         $service = Service::findOrFail($id);
 
         $service->update($request->all());
         $service->updatedBy()->associate(Auth::user());
         $service->save();
         flash()->success('Service details were successfully updated');
+
         return redirect('plans/services/all');
     }
 
