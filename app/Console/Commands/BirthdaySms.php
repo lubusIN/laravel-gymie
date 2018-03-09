@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Member;
-use App\Sms_trigger;
 use Carbon\Carbon;
+use App\Sms_trigger;
+use Illuminate\Console\Command;
 
 class BirthdaySms extends Command
 {
@@ -40,18 +40,17 @@ class BirthdaySms extends Command
      */
     public function handle()
     {
-        $birthdays = Member::whereMonth('DOB','=',Carbon::today()->month)->whereDay('DOB','=',Carbon::today()->day)->where('status','=',\constStatus::Active)->get();
+        $birthdays = Member::whereMonth('DOB', '=', Carbon::today()->month)->whereDay('DOB', '=', Carbon::today()->day)->where('status', '=', \constStatus::Active)->get();
         $sender_id = \Utilities::getSetting('sms_sender_id');
         $gym_name = \Utilities::getSetting('gym_name');
 
-        $sms_trigger = Sms_trigger::where('alias','=','member_birthday')->first();
+        $sms_trigger = Sms_trigger::where('alias', '=', 'member_birthday')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
 
-        foreach($birthdays as $birthday)
-        {
-            $sms_text = sprintf($message,$birthday->name,$gym_name);
-            \Utilities::Sms($sender_id,$birthday->contact,$sms_text,$sms_status);
+        foreach ($birthdays as $birthday) {
+            $sms_text = sprintf($message, $birthday->name, $gym_name);
+            \Utilities::Sms($sender_id, $birthday->contact, $sms_text, $sms_status);
         }
     }
 }

@@ -1,19 +1,18 @@
-<?php 
+<?php
+
 namespace App;
 
 use Auth;
-use Illuminate\Database\Eloquent\Model;
 use Zizaco\Entrust\EntrustRole;
 
 class Role extends EntrustRole
 {
-
-	protected $table = 'roles';
+    protected $table = 'roles';
 
     protected $fillable = [
-    		'name',
-    		'display_name',
-    		'description',
+            'name',
+            'display_name',
+            'description',
     ];
 
     public function Users()
@@ -23,7 +22,7 @@ class Role extends EntrustRole
 
     public function Permissions()
     {
-    	return $this->hasMany('App\Permission');
+        return $this->hasMany('App\Permission');
     }
 
     public function Role_users()
@@ -33,11 +32,10 @@ class Role extends EntrustRole
 
     public function scopeExcludeGymie($query)
     {
-        if (Auth::User()->id != 1) 
-        {
-            return $query->where('id','!=',1);
+        if (Auth::User()->id != 1) {
+            return $query->where('id', '!=', 1);
         }
+
         return $query;
     }
-
 }

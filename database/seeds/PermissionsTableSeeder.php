@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Permission;
+use Illuminate\Database\Seeder;
 
 class PermissionsTableSeeder extends Seeder
 {
@@ -317,7 +317,7 @@ class PermissionsTableSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-          Permission::create($permission);
+            Permission::create($permission);
         }
     }
 }

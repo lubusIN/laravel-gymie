@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Expense;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class RepeatExpense extends Command
 {
@@ -39,13 +39,11 @@ class RepeatExpense extends Command
      */
     public function handle()
     {
-        $expenses = Expense::where('due_date','=',Carbon::today()->format('Y-m-d'))->get();
+        $expenses = Expense::where('due_date', '=', Carbon::today()->format('Y-m-d'))->get();
 
-        foreach($expenses as $expense)
-        {
-            if ($expense->repeat == 1) 
-            {
-                $expenseData = array('name' => $expense->name,
+        foreach ($expenses as $expense) {
+            if ($expense->repeat == 1) {
+                $expenseData = ['name' => $expense->name,
                                      'category_id' => $expense->category_id,
                                      'due_date' => $expense->due_date->addDays(1),
                                      'repeat' => $expense->repeat,
@@ -53,14 +51,12 @@ class RepeatExpense extends Command
                                      'amount' => $expense->amount,
                                      'paid' => 0,
                                      'created_by' => 1,
-                                     'updated_by' => 1);
+                                     'updated_by' => 1, ];
 
-                $newExpense  = new Expense($expenseData);
+                $newExpense = new Expense($expenseData);
                 $newExpense->save();
-            } 
-            elseif ($expense->repeat == 2) 
-            {
-                $expenseData = array('name' => $expense->name,
+            } elseif ($expense->repeat == 2) {
+                $expenseData = ['name' => $expense->name,
                                      'category_id' => $expense->category_id,
                                      'due_date' => $expense->due_date->addWeek(),
                                      'repeat' => $expense->repeat,
@@ -68,14 +64,12 @@ class RepeatExpense extends Command
                                      'amount' => $expense->amount,
                                      'paid' => 0,
                                      'created_by' => 1,
-                                     'updated_by' => 1);
+                                     'updated_by' => 1, ];
 
-                $newExpense  = new Expense($expenseData);
+                $newExpense = new Expense($expenseData);
                 $newExpense->save();
-            }
-            elseif ($expense->repeat == 3) 
-            {
-                $expenseData = array('name' => $expense->name,
+            } elseif ($expense->repeat == 3) {
+                $expenseData = ['name' => $expense->name,
                                      'category_id' => $expense->category_id,
                                      'due_date' => $expense->due_date->addMonth(),
                                      'repeat' => $expense->repeat,
@@ -83,14 +77,12 @@ class RepeatExpense extends Command
                                      'amount' => $expense->amount,
                                      'paid' => 0,
                                      'created_by' => 1,
-                                     'updated_by' => 1);
+                                     'updated_by' => 1, ];
 
-                $newExpense  = new Expense($expenseData);
+                $newExpense = new Expense($expenseData);
                 $newExpense->save();
-            }
-            elseif ($expense->repeat == 4) 
-            {
-                $expenseData = array('name' => $expense->name,
+            } elseif ($expense->repeat == 4) {
+                $expenseData = ['name' => $expense->name,
                                      'category_id' => $expense->category_id,
                                      'due_date' => $expense->due_date->addYear(),
                                      'repeat' => $expense->repeat,
@@ -98,12 +90,11 @@ class RepeatExpense extends Command
                                      'amount' => $expense->amount,
                                      'paid' => 0,
                                      'created_by' => 1,
-                                     'updated_by' => 1);
+                                     'updated_by' => 1, ];
 
-                $newExpense  = new Expense($expenseData);
+                $newExpense = new Expense($expenseData);
                 $newExpense->save();
             }
-            
         }
     }
 }
