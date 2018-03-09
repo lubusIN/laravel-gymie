@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Sms_trigger;
+use Illuminate\Database\Seeder;
 
 class SmsTriggersTableSeeder extends Seeder
 {
@@ -105,7 +105,7 @@ class SmsTriggersTableSeeder extends Seeder
                 'status' => '0',
             ],
         ];
-        
+
         foreach ($sms_triggers as $sms_trigger) {
             Sms_trigger::create($sms_trigger);
         }

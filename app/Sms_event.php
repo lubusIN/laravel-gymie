@@ -11,16 +11,16 @@ class Sms_event extends Model
 
     protected $fillable = [
             'name',
-    		'date',
+            'date',
             'message',
             'description',
             'status',
-    		'send_to',
-    		'created_by',
-    		'updated_by'
+            'send_to',
+            'created_by',
+            'updated_by',
     ];
 
-    protected $dates  = ['created_at', 'updated_at', 'date'];
+    protected $dates = ['created_at', 'updated_at', 'date'];
 
     //Eloquence Search mapping
     use Eloquence;
@@ -33,11 +33,11 @@ class Sms_event extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo('App\User','created_by');
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo('App\User','updated_by');
+        return $this->belongsTo('App\User', 'updated_by');
     }
 }

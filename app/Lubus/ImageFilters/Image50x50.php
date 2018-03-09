@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Lubus\ImageFilters;
 
 use Intervention\Image\Image;

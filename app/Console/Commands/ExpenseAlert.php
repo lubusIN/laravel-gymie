@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Expense;
-use App\Sms_trigger;
 use Carbon\Carbon;
+use App\Sms_trigger;
+use Illuminate\Console\Command;
 
 class ExpenseAlert extends Command
 {
@@ -40,18 +40,17 @@ class ExpenseAlert extends Command
      */
     public function handle()
     {
-        $expenseAlerts = Expense::where('due_date','=',Carbon::today()->addDays(1))->where('paid','=',0)->get();
+        $expenseAlerts = Expense::where('due_date', '=', Carbon::today()->addDays(1))->where('paid', '=', 0)->get();
         $contact = \Utilities::getSetting('primary_contact');
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
-        $sms_trigger = Sms_trigger::where('alias','=','expense_alert')->first();
+        $sms_trigger = Sms_trigger::where('alias', '=', 'expense_alert')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
 
-        foreach ($expenseAlerts as $expenseAlert) 
-        {
-            $sms_text = sprintf($message,$expenseAlert->name,$expenseAlert->amount,$expenseAlert->due_date);
-            \Utilities::Sms($sender_id,$contact,$sms_text,$sms_status);
+        foreach ($expenseAlerts as $expenseAlert) {
+            $sms_text = sprintf($message, $expenseAlert->name, $expenseAlert->amount, $expenseAlert->due_date);
+            \Utilities::Sms($sender_id, $contact, $sms_text, $sms_status);
         }
     }
 }

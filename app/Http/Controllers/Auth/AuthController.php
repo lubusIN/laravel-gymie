@@ -4,26 +4,23 @@ namespace App\Http\Controllers\Auth;
 
 use Auth;
 use App\User;
-use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-class AuthController extends Controller {
- 
+class AuthController extends Controller
+{
     /**
-     * the model instance
+     * the model instance.
      * @var User
      */
-    protected $user; 
+    protected $user;
     /**
      * The Guard implementation.
      *
      * @var Authenticator
      */
     protected $auth;
- 
+
     /**
      * Create a new authentication controller instance.
      *
@@ -32,12 +29,12 @@ class AuthController extends Controller {
      */
     public function __construct(Guard $auth, User $user)
     {
-        $this->user = $user; 
+        $this->user = $user;
         $this->auth = $auth;
- 
-        $this->middleware('guest', ['except' => ['getLogout']]); 
+
+        $this->middleware('guest', ['except' => ['getLogout']]);
     }
- 
+
     /**
      * Show the application registration form.
      *
@@ -47,7 +44,7 @@ class AuthController extends Controller {
     {
         return view('auth.register');
     }
- 
+
     /**
      * Handle a registration request for the application.
      *
@@ -60,10 +57,11 @@ class AuthController extends Controller {
         $this->user->email = $request->email;
         $this->user->password = bcrypt($request->password);
         $this->user->save();
-        $this->auth->login($this->user); 
-        return redirect('/dashboard'); 
+        $this->auth->login($this->user);
+
+        return redirect('/dashboard');
     }
- 
+
     /**
      * Show the application login form.
      *
@@ -73,7 +71,7 @@ class AuthController extends Controller {
     {
         return view('auth.login');
     }
- 
+
     /**
      * Handle a login request to the application.
      *
@@ -81,18 +79,16 @@ class AuthController extends Controller {
      * @return Response
      */
     public function postLogin(LoginRequest $request)
-    { 
-       if($this->auth->attempt(['email'=>  $request->email, 'password'=> $request->password , 'status'=> 1],$request->remember))
-
-        {
+    {
+        if ($this->auth->attempt(['email'=>  $request->email, 'password'=> $request->password, 'status'=> 1], $request->remember)) {
             return redirect()->intended('/dashboard');
         }
- 
+
         return redirect('/auth/login')->withErrors([
             'email' => 'The credentials you entered did not match our records. Try again?',
         ]);
     }
- 
+
     /**
      * Log the user out of the application.
      *
@@ -101,8 +97,7 @@ class AuthController extends Controller {
     public function getLogout()
     {
         $this->auth->logout();
- 
+
         return redirect('/');
     }
- 
 }

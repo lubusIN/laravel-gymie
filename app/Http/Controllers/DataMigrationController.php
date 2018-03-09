@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use DB;
 use Auth;
-use Spatie\MediaLibrary\Media;
-use Carbon\Carbon;
+use Excel;
+use App\Plan;
 use App\Member;
-use App\Setting;
 use App\Invoice;
+use App\Setting;
+use Carbon\Carbon;
+use App\Subscription;
 use App\Invoice_detail;
 use App\Payment_detail;
-use App\Plan;
-use App\Expense;
-use App\Enquiry;
-use App\Followup;
-use App\Subscription;
-use App\Sms_log;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Collection;
-use Excel;
 
 class DataMigrationController extends Controller
 {
@@ -60,7 +51,6 @@ class DataMigrationController extends Controller
             }
 
             DB::commit();
-
         } catch (\Exception $e) {
             DB::rollback();
             dd($e);
@@ -104,7 +94,6 @@ class DataMigrationController extends Controller
 
         try {
             foreach ($lines as $line) {
-
                 $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
                 $invoicePrefix = \Utilities::getSetting('invoice_prefix');
                 $invoice_number = $invoicePrefix.$invoiceCounter;
@@ -116,7 +105,7 @@ class DataMigrationController extends Controller
                 $dob = Carbon::createFromFormat('d/m/Y', $line->get('dob'))->toDateString();
                 $gender = ($line->get('gender') == 'male' ? 'm' : 'f');
                 // $explodedName = explode(" ", $line->get('name'));
-                $email = $member_code . "@evolvegym.in";
+                $email = $member_code.'@evolvegym.in';
 
                 $address = (empty($line->get('address')) ? 'Naigaon east' : $line->get('address'));
 
@@ -136,7 +125,7 @@ class DataMigrationController extends Controller
                                         'aim'=> '0',
                                         'source'=> '0',
                                         'created_by'=> Auth::user()->id,
-                                        'updated_by'=> Auth::user()->id
+                                        'updated_by'=> Auth::user()->id,
                                     ]);
 
                 $invoice_total = $line->get('total_amount');
@@ -146,26 +135,21 @@ class DataMigrationController extends Controller
                 $payment_amount = $invoice_total - (int) $pending;
 
                 if ($payment_amount == $invoice_total) {
-                  $paymentStatus = \constPaymentStatus::Paid;
-                } 
-                elseif($payment_amount > 0 && $payment_amount < $invoice_total) {
-                  $paymentStatus = \constPaymentStatus::Partial;
-                }
-                elseif($payment_amount == 0) {
-                  $paymentStatus = \constPaymentStatus::Unpaid;
-                }
-                else {
-                  $paymentStatus = \constPaymentStatus::Overpaid;
+                    $paymentStatus = \constPaymentStatus::Paid;
+                } elseif ($payment_amount > 0 && $payment_amount < $invoice_total) {
+                    $paymentStatus = \constPaymentStatus::Partial;
+                } elseif ($payment_amount == 0) {
+                    $paymentStatus = \constPaymentStatus::Unpaid;
+                } else {
+                    $paymentStatus = \constPaymentStatus::Overpaid;
                 }
 
-                if(empty($line->discount_percent) && !empty($line->discount_amount)) {
+                if (empty($line->discount_percent) && ! empty($line->discount_amount)) {
                     $discountPercent = 'custom';
-                }
-                elseif(empty($line->discount_percent) && empty($line->discount_amount)) {
+                } elseif (empty($line->discount_percent) && empty($line->discount_amount)) {
                     $discountPercent = '0';
-                }
-                elseif(!empty($line->discount_percent)) {
-                    $discountPercent = str_replace("%", "", $line->discount_percent);
+                } elseif (! empty($line->discount_percent)) {
+                    $discountPercent = str_replace('%', '', $line->discount_percent);
                 }
 
                 $invoice = Invoice::create(['invoice_number'=> $invoice_number,
@@ -180,29 +164,25 @@ class DataMigrationController extends Controller
                                              'additional_fees'=> '0',
                                              'note'=> null,
                                              'created_by'=> Auth::user()->id,
-                                             'updated_by'=> Auth::user()->id
+                                             'updated_by'=> Auth::user()->id,
                                             ]);
 
                 $start_date = Carbon::createFromFormat('d/m/Y', $line->get('start_date'));
                 $planId = $line->get('plan');
 
-                if($planId == 3) {
+                if ($planId == 3) {
                     $end_date = $start_date->copy()->addMonth();
-                }
-                elseif($planId == 4) {
+                } elseif ($planId == 4) {
                     $end_date = $start_date->copy()->addMonths(3);
-                }
-                elseif($planId == 5) {
+                } elseif ($planId == 5) {
                     $end_date = $start_date->copy()->addMonths(6);
-                }
-                elseif($planId == 6) {
+                } elseif ($planId == 6) {
                     $end_date = $start_date->copy()->addMonths(12);
                 }
 
-                if($end_date->lt(Carbon::today())) {
+                if ($end_date->lt(Carbon::today())) {
                     $subscription_status = \constSubscription::Expired;
-                }
-                else {
+                } else {
                     $subscription_status = \constSubscription::onGoing;
                 }
 
@@ -214,7 +194,7 @@ class DataMigrationController extends Controller
                                                     'status'=> $subscription_status,
                                                     'is_renewal'=>'0',
                                                     'created_by'=> Auth::user()->id,
-                                                    'updated_by'=> Auth::user()->id
+                                                    'updated_by'=> Auth::user()->id,
                                                     ]);
 
                 $invoiceDetail = Invoice_detail::create(['invoice_id'=> $invoice->id,
@@ -222,7 +202,7 @@ class DataMigrationController extends Controller
                                                        'item_amount'=> $line->get('total_amount'),
                                                        'item_amount'=> $line->get('total_amount'),
                                                        'created_by'=> Auth::user()->id,
-                                                       'updated_by'=> Auth::user()->id
+                                                       'updated_by'=> Auth::user()->id,
                                                         ]);
 
                 $paymentDetail = Payment_detail::create(['invoice_id'=> $invoice->id,
@@ -230,19 +210,17 @@ class DataMigrationController extends Controller
                                                          'mode'=> '1',
                                                          'note'=> ' ',
                                                          'created_by'=> Auth::user()->id,
-                                                         'updated_by'=> Auth::user()->id
+                                                         'updated_by'=> Auth::user()->id,
                                                         ]);
 
-                Setting::where('key', '=','invoice_last_number')->update(['value' => $invoiceCounter]);
-                Setting::where('key', '=','member_last_number')->update(['value' => $memberCounter]);
+                Setting::where('key', '=', 'invoice_last_number')->update(['value' => $invoiceCounter]);
+                Setting::where('key', '=', 'member_last_number')->update(['value' => $memberCounter]);
             }
             DB::commit();
-        }
-
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             dd($e);
         }
-        echo "Ho gaya bc";
+        echo 'Ho gaya bc';
     }
 }

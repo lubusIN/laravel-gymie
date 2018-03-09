@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Subscription;
-use App\Sms_trigger;
 use Carbon\Carbon;
+use App\Sms_trigger;
+use App\Subscription;
+use Illuminate\Console\Command;
 
 class SmsExpired extends Command
 {
@@ -40,17 +40,16 @@ class SmsExpired extends Command
      */
     public function handle()
     {
-        $subscriptions = Subscription::where('status','=',\constSubscription::Expired)->where('end_date','=',Carbon::today()->subDay())->get();
+        $subscriptions = Subscription::where('status', '=', \constSubscription::Expired)->where('end_date', '=', Carbon::today()->subDay())->get();
 
-        $sms_trigger = Sms_trigger::where('alias','=','subscription_expired')->first();
+        $sms_trigger = Sms_trigger::where('alias', '=', 'subscription_expired')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
-        foreach ($subscriptions as $subscription) 
-        {
-            $sms_text = sprintf($message,$subscription->member->name,$subscription->end_date->format('d-m-Y'));
-            \Utilities::Sms($sender_id,$subscription->member->contact,$sms_text,$sms_status);
+        foreach ($subscriptions as $subscription) {
+            $sms_text = sprintf($message, $subscription->member->name, $subscription->end_date->format('d-m-Y'));
+            \Utilities::Sms($sender_id, $subscription->member->contact, $sms_text, $sms_status);
         }
     }
 }
