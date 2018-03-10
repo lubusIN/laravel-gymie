@@ -50,8 +50,11 @@ Improper permission on `storage` & `public` folder will lead to server & applica
  5. Run `php artisan key:generate` to generate key
  6. Run `composer install` to install all dependencies
  7. Run `php artisan migrate --seed` to install the database & required data
- 
-All done !
+ 8. All done! use the following credentials to log in
+ ```
+	email: admin@gymie.in
+	password: password
+ ```
 
 ## Changelog
 Please see [CHANGELOG](https://github.com/spatie/laravel-medialibrary/blob/master/CHANGELOG.md) for more information what has changed recently.
