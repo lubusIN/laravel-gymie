@@ -42,7 +42,7 @@ class DashboardController extends Controller
         $reminderCount = $reminders->count();
         $dues = Expense::dueAlerts()->get();
         $outstandings = Expense::outstandingAlerts()->get();
-        $smsRequestSetting = \Utilities::getSetting('sms_request');
+        $smsRequestSetting = \Utilities::getSetting('sms_request')[0];
         $smslogs = Sms_log::dashboardLogs()->get();
         $recievedCheques = Cheque_detail::where('status', \constChequeStatus::Recieved)->get();
         $recievedChequesCount = $recievedCheques->count();
