@@ -75,7 +75,7 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 Test drive the application without going through the hassel of installation.
 
 ```
-url: https://demo.lubus.in
+url: https://demo.gymie.in
 email: admin@gymie.in
 password: password
 ```
