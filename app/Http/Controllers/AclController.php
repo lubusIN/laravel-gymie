@@ -153,12 +153,12 @@ class AclController extends Controller
             DB::commit();
             flash()->success('Role was successfully created');
 
-            return redirect('role');
+            return redirect('user/role');
         } catch (Exception $e) {
             DB::rollback();
             flash()->error('Role was not created');
 
-            return redirect('role');
+            return redirect('user/role');
         }
     }
 
