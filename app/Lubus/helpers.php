@@ -1,7 +1,7 @@
 <?php
 
 
-/**
+/*
  * Set active page.
  *
  * @param string $uri
