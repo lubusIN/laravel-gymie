@@ -4,11 +4,11 @@ namespace App\Console\Commands;
 
 use App\Member;
 use App\Enquiry;
-use App\Sms_event;
+use App\SmsEvent;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class SmsEvent extends Command
+class SmsScheduledEvent extends Command
 {
     /**
      * The name and signature of the console command.
@@ -41,7 +41,7 @@ class SmsEvent extends Command
      */
     public function handle()
     {
-        $smsevents = Sms_event::where('date', '=', Carbon::today())->get();
+        $smsevents = SmsEvent::where('date', '=', Carbon::today())->get();
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
         foreach ($smsevents as $smsevent) {

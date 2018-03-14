@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Member;
 use App\Enquiry;
-use App\Sms_log;
-use App\Sms_event;
-use App\Sms_trigger;
+use App\SmsLog;
+use App\SmsEvent;
+use App\SmsTrigger;
 use Lubus\Constants\Status;
 use Illuminate\Http\Request;
 
@@ -20,21 +20,21 @@ class SmsController extends Controller
 
     public function triggersIndex(Request $request)
     {
-        $triggers = Sms_trigger::search($request->input('search'))->get();
+        $triggers = SmsTrigger::search($request->input('search'))->get();
 
         return view('sms.triggers.index', compact('triggers'));
     }
 
     public function triggerUpdate(Request $request)
     {
-        $DBtriggers = Sms_trigger::all();
+        $DBtriggers = SmsTrigger::all();
         $Clienttriggers = collect($request->triggers);
         //dd($request->triggers);
 
         foreach ($DBtriggers as $trigger) {
             $status = ($Clienttriggers->contains($trigger->id) ? 1 : 0);
 
-            Sms_trigger::where('id', '=', $trigger['id'])->update(['status' => $status]);
+            SmsTrigger::where('id', '=', $trigger['id'])->update(['status' => $status]);
         }
 
         flash()->success('Message triggers were successfully updated');
@@ -44,7 +44,7 @@ class SmsController extends Controller
 
     public function eventsIndex(Request $request)
     {
-        $events = Sms_event::search($request->input('search'))->paginate(10);
+        $events = SmsEvent::search($request->input('search'))->paginate(10);
 
         return view('sms.events.index', compact('events'));
     }
@@ -56,7 +56,7 @@ class SmsController extends Controller
 
     public function storeEvent(Request $request)
     {
-        $event = new Sms_event($request->all());
+        $event = new SmsEvent($request->all());
 
         $event->createdBy()->associate(Auth::user());
         $event->updatedBy()->associate(Auth::user());
@@ -70,14 +70,14 @@ class SmsController extends Controller
 
     public function editEvent($id)
     {
-        $event = Sms_event::findOrFail($id);
+        $event = SmsEvent::findOrFail($id);
 
         return view('sms.events.edit', compact('event'));
     }
 
     public function updateEvent($id, Request $request)
     {
-        $event = Sms_event::findOrFail($id);
+        $event = SmsEvent::findOrFail($id);
 
         $event->update($request->all());
         $event->updatedBy()->associate(Auth::user());
@@ -89,7 +89,7 @@ class SmsController extends Controller
 
     public function destroyEvent($id)
     {
-        $event = Sms_event::findOrFail($id);
+        $event = SmsEvent::findOrFail($id);
         $event->delete();
 
         flash()->success('SMS event was successfully deleted');
@@ -163,7 +163,7 @@ class SmsController extends Controller
 
     public function logIndex(Request $request)
     {
-        $smslogs = Sms_log::orderBy('send_time', 'desc')->search('"'.$request->input('search').'"')->paginate(10);
+        $smslogs = SmsLog::orderBy('send_time', 'desc')->search('"'.$request->input('search').'"')->paginate(10);
 
         return view('sms.log', compact('smslogs'));
     }

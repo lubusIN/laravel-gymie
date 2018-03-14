@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Sms_log;
+use App\SmsLog;
 use Illuminate\Console\Command;
 
 class ReshootOfflineSms extends Command
@@ -39,7 +39,7 @@ class ReshootOfflineSms extends Command
     public function handle()
     {
         try {
-            $logs = Sms_log::where('status', '=', 'offline')->get();
+            $logs = SmsLog::where('status', '=', 'offline')->get();
 
             foreach ($logs as $log) {
                 $text = urldecode($log->message);

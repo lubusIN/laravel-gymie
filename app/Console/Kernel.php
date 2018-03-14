@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\Inspire::class,
         \App\Console\Commands\SetExpired::class,
-        \App\Console\Commands\SmsEvent::class,
+        \App\Console\Commands\SmsScheduledEvent::class,
         \App\Console\Commands\SmsExpiring::class,
         \App\Console\Commands\ExpenseAlert::class,
         \App\Console\Commands\PendingInvoice::class,

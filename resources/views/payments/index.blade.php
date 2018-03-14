@@ -88,7 +88,7 @@
                 <tbody>
                 <tr>
                 @foreach ($payment_details as $payment_detail)
-                <?php $cheque_detail = App\Cheque_detail::where('payment_id',$payment_detail->id)->first(); ?>
+                <?php $cheque_detail = App\ChequeDetail::where('payment_id',$payment_detail->id)->first(); ?>
                 <td><a href="{{ action('InvoicesController@show',['id' => $payment_detail->invoice_id]) }}">{{ $payment_detail->invoice_number }}</a></td> 
                 <td><a href="{{ action('MembersController@show',['id' => $payment_detail->member_id]) }}">{{ $payment_detail->member_name }}</a></td>                                                                           
                 <td><i class="fa fa-inr"></i> {{ ($payment_detail->payment_amount >= 0 ? $payment_detail->payment_amount : str_replace("-","",$payment_detail->payment_amount)." (Paid)") }}</td>
@@ -115,7 +115,7 @@
                       @endpermission
                       </li> 
                       @if($payment_detail->mode == 0)                     
-                      <?php $cheque = App\Cheque_detail::where('payment_id',$payment_detail->id)->whereIn('status',['0','1','3'])->first(); 
+                      <?php $cheque = App\ChequeDetail::where('payment_id',$payment_detail->id)->whereIn('status',['0','1','3'])->first(); 
                       $result = ($cheque == null) ? false : true;
                       //$result = false;
                       ?>

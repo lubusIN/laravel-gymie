@@ -5,24 +5,30 @@ namespace App;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class Cheque_detail extends Model
+class SmsEvent extends Model
 {
-    protected $table = 'trn_cheque_details';
+    protected $table = 'mst_sms_events';
 
     protected $fillable = [
-            'payment_id',
-            'number',
+            'name',
             'date',
+            'message',
+            'description',
             'status',
+            'send_to',
             'created_by',
             'updated_by',
-     ];
+    ];
+
+    protected $dates = ['created_at', 'updated_at', 'date'];
 
     //Eloquence Search mapping
     use Eloquence;
 
     protected $searchableColumns = [
-        'number' => 20,
+        'name' => 20,
+        'date' => 10,
+        'message' => 5,
     ];
 
     public function createdBy()
@@ -33,10 +39,5 @@ class Cheque_detail extends Model
     public function updatedBy()
     {
         return $this->belongsTo('App\User', 'updated_by');
-    }
-
-    public function Payment()
-    {
-        return $this->belongsTo('App\Payment_detail', 'payment_id');
     }
 }

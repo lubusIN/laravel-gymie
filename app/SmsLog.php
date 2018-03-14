@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class Sms_log extends Model
+class SmsLog extends Model
 {
     protected $table = 'trn_sms_log';
 

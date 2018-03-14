@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use App\Subscription;
 use Illuminate\Console\Command;
 
@@ -42,7 +42,7 @@ class SmsExpiring extends Command
     {
         $expirings = Subscription::where('end_date', '<=', Carbon::today()->addDays(3))->where('status', '=', \constSubscription::onGoing)->get();
 
-        $sms_trigger = Sms_trigger::where('alias', '=', 'subscription_expiring')->first();
+        $sms_trigger = SmsTrigger::where('alias', '=', 'subscription_expiring')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
         $sender_id = \Utilities::getSetting('sms_sender_id');
