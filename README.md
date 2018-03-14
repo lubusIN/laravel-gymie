@@ -37,24 +37,48 @@ Laravel based web application for gym & club management. Currently being used by
 Improper permission on `storage` & `public` folder will lead to server & application errors
 
 ##  Installation
- 1. Clone to your server root `git clone git@github.com:lubusIN/laravel-gymie.git`
- 2. Create .env in application root `touch .env`
- 3. Add your database details & optional sentry DNS
- ```
-	DB_HOST= [HOST]
-	DB_DATABASE=[DBHOST]
-	DB_USERNAME=[USERNAME]
-	DB_PASSWORD= [PASSWORD]
-	SENTRY_DSN= [SENTRYDNS]
- ```
- 5. Run `php artisan key:generate` to generate key
- 6. Run `composer install` to install all dependencies
- 7. Run `php artisan migrate --seed` to install the database & required data
- 8. All done! use the following credentials to log in
- ```
-	email: admin@gymie.in
-	password: password
- ```
+1. Clone to your server root `git clone git@github.com:lubusIN/laravel-gymie.git`
+2. Run `composer install` to install all dependencies
+3. Create .env in application root `touch .env`
+4. Add your database details & optional sentry DNS
+```
+DB_HOST= [HOST]
+DB_DATABASE=[DBHOST]
+DB_USERNAME=[USERNAME]
+DB_PASSWORD= [PASSWORD]
+SENTRY_DSN= [SENTRYDNS]
+```
+5. Run `php artisan key:generate` to generate key
+6. Run `php artisan migrate --seed` to install the database & required data
+7. All done! use the following credentials to log in
+```
+email: admin@gymie.in
+password: password
+```
+
+## Troubleshooting
+
+**APP_KEY not getting added to .env**
+- Add APP_KEY to .env
+- Copy generated key from terminal
+
+**Permission / 500 Internal Server Error**
+
+Change permission on storage & cache
+```
+sudo chgrp -R www-data storage bootstrap/cache
+sudo chmod -R ug+rwx storage bootstrap/cache
+``` 
+
+## Live Demo
+
+Test drive the application without going through the hassel of installation.
+
+```
+url: https://demo.gymie.in
+email: admin@gymie.in
+password: password
+```
 
 ## Changelog
 Please see [CHANGELOG](https://github.com/spatie/laravel-medialibrary/blob/master/CHANGELOG.md) for more information what has changed recently.

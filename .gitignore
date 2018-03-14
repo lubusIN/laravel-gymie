@@ -8,7 +8,7 @@ bootstrap/compiled.php
 app/storage/
 
 # Laravel 5 & Lumen specific
-public/assets/img/
+#public/assets/img/
 public/storage
 public/hot
 storage/*.key
