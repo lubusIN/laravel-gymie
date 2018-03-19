@@ -6,7 +6,7 @@ use DB;
 use Auth;
 use App\Role;
 use App\User;
-use App\Role_user;
+use App\RoleUser;
 use App\Permission;
 use App\Permission_role;
 use Illuminate\Http\Request;
@@ -89,7 +89,7 @@ class AclController extends Controller
         $user->save();
 
         if ($user->role_user->role->id != $request->role_id) {
-            Role_user::where('user_id', $user->id)->where('role_id', $user->role_user->role_id)->delete();
+            RoleUser::where('user_id', $user->id)->where('role_id', $user->role_user->role_id)->delete();
             $user->attachRole($request->role_id);
         }
 
@@ -102,7 +102,7 @@ class AclController extends Controller
     {
         DB::beginTransaction();
         try {
-            Role_user::where('user_id', $id)->delete();
+            RoleUser::where('user_id', $id)->delete();
             $user = User::findOrFail($id);
             $user->clearMediaCollection('staff');
             $user->status = \constStatus::Archive;
@@ -153,12 +153,12 @@ class AclController extends Controller
             DB::commit();
             flash()->success('Role was successfully created');
 
-            return redirect('role');
+            return redirect('user/role');
         } catch (Exception $e) {
             DB::rollback();
             flash()->error('Role was not created');
 
-            return redirect('role');
+            return redirect('user/role');
         }
     }
 

@@ -8,10 +8,10 @@ use JavaScript;
 use App\Enquiry;
 use App\Expense;
 use App\Setting;
-use App\Sms_log;
+use App\SmsLog;
 use App\Followup;
 use App\Subscription;
-use App\Cheque_detail;
+use App\ChequeDetail;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -43,12 +43,12 @@ class DashboardController extends Controller
         $dues = Expense::dueAlerts()->get();
         $outstandings = Expense::outstandingAlerts()->get();
         $smsRequestSetting = \Utilities::getSetting('sms_request');
-        $smslogs = Sms_log::dashboardLogs()->get();
-        $recievedCheques = Cheque_detail::where('status', \constChequeStatus::Recieved)->get();
+        $smslogs = SmsLog::dashboardLogs()->get();
+        $recievedCheques = ChequeDetail::where('status', \constChequeStatus::Recieved)->get();
         $recievedChequesCount = $recievedCheques->count();
-        $depositedCheques = Cheque_detail::where('status', \constChequeStatus::Deposited)->get();
+        $depositedCheques = ChequeDetail::where('status', \constChequeStatus::Deposited)->get();
         $depositedChequesCount = $depositedCheques->count();
-        $bouncedCheques = Cheque_detail::where('status', \constChequeStatus::Bounced)->get();
+        $bouncedCheques = ChequeDetail::where('status', \constChequeStatus::Bounced)->get();
         $bouncedChequesCount = $bouncedCheques->count();
         $membersPerPlan = json_decode(\Utilities::membersPerPlan());
 

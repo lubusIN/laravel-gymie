@@ -7,7 +7,7 @@ use Auth;
 use App\Member;
 use App\Enquiry;
 use App\Followup;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Http\Request;
 
 class EnquiriesController extends Controller
@@ -94,7 +94,7 @@ class EnquiriesController extends Controller
             $gym_name = \Utilities::getSetting('gym_name');
             $sender_id = \Utilities::getSetting('sms_sender_id');
 
-            $sms_trigger = Sms_trigger::where('alias', '=', 'enquiry_placement')->first();
+            $sms_trigger = SmsTrigger::where('alias', '=', 'enquiry_placement')->first();
             $message = $sms_trigger->message;
             $sms_text = sprintf($message, $enquiry->name, $gym_name);
             $sms_status = $sms_trigger->status;

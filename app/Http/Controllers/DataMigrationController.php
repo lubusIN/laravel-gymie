@@ -11,8 +11,8 @@ use App\Invoice;
 use App\Setting;
 use Carbon\Carbon;
 use App\Subscription;
-use App\Invoice_detail;
-use App\Payment_detail;
+use App\InvoiceDetail;
+use App\PaymentDetail;
 
 class DataMigrationController extends Controller
 {
@@ -25,29 +25,29 @@ class DataMigrationController extends Controller
     {
         DB::beginTransaction();
         try {
-            //From: Invoice_detail->tax To: Invoice->tax
-            $oldInvoiceDetailsTax = Invoice_detail::where('item_name', '=', 'Taxes')->get();
+            //From: InvoiceDetail->tax To: Invoice->tax
+            $oldInvoiceDetailsTax = InvoiceDetail::where('item_name', '=', 'Taxes')->get();
 
             foreach ($oldInvoiceDetailsTax as $taxDetail) {
                 Invoice::where('id', $taxDetail->invoice_id)->update(['tax' => $taxDetail->item_amount]);
             }
 
-            //From: Invoice_detail->admission To: Invoice->additional_fees
-            $oldInvoiceDetailsAdmission = Invoice_detail::where('item_name', '=', 'Admission')->get();
+            //From: InvoiceDetail->admission To: Invoice->additional_fees
+            $oldInvoiceDetailsAdmission = InvoiceDetail::where('item_name', '=', 'Admission')->get();
 
             foreach ($oldInvoiceDetailsAdmission as $admissionDetail) {
                 Invoice::where('id', $admissionDetail->invoice_id)->update(['additional_fees' => $admissionDetail->item_amount]);
             }
 
-            //Now delete the admission and tax rows from Invoice_details
-            Invoice_detail::where('item_name', '=', 'Admission')->delete();
-            Invoice_detail::where('item_name', '=', 'Taxes')->delete();
+            //Now delete the admission and tax rows from InvoiceDetails
+            InvoiceDetail::where('item_name', '=', 'Admission')->delete();
+            InvoiceDetail::where('item_name', '=', 'Taxes')->delete();
 
-            //From: Member->plan_id To: Invoice_detail->plan_id
+            //From: Member->plan_id To: InvoiceDetail->plan_id
             $invoices = Invoice::all();
 
             foreach ($invoices as $invoice) {
-                Invoice_detail::where('invoice_id', $invoice->id)->update(['plan_id' => $invoice->member->plan_id]);
+                InvoiceDetail::where('invoice_id', $invoice->id)->update(['plan_id' => $invoice->member->plan_id]);
             }
 
             DB::commit();
@@ -197,7 +197,7 @@ class DataMigrationController extends Controller
                                                     'updated_by'=> Auth::user()->id,
                                                     ]);
 
-                $invoiceDetail = Invoice_detail::create(['invoice_id'=> $invoice->id,
+                $invoiceDetail = InvoiceDetail::create(['invoice_id'=> $invoice->id,
                                                        'plan_id'=> (int) $planId,
                                                        'item_amount'=> $line->get('total_amount'),
                                                        'item_amount'=> $line->get('total_amount'),
@@ -205,7 +205,7 @@ class DataMigrationController extends Controller
                                                        'updated_by'=> Auth::user()->id,
                                                         ]);
 
-                $paymentDetail = Payment_detail::create(['invoice_id'=> $invoice->id,
+                $paymentDetail = PaymentDetail::create(['invoice_id'=> $invoice->id,
                                                          'payment_amount'=> $payment_amount,
                                                          'mode'=> '1',
                                                          'note'=> ' ',

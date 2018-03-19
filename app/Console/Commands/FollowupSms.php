@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Followup;
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Console\Command;
 
 class FollowupSms extends Command
@@ -42,7 +42,7 @@ class FollowupSms extends Command
     {
         $followups = Followup::where('due_date', '=', Carbon::today())->get();
 
-        $sms_trigger = Sms_trigger::where('alias', '=', 'followup')->first();
+        $sms_trigger = SmsTrigger::where('alias', '=', 'followup')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
         $sender_id = \Utilities::getSetting('sms_sender_id');

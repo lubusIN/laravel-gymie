@@ -5,7 +5,7 @@ namespace App;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class Payment_detail extends Model
+class PaymentDetail extends Model
 {
     protected $table = 'trn_payment_details';
 
@@ -63,6 +63,6 @@ class Payment_detail extends Model
 
     public function Cheque()
     {
-        return $this->hasOne('App\Cheque_detail', 'payment_id');
+        return $this->hasOne('App\ChequeDetail', 'payment_id');
     }
 }

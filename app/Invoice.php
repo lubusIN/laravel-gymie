@@ -65,14 +65,14 @@ class Invoice extends Model
         return $this->belongsTo('App\Member', 'member_id');
     }
 
-    public function Payment_details()
+    public function PaymentDetails()
     {
-        return $this->hasMany('App\Payment_detail');
+        return $this->hasMany('App\PaymentDetail');
     }
 
-    public function Invoice_details()
+    public function InvoiceDetails()
     {
-        return $this->hasMany('App\Invoice_detail');
+        return $this->hasMany('App\InvoiceDetail');
     }
 
     public function Subscription()
