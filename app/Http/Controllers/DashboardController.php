@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Member;
+use App\SmsLog;
 use JavaScript;
 use App\Enquiry;
 use App\Expense;
 use App\Setting;
-use App\SmsLog;
 use App\Followup;
-use App\Subscription;
 use App\ChequeDetail;
+use App\Subscription;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller

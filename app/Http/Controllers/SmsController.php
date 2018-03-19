@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Member;
-use App\Enquiry;
 use App\SmsLog;
+use App\Enquiry;
 use App\SmsEvent;
 use App\SmsTrigger;
 use Lubus\Constants\Status;
