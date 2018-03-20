@@ -245,11 +245,7 @@ class AclController extends Controller
 
     public function storePermission(Request $request)
     {
-        Permission::create(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                           ]);
+        Permission::create($request->only(['name', 'display_name', 'description', 'group_key']));
 
         flash()->success('Permission was successfully created');
 
