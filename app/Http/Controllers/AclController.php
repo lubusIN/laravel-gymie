@@ -263,11 +263,7 @@ class AclController extends Controller
     {
         $permission = Permission::findOrFail($id);
 
-        $permission->update(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                            ]);
+        $permission->update($request->only(['name', 'display_name', 'description', 'group_key']));
 
         flash()->success('Permission was successfully updated');
 
