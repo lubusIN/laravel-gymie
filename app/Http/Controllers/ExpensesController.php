@@ -65,12 +65,7 @@ class ExpensesController extends Controller
      */
     public function store(Request $request)
     {
-        $expenseData = ['name' => $request->name,
-                             'category_id' => $request->category_id,
-                             'due_date' => $request->due_date,
-                             'repeat' => $request->repeat,
-                             'note' => $request->note,
-                             'amount' => $request->amount, ];
+        $expenseData = $request->only(['name', 'category_id', 'due_date', 'repeat', 'note', 'amount',]);
 
         $expense = new Expense($expenseData);
         $expense->createdBy()->associate(Auth::user());
