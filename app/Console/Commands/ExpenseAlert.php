@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Expense;
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Console\Command;
 
 class ExpenseAlert extends Command
@@ -44,7 +44,7 @@ class ExpenseAlert extends Command
         $contact = \Utilities::getSetting('primary_contact');
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
-        $sms_trigger = Sms_trigger::where('alias', '=', 'expense_alert')->first();
+        $sms_trigger = SmsTrigger::where('alias', '=', 'expense_alert')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
 

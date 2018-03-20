@@ -1,6 +1,6 @@
 <?php
 
-use App\Role_user;
+use App\RoleUser;
 use Illuminate\Database\Seeder;
 
 class RoleUserTableSeeder extends Seeder
@@ -13,7 +13,7 @@ class RoleUserTableSeeder extends Seeder
     public function run()
     {
         // Create Role User
-        Role_user::create([
+        RoleUser::create([
             'user_id' => 1,
             'role_id' => 1,
         ]);

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice_detail extends Model
+class InvoiceDetail extends Model
 {
     protected $table = 'trn_invoice_details';
 

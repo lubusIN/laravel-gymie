@@ -2,8 +2,8 @@
 
 use App\Plan;
 use App\Member;
+use App\SmsLog;
 use App\Setting;
-use App\Sms_log;
 use Carbon\Carbon;
 use App\Subscription;
 use Illuminate\Http\Request;
@@ -612,7 +612,7 @@ class Utilities
                                         'send_time' => Carbon::now(),
                                         'status' => 'NA', ];
 
-                    $SmsLog = new Sms_log($SmsLogData);
+                    $SmsLog = new SmsLog($SmsLogData);
                     $SmsLog->save();
                 }
                 //Update SMS balance
@@ -625,7 +625,7 @@ class Utilities
                                     'send_time' => Carbon::now(),
                                     'status' => 'offline', ];
 
-                $SmsLog = new Sms_log($SmsLogData);
+                $SmsLog = new SmsLog($SmsLogData);
                 $SmsLog->save();
             }
         }
@@ -694,14 +694,14 @@ class Utilities
             $api_key = self::getSetting('sms_api_key');
 
             // Retry Offline Msg
-            $messages = Sms_log::where('status', 'offline')->get();
+            $messages = SmsLog::where('status', 'offline')->get();
 
             foreach ($messages as $message) {
                 self::retrySms($message->sender_id, $message->number, $message->message, $message);
             }
 
             // Update Status
-            $messages = Sms_log::whereNotIn('status', ['Delivered', 'Failed', 'offline'])->get();
+            $messages = SmsLog::whereNotIn('status', ['Delivered', 'Failed', 'offline'])->get();
 
             foreach ($messages as $message) {
                 $sms_shoot_id = $message->shoot_id;

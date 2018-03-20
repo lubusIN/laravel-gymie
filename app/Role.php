@@ -25,9 +25,9 @@ class Role extends EntrustRole
         return $this->hasMany('App\Permission');
     }
 
-    public function Role_users()
+    public function RoleUsers()
     {
-        return $this->belongsToMany('App\Role_user');
+        return $this->belongsToMany('App\RoleUser');
     }
 
     public function scopeExcludeGymie($query)

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use DB;
 use App\Invoice;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Console\Command;
 
 class PendingInvoice extends Command
@@ -45,13 +45,13 @@ class PendingInvoice extends Command
                                 ->whereIn('status', [0, 2])
                                 ->get();
 
-        $sms_trigger = Sms_trigger::where('alias', '=', 'pending_invoice')->first();
+        $sms_trigger = SmsTrigger::where('alias', '=', 'pending_invoice')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
         foreach ($invoices as $invoice) {
-            if ($invoice->Payment_details->contains('mode', 1)) {
+            if ($invoice->PaymentDetails->contains('mode', 1)) {
                 $sms_text = sprintf($message, $invoice->member->name, $invoice->pending_amount, $invoice->invoice_number);
                 \Utilities::Sms($sender_id, $invoice->member->contact, $sms_text, $sms_status);
             }

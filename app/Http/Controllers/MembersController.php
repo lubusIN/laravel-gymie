@@ -11,11 +11,11 @@ use App\Invoice;
 use App\Service;
 use App\Setting;
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
+use App\ChequeDetail;
 use App\Subscription;
-use App\Cheque_detail;
-use App\Invoice_detail;
-use App\Payment_detail;
+use App\InvoiceDetail;
+use App\PaymentDetail;
 use Illuminate\Http\Request;
 
 class MembersController extends Controller
@@ -238,7 +238,7 @@ class MembersController extends Controller
                                        'plan_id'=> $plan['id'],
                                        'item_amount'=> $plan['price'], ];
 
-                $invoice_details = new Invoice_detail($detailsData);
+                $invoice_details = new InvoiceDetail($detailsData);
                 $invoice_details->createdBy()->associate(Auth::user());
                 $invoice_details->updatedBy()->associate(Auth::user());
                 $invoice_details->save();
@@ -250,7 +250,7 @@ class MembersController extends Controller
                                      'mode'=> $request->mode,
                                      'note'=> ' ', ];
 
-            $payment_details = new Payment_detail($paymentData);
+            $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
             $payment_details->updatedBy()->associate(Auth::user());
             $payment_details->save();
@@ -262,7 +262,7 @@ class MembersController extends Controller
                                       'date'=> $request->date,
                                       'status'=> \constChequeStatus::Recieved, ];
 
-                $cheque_details = new Cheque_detail($chequeData);
+                $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
                 $cheque_details->updatedBy()->associate(Auth::user());
                 $cheque_details->save();
@@ -284,14 +284,14 @@ class MembersController extends Controller
 
             //SMS Trigger
             if ($invoice->status == \constPaymentStatus::Paid) {
-                $sms_trigger = Sms_trigger::where('alias', '=', 'member_admission_with_paid_invoice')->first();
+                $sms_trigger = SmsTrigger::where('alias', '=', 'member_admission_with_paid_invoice')->first();
                 $message = $sms_trigger->message;
                 $sms_text = sprintf($message, $member->name, $gym_name, $payment_details->payment_amount, $invoice->invoice_number);
                 $sms_status = $sms_trigger->status;
 
                 \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
             } elseif ($invoice->status == \constPaymentStatus::Partial) {
-                $sms_trigger = Sms_trigger::where('alias', '=', 'member_admission_with_partial_invoice')->first();
+                $sms_trigger = SmsTrigger::where('alias', '=', 'member_admission_with_partial_invoice')->first();
                 $message = $sms_trigger->message;
                 $sms_text = sprintf($message, $member->name, $gym_name, $payment_details->payment_amount, $invoice->invoice_number, $invoice->pending_amount);
                 $sms_status = $sms_trigger->status;
@@ -299,14 +299,14 @@ class MembersController extends Controller
                 \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
             } elseif ($invoice->status == \constPaymentStatus::Unpaid) {
                 if ($request->mode == 0) {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'payment_with_cheque')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'payment_with_cheque')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $member->name, $payment_details->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
                     $sms_status = $sms_trigger->status;
 
                     \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
                 } else {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'member_admission_with_unpaid_invoice')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'member_admission_with_unpaid_invoice')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $member->name, $gym_name, $invoice->pending_amount, $invoice->invoice_number);
                     $sms_status = $sms_trigger->status;
@@ -410,11 +410,11 @@ class MembersController extends Controller
         $invoices = Invoice::where('member_id', $id)->get();
 
         foreach ($invoices as $invoice) {
-            Invoice_detail::where('invoice_id', $invoice->id)->delete();
-            $payment_details = Payment_detail::where('invoice_id', $invoice->id)->get();
+            InvoiceDetail::where('invoice_id', $invoice->id)->delete();
+            $payment_details = PaymentDetail::where('invoice_id', $invoice->id)->get();
 
             foreach ($payment_details as $payment_detail) {
-                Cheque_detail::where('payment_id', $payment_detail->id)->delete();
+                ChequeDetail::where('payment_id', $payment_detail->id)->delete();
                 $payment_detail->delete();
             }
 

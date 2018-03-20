@@ -9,11 +9,11 @@ use App\Invoice;
 use App\Service;
 use App\Setting;
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
+use App\ChequeDetail;
 use App\Subscription;
-use App\Cheque_detail;
-use App\Invoice_detail;
-use App\Payment_detail;
+use App\InvoiceDetail;
+use App\PaymentDetail;
 use Illuminate\Http\Request;
 
 class SubscriptionsController extends Controller
@@ -159,7 +159,7 @@ class SubscriptionsController extends Controller
                                        'plan_id'=> $plan['id'],
                                        'item_amount'=> $plan['price'], ];
 
-                $invoice_details = new Invoice_detail($detailsData);
+                $invoice_details = new InvoiceDetail($detailsData);
                 $invoice_details->createdBy()->associate(Auth::user());
                 $invoice_details->updatedBy()->associate(Auth::user());
                 $invoice_details->save();
@@ -171,7 +171,7 @@ class SubscriptionsController extends Controller
                                    'mode'=> $request->mode,
                                    'note'=> ' ', ];
 
-            $payment_details = new Payment_detail($paymentData);
+            $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
             $payment_details->updatedBy()->associate(Auth::user());
             $payment_details->save();
@@ -183,7 +183,7 @@ class SubscriptionsController extends Controller
                                     'date'=> $request->date,
                                     'status'=> \constChequeStatus::Recieved, ];
 
-                $cheque_details = new Cheque_detail($chequeData);
+                $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
                 $cheque_details->updatedBy()->associate(Auth::user());
                 $cheque_details->save();
@@ -209,14 +209,14 @@ class SubscriptionsController extends Controller
             //SMS Trigger
             if ($invoice->status == \constPaymentStatus::Paid) {
                 if ($request->mode == 0) {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'payment_with_cheque')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'payment_with_cheque')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $payment_details->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
                     $sms_status = $sms_trigger->status;
 
                     \Utilities::Sms($sender_id, $subscription->member->contact, $sms_text, $sms_status);
                 } else {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'subscription_renewal_with_paid_invoice')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'subscription_renewal_with_paid_invoice')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $payment_details->payment_amount, $invoice->invoice_number);
                     $sms_status = $sms_trigger->status;
@@ -225,14 +225,14 @@ class SubscriptionsController extends Controller
                 }
             } elseif ($invoice->status == \constPaymentStatus::Partial) {
                 if ($request->mode == 0) {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'payment_with_cheque')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'payment_with_cheque')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $payment_details->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
                     $sms_status = $sms_trigger->status;
 
                     \Utilities::Sms($sender_id, $subscription->member->contact, $sms_text, $sms_status);
                 } else {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'subscription_renewal_with_partial_invoice')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'subscription_renewal_with_partial_invoice')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $payment_details->payment_amount, $invoice->invoice_number, $invoice->pending_amount);
                     $sms_status = $sms_trigger->status;
@@ -241,14 +241,14 @@ class SubscriptionsController extends Controller
                 }
             } elseif ($invoice->status == \constPaymentStatus::Unpaid) {
                 if ($request->mode == 0) {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'payment_with_cheque')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'payment_with_cheque')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $payment_details->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
                     $sms_status = $sms_trigger->status;
 
                     \Utilities::Sms($sender_id, $subscription->member->contact, $sms_text, $sms_status);
                 } else {
-                    $sms_trigger = Sms_trigger::where('alias', '=', 'subscription_renewal_with_unpaid_invoice')->first();
+                    $sms_trigger = SmsTrigger::where('alias', '=', 'subscription_renewal_with_unpaid_invoice')->first();
                     $message = $sms_trigger->message;
                     $sms_text = sprintf($message, $subscription->member->name, $invoice->total, $invoice->invoice_number);
                     $sms_status = $sms_trigger->status;
@@ -360,15 +360,15 @@ class SubscriptionsController extends Controller
         try {
             $subscription = Subscription::findOrFail($id);
             $invoice = Invoice::where('id', $subscription->invoice_id)->first();
-            $invoice_details = Invoice_detail::where('invoice_id', $invoice->id)->get();
-            $payment_details = Payment_detail::where('invoice_id', $invoice->id)->get();
+            $invoice_details = InvoiceDetail::where('invoice_id', $invoice->id)->get();
+            $payment_details = PaymentDetail::where('invoice_id', $invoice->id)->get();
 
             foreach ($invoice_details as $invoice_detail) {
                 $invoice_detail->delete();
             }
 
             foreach ($payment_details as $payment_detail) {
-                Cheque_detail::where('payment_id', $payment_detail->id)->delete();
+                ChequeDetail::where('payment_id', $payment_detail->id)->delete();
                 $payment_detail->delete();
             }
 
@@ -389,7 +389,7 @@ class SubscriptionsController extends Controller
     {
         $subscription = Subscription::findOrFail($id);
 
-        $already_paid = Payment_detail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
+        $already_paid = PaymentDetail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
                                      ->whereRaw("trn_payment_details.invoice_id = $subscription->invoice_id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
                                      ->sum('trn_payment_details.payment_amount');
 
@@ -446,7 +446,7 @@ class SubscriptionsController extends Controller
 
                 //Adding subscription to invoice(Invoice Details)
 
-                Invoice_detail::where('invoice_id', $subscription->invoice_id)->update(['plan_id'=> $plan['id'],
+                InvoiceDetail::where('invoice_id', $subscription->invoice_id)->update(['plan_id'=> $plan['id'],
                                                                                          'item_amount'=> $plan['price'], ]);
             }
 
@@ -456,7 +456,7 @@ class SubscriptionsController extends Controller
                                    'mode'=> $request->mode,
                                    'note'=> ' ', ];
 
-            $payment_details = new Payment_detail($paymentData);
+            $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
             $payment_details->updatedBy()->associate(Auth::user());
             $payment_details->save();
@@ -468,7 +468,7 @@ class SubscriptionsController extends Controller
                                     'date'=> $request->date,
                                     'status'=> \constChequeStatus::Recieved, ];
 
-                $cheque_details = new Cheque_detail($chequeData);
+                $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
                 $cheque_details->updatedBy()->associate(Auth::user());
                 $cheque_details->save();

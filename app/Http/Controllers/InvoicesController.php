@@ -8,10 +8,10 @@ use JavaScript;
 use App\Invoice;
 use App\Service;
 use Carbon\Carbon;
+use App\ChequeDetail;
 use App\Subscription;
-use App\Cheque_detail;
-use App\Invoice_detail;
-use App\Payment_detail;
+use App\InvoiceDetail;
+use App\PaymentDetail;
 use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
@@ -126,11 +126,11 @@ class InvoicesController extends Controller
         DB::beginTransaction();
 
         try {
-            Invoice_detail::where('invoice_id', $id)->delete();
-            $payment_details = Payment_detail::where('invoice_id', $id)->get();
+            InvoiceDetail::where('invoice_id', $id)->delete();
+            $payment_details = PaymentDetail::where('invoice_id', $id)->get();
 
             foreach ($payment_details as $payment_detail) {
-                Cheque_detail::where('payment_id', $payment_detail->id)->delete();
+                ChequeDetail::where('payment_id', $payment_detail->id)->delete();
                 $payment_detail->delete();
             }
 
@@ -166,7 +166,7 @@ class InvoicesController extends Controller
 
         try {
             $invoice_total = $request->admission_amount + $request->subscription_amount + $request->taxes_amount - $request->discount_amount;
-            $already_paid = Payment_detail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
+            $already_paid = PaymentDetail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
                                        ->whereRaw("trn_payment_details.invoice_id = $id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
                                        ->sum('trn_payment_details.payment_amount');
 

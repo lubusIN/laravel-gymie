@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Member;
 use Carbon\Carbon;
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Console\Command;
 
 class BirthdaySms extends Command
@@ -44,7 +44,7 @@ class BirthdaySms extends Command
         $sender_id = \Utilities::getSetting('sms_sender_id');
         $gym_name = \Utilities::getSetting('gym_name');
 
-        $sms_trigger = Sms_trigger::where('alias', '=', 'member_birthday')->first();
+        $sms_trigger = SmsTrigger::where('alias', '=', 'member_birthday')->first();
         $message = $sms_trigger->message;
         $sms_status = $sms_trigger->status;
 

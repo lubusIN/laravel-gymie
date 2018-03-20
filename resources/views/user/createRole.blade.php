@@ -23,7 +23,7 @@
                             <div class="panel-head">Enter Details of the role</div>
                             </div>
 
-                            {!! Form::Open(['url' => 'role','id' => 'rolesform','files'=>'true']) !!}
+                            {!! Form::Open(['url' => 'user/role','id' => 'rolesform','files'=>'true']) !!}
 
                                 <div class="panel-body">
                                     <div class="row">

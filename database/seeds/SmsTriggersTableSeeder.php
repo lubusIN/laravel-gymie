@@ -1,6 +1,6 @@
 <?php
 
-use App\Sms_trigger;
+use App\SmsTrigger;
 use Illuminate\Database\Seeder;
 
 class SmsTriggersTableSeeder extends Seeder
@@ -107,7 +107,7 @@ class SmsTriggersTableSeeder extends Seeder
         ];
 
         foreach ($sms_triggers as $sms_trigger) {
-            Sms_trigger::create($sms_trigger);
+            SmsTrigger::create($sms_trigger);
         }
     }
 }

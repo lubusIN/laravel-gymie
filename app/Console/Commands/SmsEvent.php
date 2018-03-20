@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Member;
 use App\Enquiry;
-use App\Sms_event;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\SmsEvent as SmsEventModel;
 
 class SmsEvent extends Command
 {
@@ -41,7 +41,7 @@ class SmsEvent extends Command
      */
     public function handle()
     {
-        $smsevents = Sms_event::where('date', '=', Carbon::today())->get();
+        $smsevents = SmsEventModel::where('date', '=', Carbon::today())->get();
         $sender_id = \Utilities::getSetting('sms_sender_id');
 
         foreach ($smsevents as $smsevent) {

@@ -5,7 +5,7 @@ namespace App;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 
-class Sms_trigger extends Model
+class SmsTrigger extends Model
 {
     protected $table = 'mst_sms_triggers';
 
