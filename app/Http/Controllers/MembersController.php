@@ -49,7 +49,11 @@ class MembersController extends Controller
         $Totalmembers = Member::active($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
         $count = $Totalmembers->count();
 
-        $drp_placeholder = $this->drpPlaceholder($request);
+        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+            $drp_placeholder = 'Select daterange filter';
+        } else {
+            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+        }
 
         $request->flash();
 
@@ -462,12 +466,9 @@ class MembersController extends Controller
      */
     private function drpPlaceholder(Request $request)
     {
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
-            $drp_placeholder = 'Select daterange filter';
-        } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+        if ($request->has('drp_start') and $request->has('drp_end')) {
+            return $request->drp_start.' - '.$request->drp_end;
         }
-
-        return $drp_placeholder;
+        return 'Select daterange filter';
     }
 }
