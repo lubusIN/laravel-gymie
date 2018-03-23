@@ -82,19 +82,7 @@ class SubscriptionsController extends Controller
           'gymieToday' => Carbon::today()->format('Y-m-d'),
           'servicesCount' => Service::count(),
       ]);
-
-        //Get Numbering mode
-        $invoice_number_mode = \Utilities::getSetting('invoice_number_mode');
-
-        //Generating Invoice number
-        if ($invoice_number_mode == \constNumberingMode::Auto) {
-            $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
-            $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoice_number = $invoicePrefix.$invoiceCounter;
-        } else {
-            $invoice_number = '';
-            $invoiceCounter = '';
-        }
+        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->GenerateInvoiceNumber();
 
         return view('subscriptions.create', compact('invoice_number', 'invoiceCounter', 'invoice_number_mode'));
     }
@@ -305,17 +293,7 @@ class SubscriptionsController extends Controller
     {
 
         //Get Numbering mode
-        $invoice_number_mode = \Utilities::getSetting('invoice_number_mode');
-
-        //Generating Invoice number
-        if ($invoice_number_mode == \constNumberingMode::Auto) {
-            $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
-            $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoice_number = $invoicePrefix.$invoiceCounter;
-        } else {
-            $invoice_number = '';
-            $invoiceCounter = '';
-        }
+        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->GenerateInvoiceNumber();
 
         $subscriptions = Subscription::where('invoice_id', $id)->get();
         $member_id = $subscriptions->pluck('member_id')->first();
@@ -484,5 +462,26 @@ class SubscriptionsController extends Controller
 
             return back();
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function GenerateInvoiceNumber()
+    {
+        //Get Numbering mode
+        $invoice_number_mode = \Utilities::getSetting('invoice_number_mode');
+
+        //Generating Invoice number
+        if ($invoice_number_mode == \constNumberingMode::Auto) {
+            $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
+            $invoicePrefix = \Utilities::getSetting('invoice_prefix');
+            $invoice_number = $invoicePrefix.$invoiceCounter;
+        } else {
+            $invoice_number = '';
+            $invoiceCounter = '';
+        }
+
+        return [$invoice_number_mode, $invoiceCounter, $invoice_number];
     }
 }
