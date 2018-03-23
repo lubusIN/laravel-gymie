@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Followup extends Model
 {
+    use createdByUser, updatedByUser;
+
     protected $table = 'trn_enquiry_followups';
 
     protected $fillable = [
@@ -28,14 +30,6 @@ class Followup extends Model
 
     public function scopeReminders($query)
     {
-        return $query->leftJoin('mst_enquiries', 'trn_enquiry_followups.enquiry_id', '=', 'mst_enquiries.id')
-                     ->select('trn_enquiry_followups.*', 'mst_enquiries.status')
-                     ->where('trn_enquiry_followups.due_date', '<=', Carbon::today())
-                     ->where('trn_enquiry_followups.status', '=', \constFollowUpStatus::Pending)
-                     ->where('mst_enquiries.status', '=', \constEnquiryStatus::Lead);
+        return $query->leftJoin('mst_enquiries', 'trn_enquiry_followups.enquiry_id', '=', 'mst_enquiries.id')->select('trn_enquiry_followups.*', 'mst_enquiries.status')->where('trn_enquiry_followups.due_date', '<=', Carbon::today())->where('trn_enquiry_followups.status', '=', \constFollowUpStatus::Pending)->where('mst_enquiries.status', '=', \constEnquiryStatus::Lead);
     }
-
-    use createdByUser;
-
-    use updatedByUser;
 }

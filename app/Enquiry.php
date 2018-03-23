@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enquiry extends Model
 {
+    //Eloquence Search mapping
+    use Eloquence;
+    use createdByUser, updatedByUser;
+
     protected $table = 'mst_enquiries';
 
     protected $fillable = [
@@ -27,9 +31,6 @@ class Enquiry extends Model
         'updated_by',
     ];
 
-    //Eloquence Search mapping
-    use Eloquence;
-
     protected $searchableColumns = [
         'name' => 20,
         'email' => 20,
@@ -41,10 +42,6 @@ class Enquiry extends Model
         return $this->hasMany('App\Followup');
     }
 
-    use createdByUser;
-
-    use updatedByUser;
-
     public function scopeIndexQuery($query, $sorting_field, $sorting_direction, $drp_start, $drp_end)
     {
         $sorting_field = ($sorting_field != null ? $sorting_field : 'created_at');
@@ -54,7 +51,10 @@ class Enquiry extends Model
             return $query->select('id', 'name', 'contact', 'email', 'address', 'gender', 'created_at', 'status')->orderBy($sorting_field, $sorting_direction);
         }
 
-        return $query->select('id', 'name', 'contact', 'email', 'address', 'gender', 'created_at', 'status')->whereBetween('created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
+        return $query->select('id', 'name', 'contact', 'email', 'address', 'gender', 'created_at', 'status')->whereBetween('created_at', [
+            $drp_start,
+            $drp_end,
+        ])->orderBy($sorting_field, $sorting_direction);
     }
 
     public function scopeOnlyLeads($query)

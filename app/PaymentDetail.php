@@ -7,19 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentDetail extends Model
 {
+    //Eloquence Search mapping
+    use Eloquence;
+    use createdByUser,updatedByUser;
+
     protected $table = 'trn_payment_details';
 
     protected $fillable = [
-            'payment_amount',
-            'note',
-            'mode',
-            'invoice_id',
-            'created_by',
-            'updated_by',
-     ];
-
-    //Eloquence Search mapping
-    use Eloquence;
+        'payment_amount',
+        'note',
+        'mode',
+        'invoice_id',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $searchableColumns = [
         'payment_amount' => 20,
@@ -33,22 +34,14 @@ class PaymentDetail extends Model
         $sorting_direction = ($sorting_direction != null ? $sorting_direction : 'desc');
 
         if ($drp_start == null or $drp_end == null) {
-            return $query->leftJoin('trn_invoice', 'trn_payment_details.invoice_id', '=', 'trn_invoice.id')
-                         ->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')
-                         ->select('trn_payment_details.id', 'trn_payment_details.created_at', 'trn_payment_details.payment_amount', 'trn_payment_details.mode', 'trn_payment_details.invoice_id', 'trn_invoice.invoice_number', 'mst_members.id as member_id', 'mst_members.name as member_name', 'mst_members.member_code')
-                         ->orderBy($sorting_field, $sorting_direction);
+            return $query->leftJoin('trn_invoice', 'trn_payment_details.invoice_id', '=', 'trn_invoice.id')->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_payment_details.id', 'trn_payment_details.created_at', 'trn_payment_details.payment_amount', 'trn_payment_details.mode', 'trn_payment_details.invoice_id', 'trn_invoice.invoice_number', 'mst_members.id as member_id', 'mst_members.name as member_name', 'mst_members.member_code')->orderBy($sorting_field, $sorting_direction);
         }
 
-        return $query->leftJoin('trn_invoice', 'trn_payment_details.invoice_id', '=', 'trn_invoice.id')
-                     ->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')
-                     ->select('trn_payment_details.id', 'trn_payment_details.created_at', 'trn_payment_details.payment_amount', 'trn_payment_details.mode', 'trn_invoice.invoice_number', 'mst_members.name as member_name', 'mst_members.member_code')
-                     ->whereBetween('trn_payment_details.created_at', [$drp_start, $drp_end])
-                     ->orderBy($sorting_field, $sorting_direction);
+        return $query->leftJoin('trn_invoice', 'trn_payment_details.invoice_id', '=', 'trn_invoice.id')->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_payment_details.id', 'trn_payment_details.created_at', 'trn_payment_details.payment_amount', 'trn_payment_details.mode', 'trn_invoice.invoice_number', 'mst_members.name as member_name', 'mst_members.member_code')->whereBetween('trn_payment_details.created_at', [
+                $drp_start,
+                $drp_end,
+            ])->orderBy($sorting_field, $sorting_direction);
     }
-
-    use createdByUser;
-
-    use updatedByUser;
 
     public function Invoice()
     {

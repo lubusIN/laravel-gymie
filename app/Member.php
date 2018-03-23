@@ -10,7 +10,8 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 class Member extends Model implements HasMediaConversions
 {
-    use HasMediaTrait , Eloquence;
+    use HasMediaTrait, Eloquence;
+    use createdByUser, updatedByUser;
 
     protected $table = 'mst_members';
 
@@ -46,20 +47,12 @@ class Member extends Model implements HasMediaConversions
     // Media i.e. Image size conversion
     public function registerMediaConversions()
     {
-        $this->addMediaConversion('thumb')
-             ->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])
-             ->performOnCollections('profile');
+        $this->addMediaConversion('thumb')->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])->performOnCollections('profile');
 
-        $this->addMediaConversion('form')
-             ->setManipulations(['w' => 70, 'h' => 70, 'q' => 100, 'fit' => 'crop'])
-             ->performOnCollections('profile', 'proof');
+        $this->addMediaConversion('form')->setManipulations(['w' => 70, 'h' => 70, 'q' => 100, 'fit' => 'crop'])->performOnCollections('profile', 'proof');
     }
 
     //Relationships
-    use createdByUser;
-
-    use updatedByUser;
-
     public function Subscriptions()
     {
         return $this->hasMany('App\Subscription');
@@ -80,7 +73,10 @@ class Member extends Model implements HasMediaConversions
             return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status')->where('mst_members.status', '!=', \constStatus::Archive)->orderBy($sorting_field, $sorting_direction);
         }
 
-        return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status')->where('mst_members.status', '!=', \constStatus::Archive)->whereBetween('mst_members.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
+        return $query->select('mst_members.id', 'mst_members.member_code', 'mst_members.name', 'mst_members.contact', 'mst_members.created_at', 'mst_members.status')->where('mst_members.status', '!=', \constStatus::Archive)->whereBetween('mst_members.created_at', [
+            $drp_start,
+            $drp_end,
+        ])->orderBy($sorting_field, $sorting_direction);
     }
 
     // public function scopeReportQuery($query,$sorting_field,$sorting_direction,$drp_start,$drp_end)
