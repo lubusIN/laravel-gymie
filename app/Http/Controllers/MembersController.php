@@ -465,6 +465,7 @@ class MembersController extends Controller
         if ($request->has('drp_start') and $request->has('drp_end')) {
             return $request->drp_start.' - '.$request->drp_end;
         }
+
         return 'Select daterange filter';
     }
 }
