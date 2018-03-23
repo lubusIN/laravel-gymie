@@ -36,11 +36,7 @@ class MembersController extends Controller
         $memberTotal = Member::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
         $count = $memberTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
-            $drp_placeholder = 'Select daterange filter';
-        } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
-        }
+        $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
@@ -53,11 +49,7 @@ class MembersController extends Controller
         $Totalmembers = Member::active($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
         $count = $Totalmembers->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
-            $drp_placeholder = 'Select daterange filter';
-        } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
-        }
+        $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
@@ -70,11 +62,7 @@ class MembersController extends Controller
         $Totalmembers = Member::inactive($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
         $count = $Totalmembers->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
-            $drp_placeholder = 'Select daterange filter';
-        } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
-        }
+        $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
@@ -466,5 +454,17 @@ class MembersController extends Controller
         $enquiry = Enquiry::findOrFail($id);
 
         return view('members.transfer', compact('enquiry', 'invoice_number', 'invoiceCounter', 'member_code', 'memberCounter', 'member_number_mode', 'invoice_number_mode'));
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return string
+     */
+    private function drpPlaceholder(Request $request)
+    {
+        if ($request->has('drp_start') and $request->has('drp_end')) {
+            return $request->drp_start.' - '.$request->drp_end;
+        }
+        return 'Select daterange filter';
     }
 }
