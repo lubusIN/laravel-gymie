@@ -27,13 +27,7 @@ class ExpenseCategory extends Model
         return $this->hasMany('App\Expense', 'category_id');
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('app\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('app\User', 'updated_by');
-    }
+    use updatedByUser;
 }
