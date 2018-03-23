@@ -30,10 +30,7 @@ class ChequeDetail extends Model
         return $this->belongsTo('App\User', 'created_by');
     }
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 
     public function Payment()
     {

@@ -41,15 +41,9 @@ class Enquiry extends Model
         return $this->hasMany('App\Followup');
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 
     public function scopeIndexQuery($query, $sorting_field, $sorting_direction, $drp_start, $drp_end)
     {

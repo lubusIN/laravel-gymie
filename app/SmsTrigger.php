@@ -27,13 +27,7 @@ class SmsTrigger extends Model
         'message' => 10,
     ];
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 }

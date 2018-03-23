@@ -82,15 +82,9 @@ class Subscription extends Model
         return $query->leftJoin('mst_plans', 'trn_subscriptions.plan_id', '=', 'mst_plans.id')->select('trn_subscriptions.*', 'mst_plans.plan_name')->where('trn_subscriptions.status', '=', \constSubscription::Expired)->where('trn_subscriptions.status', '!=', \constSubscription::renewed)->whereBetween('trn_subscriptions.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 
     public function Member()
     {

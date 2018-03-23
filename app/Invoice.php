@@ -50,15 +50,9 @@ class Invoice extends Model
         return $query->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_invoice.*', 'mst_members.name as member_name')->whereBetween('trn_invoice.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 
     public function Member()
     {

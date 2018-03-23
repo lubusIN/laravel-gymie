@@ -46,15 +46,9 @@ class Plan extends Model
         return $query->where('status', '=', \constStatus::Active);
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use createdByUser;
 
     public function Subscriptions()
     {

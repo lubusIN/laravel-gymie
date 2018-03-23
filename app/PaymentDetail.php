@@ -46,15 +46,9 @@ class PaymentDetail extends Model
                      ->orderBy($sorting_field, $sorting_direction);
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
+    use createdByUser;
 
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
+    use updatedByUser;
 
     public function Invoice()
     {
