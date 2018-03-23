@@ -475,8 +475,7 @@ class SubscriptionsController extends Controller
         //Generating Invoice number
         if ($invoiceNumberMode == \constNumberingMode::Auto) {
             $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
-            $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoiceNumber = $invoicePrefix.$invoiceCounter;
+            $invoiceNumber = \Utilities::getSetting('invoice_prefix').$invoiceCounter;
         } else {
             $invoiceNumber = '';
             $invoiceCounter = '';
