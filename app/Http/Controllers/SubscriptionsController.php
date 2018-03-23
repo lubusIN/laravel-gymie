@@ -469,7 +469,7 @@ class SubscriptionsController extends Controller
      */
     private function generateInvoiceNumber()
     {
-//Get Numbering mode
+        //Get Numbering mode
         $invoice_number_mode = \Utilities::getSetting('invoice_number_mode');
 
         //Generating Invoice number
