@@ -178,10 +178,7 @@ class AclController extends Controller
             //Updating Role
             $role = Role::findOrFail($id);
 
-            $role->update(['name' => $request->name,
-                           'display_name' => $request->display_name,
-                           'description' => $request->description,
-                          ]);
+            $role->update($request->only(['name', 'display_name', 'description']));
 
             //Updating permissions for the role
             $DBpermissions = Permission_role::where('role_id', $id)->select('permission_id')->lists('permission_id');
@@ -248,11 +245,7 @@ class AclController extends Controller
 
     public function storePermission(Request $request)
     {
-        Permission::create(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                           ]);
+        Permission::create($request->only(['name', 'display_name', 'description', 'group_key']));
 
         flash()->success('Permission was successfully created');
 
@@ -270,11 +263,7 @@ class AclController extends Controller
     {
         $permission = Permission::findOrFail($id);
 
-        $permission->update(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                            ]);
+        $permission->update($request->only(['name', 'display_name', 'description', 'group_key']));
 
         flash()->success('Permission was successfully updated');
 
