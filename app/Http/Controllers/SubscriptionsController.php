@@ -470,18 +470,18 @@ class SubscriptionsController extends Controller
     private function generateInvoiceNumber()
     {
         //Get Numbering mode
-        $invoice_number_mode = \Utilities::getSetting('invoice_number_mode');
+        $invoiceNumberMode = \Utilities::getSetting('invoice_number_mode');
 
         //Generating Invoice number
-        if ($invoice_number_mode == \constNumberingMode::Auto) {
+        if ($invoiceNumberMode == \constNumberingMode::Auto) {
             $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
             $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoice_number = $invoicePrefix.$invoiceCounter;
+            $invoiceNumber = $invoicePrefix.$invoiceCounter;
         } else {
-            $invoice_number = '';
+            $invoiceNumber = '';
             $invoiceCounter = '';
         }
 
-        return [$invoice_number_mode, $invoiceCounter, $invoice_number];
+        return [$invoiceNumberMode, $invoiceCounter, $invoiceNumber];
     }
 }
