@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="rightside bg-grey-100">
-	
-</div>
+    <div class="rightside bg-grey-100">
+
+    </div>
 
 @stop
