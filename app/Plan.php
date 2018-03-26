@@ -11,19 +11,20 @@ class Plan extends Model
     protected $table = 'mst_plans';
 
     protected $fillable = [
-            'plan_code',
-            'plan_name',
-            'service_id',
-            'plan_details',
-            'days',
-            'amount',
-            'status',
-            'created_by',
-            'updated_by',
+        'plan_code',
+        'plan_name',
+        'service_id',
+        'plan_details',
+        'days',
+        'amount',
+        'status',
+        'created_by',
+        'updated_by',
     ];
 
     //Eloquence Search mapping
     use Eloquence;
+    use createdByUser, updatedByUser;
 
     protected $searchableColumns = [
         'plan_code' => 20,
@@ -44,16 +45,6 @@ class Plan extends Model
     public function scopeOnlyActive($query)
     {
         return $query->where('status', '=', \constStatus::Active);
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
     }
 
     public function Subscriptions()

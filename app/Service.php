@@ -7,32 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
+    //Eloquence Search mapping
+    use Eloquence;
+    use createdByUser, updatedByUser;
+
     protected $table = 'mst_services';
 
     protected $fillable = [
-            'name',
-            'description',
-            'created_by',
-            'updated_by',
+        'name',
+        'description',
+        'created_by',
+        'updated_by',
     ];
-
-    //Eloquence Search mapping
-    use Eloquence;
 
     protected $searchableColumns = [
         'name' => 20,
         'description' => 10,
     ];
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
 
     public function Plans()
     {

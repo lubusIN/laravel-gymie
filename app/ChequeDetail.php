@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChequeDetail extends Model
 {
+    //Eloquence Search mapping
+    use Eloquence;
+    use updatedByUser;
+
     protected $table = 'trn_cheque_details';
 
     protected $fillable = [
@@ -18,9 +22,6 @@ class ChequeDetail extends Model
             'updated_by',
      ];
 
-    //Eloquence Search mapping
-    use Eloquence;
-
     protected $searchableColumns = [
         'number' => 20,
     ];
@@ -28,11 +29,6 @@ class ChequeDetail extends Model
     public function createdBy()
     {
         return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
     }
 
     public function Payment()

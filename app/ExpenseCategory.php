@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExpenseCategory extends Model
 {
+    use createdByUser, updatedByUser;
+
     protected $table = 'mst_expenses_categories';
 
     protected $fillable = [
@@ -25,15 +27,5 @@ class ExpenseCategory extends Model
     public function Expenses()
     {
         return $this->hasMany('App\Expense', 'category_id');
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('app\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('app\User', 'updated_by');
     }
 }
