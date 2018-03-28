@@ -33,7 +33,7 @@ class MembersController extends Controller
     public function index(Request $request)
     {
         $members = Member::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $count = $members->count();
+        $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
@@ -45,7 +45,7 @@ class MembersController extends Controller
     public function active(Request $request)
     {
         $members = Member::active($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $count = $members->count();
+        $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
@@ -57,7 +57,7 @@ class MembersController extends Controller
     public function inactive(Request $request)
     {
         $members = Member::inactive($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $count = $members->count();
+        $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
