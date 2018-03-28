@@ -29,11 +29,9 @@ class DashboardController extends Controller
         ]);
 
         $expirings = Subscription::dashboardExpiring()->paginate(5);
-        $expiringTotal = Subscription::dashboardExpiring()->get();
-        $expiringCount = $expiringTotal->count();
+        $expiringCount = $expirings->total();
         $allExpired = Subscription::dashboardExpired()->paginate(5);
-        $allExpiredTotal = Subscription::dashboardExpired()->get();
-        $expiredCount = $allExpiredTotal->count();
+        $expiredCount = $allExpired->total();
         $birthdays = Member::birthday()->get();
         $birthdayCount = $birthdays->count();
         $recents = Member::recent()->get();
