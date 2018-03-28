@@ -29,6 +29,7 @@ class Invoice extends Model
 
     //Eloquence Search mapping
     use Eloquence;
+    use createdByUser, updatedByUser;
 
     protected $searchableColumns = [
         'invoice_number' => 20,
@@ -48,16 +49,6 @@ class Invoice extends Model
         }
 
         return $query->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_invoice.*', 'mst_members.name as member_name')->whereBetween('trn_invoice.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
     }
 
     public function Member()

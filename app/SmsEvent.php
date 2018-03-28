@@ -24,20 +24,11 @@ class SmsEvent extends Model
 
     //Eloquence Search mapping
     use Eloquence;
+    use createdByUser, updatedByUser;
 
     protected $searchableColumns = [
         'name' => 20,
         'date' => 10,
         'message' => 5,
     ];
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
 }

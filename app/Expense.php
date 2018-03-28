@@ -8,22 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
+    //Eloquence Search mapping
+    use Eloquence;
+    use createdByUser, updatedByUser;
+
     protected $table = 'trn_expenses';
 
     protected $fillable = [
-          'name',
-          'category_id',
-          'amount',
-          'due_date',
-          'repeat',
-          'note',
-          'paid',
-          'created_by',
-          'updated_by',
+        'name',
+        'category_id',
+        'amount',
+        'due_date',
+        'repeat',
+        'note',
+        'paid',
+        'created_by',
+        'updated_by',
     ];
-
-    //Eloquence Search mapping
-    use Eloquence;
 
     protected $searchableColumns = [
         'name' => 20,
@@ -31,16 +32,6 @@ class Expense extends Model
     ];
 
     protected $dates = ['created_at', 'updated_at', 'due_date'];
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
-    }
 
     public function Category()
     {
@@ -71,9 +62,15 @@ class Expense extends Model
         }
 
         if ($category == 0) {
-            return $query->leftJoin('mst_expenses_categories', 'trn_expenses.category_id', '=', 'mst_expenses_categories.id')->select('trn_expenses.*', 'mst_expenses_categories.name as category_name')->whereBetween('trn_expenses.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
+            return $query->leftJoin('mst_expenses_categories', 'trn_expenses.category_id', '=', 'mst_expenses_categories.id')->select('trn_expenses.*', 'mst_expenses_categories.name as category_name')->whereBetween('trn_expenses.created_at', [
+                $drp_start,
+                $drp_end,
+            ])->orderBy($sorting_field, $sorting_direction);
         } else {
-            return $query->leftJoin('mst_expenses_categories', 'trn_expenses.category_id', '=', 'mst_expenses_categories.id')->select('trn_expenses.*', 'mst_expenses_categories.name as category_name')->where('category_id', $category)->whereBetween('trn_expenses.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
+            return $query->leftJoin('mst_expenses_categories', 'trn_expenses.category_id', '=', 'mst_expenses_categories.id')->select('trn_expenses.*', 'mst_expenses_categories.name as category_name')->where('category_id', $category)->whereBetween('trn_expenses.created_at', [
+                $drp_start,
+                $drp_end,
+            ])->orderBy($sorting_field, $sorting_direction);
         }
     }
 }
