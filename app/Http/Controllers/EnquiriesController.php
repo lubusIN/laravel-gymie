@@ -20,8 +20,7 @@ class EnquiriesController extends Controller
     public function index(Request $request)
     {
         $enquiries = Enquiry::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $enquiriesTotal = Enquiry::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
-        $count = $enquiriesTotal->count();
+        $count = $enquiries->total();
 
         if (! $request->has('drp_start') or ! $request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
