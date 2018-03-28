@@ -13,7 +13,6 @@
         "intervention/imagecache": "^2.3",
         "laracasts/utilities": "~2.0",
         "sofa/eloquence": "~5.1@dev",
-        "barryvdh/laravel-debugbar": "^2.0",
         "tymon/jwt-auth": "0.5.*",
         "spatie/laravel-medialibrary": "^3.18",
         "rap2hpoutre/laravel-log-viewer": "^0.6.1",
@@ -22,6 +21,7 @@
         "sentry/sentry-laravel": "^0.7.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
