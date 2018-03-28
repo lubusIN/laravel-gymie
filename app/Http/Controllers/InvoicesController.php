@@ -24,8 +24,7 @@ class InvoicesController extends Controller
     public function index(Request $request)
     {
         $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
-        $count = $invoicesTotal->count();
+        $count = $invoices->total();
 
         if (! $request->has('drp_start') or ! $request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
