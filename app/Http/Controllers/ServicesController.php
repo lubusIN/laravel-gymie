@@ -21,8 +21,7 @@ class ServicesController extends Controller
     public function index(Request $request)
     {
         $services = Service::search('"'.$request->input('search').'"')->paginate(10);
-        $serviceTotal = Service::search('"'.$request->input('search').'"')->get();
-        $count = $serviceTotal->count();
+        $count = $services->count();
 
         return view('services.index', compact('services', 'count'));
     }

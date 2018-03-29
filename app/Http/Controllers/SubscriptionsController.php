@@ -43,8 +43,7 @@ class SubscriptionsController extends Controller
     public function expiring(Request $request)
     {
         $expirings = Subscription::expiring($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $expiringTotal = Subscription::expiring($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
-        $count = $expiringTotal->count();
+        $count = $expirings->total();
 
         if (! $request->has('drp_start') or ! $request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
@@ -60,8 +59,7 @@ class SubscriptionsController extends Controller
     public function expired(Request $request)
     {
         $allExpired = Subscription::expired($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $allExpiredTotal = Subscription::expired($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
-        $count = $allExpiredTotal->count();
+        $count = $allExpired->total();
 
         if (! $request->has('drp_start') or ! $request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
