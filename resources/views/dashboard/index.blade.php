@@ -112,7 +112,7 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="enquiries">
-                                    @include('dashboard._index.enquiries')
+                                    @include('dashboard._index.enquiries', ['enquiries' => $enquiries])
                                 </div>
 
                                 <div class="tab-pane fade" id="reminders">
