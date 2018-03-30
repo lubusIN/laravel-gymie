@@ -2,10 +2,6 @@
 
 @section('content')
 
-    <?php
-    use Carbon\Carbon;
-    ?>
-
     <div class="rightside bg-grey-100">
         <!-- BEGIN PAGE HEADING -->
         <!--<div class="page-head bg-grey-100">

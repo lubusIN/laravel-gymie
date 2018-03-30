@@ -1,5 +1,6 @@
 @php
-$sum = App\PaymentDetail::whereMonth('created_at','=',Carbon::today()->month)->sum('payment_amount');
+    use Carbon\Carbon;
+   $sum = App\PaymentDetail::whereMonth('created_at','=',Carbon::today()->month)->sum('payment_amount');
 @endphp
 <div class="panel bg-green-400">
     <div class="panel-body padding-15-20">

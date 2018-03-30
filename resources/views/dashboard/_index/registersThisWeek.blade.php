@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 $count = App\Member::whereMonth('created_at','=',Carbon::today()->month)->count();
 ?>
 
