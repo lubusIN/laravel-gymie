@@ -20,7 +20,7 @@
 
                 <!-- Registrations This Weeks -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    @include('dashboard._index.registersThisWeek')
+                    @include('dashboard._index.registeredThisMonth')
                 </div>
 
                 <!-- Inactive Members -->
@@ -180,11 +180,11 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="recieved">
-                                    @include('dashboard._index.recievedChanges', ['recievedCheques' =>  $recievedCheques])
+                                    @include('dashboard._index.receivedCheque', ['recievedCheques' =>  $recievedCheques])
                                 </div>
 
                                 <div class="tab-pane fade" id="deposited">
-                                    @include('dashboard._index.deposited', ['depositedCheques' =>  $depositedCheques])
+                                    @include('dashboard._index.depositedCheques', ['depositedCheques' =>  $depositedCheques])
                                 </div>
 
                                 <div class="tab-pane fade" id="bounced">
