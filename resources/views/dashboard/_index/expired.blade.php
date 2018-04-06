@@ -1,4 +1,4 @@
-<div class="table-responsive <?php echo(! $allExpired->isEmpty() ? "panel-scroll" : "") ?>  ">
+<div class="table-responsive {!! (! $allExpired->isEmpty() ? "panel-scroll" : "")  !!}  ">
     <table class="table table-hover">
         @forelse($allExpired as $expired)
             <tr>

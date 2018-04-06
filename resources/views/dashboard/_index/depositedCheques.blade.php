@@ -1,4 +1,4 @@
-<div class="table-responsive <?php echo(! $depositedCheques->isEmpty() ? "panel-scroll" : "") ?>">
+<div class="table-responsive {!! (! $depositedCheques->isEmpty() ? "panel-scroll" : "")  !!}">
     <table class="table table-hover">
         @forelse($depositedCheques as $depositedCheque)
             <tr>

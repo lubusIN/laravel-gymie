@@ -1,5 +1,5 @@
 
-<div class="table-responsive <?php echo(! $outstandings->isEmpty() ? "panel-scroll" : "") ?>">
+<div class="table-responsive {!! (! $outstandings->isEmpty() ? "panel-scroll" : "")  !!}">
     <table class="table table-hover">
         @forelse($outstandings as $outstanding)
             <tr>

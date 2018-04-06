@@ -1,4 +1,4 @@
-<div class="table-responsive <?php echo(! $recents->isEmpty() ? "panel-scroll" : "") ?>">
+<div class="table-responsive {!! (! $recents->isEmpty() ? "panel-scroll" : "")  !!}">
     <table class="table table-hover table-condensed">
         @forelse($recents as $recent)
             <tr>

@@ -188,7 +188,7 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="bounced">
-                                    @include('dashboard._index.deposited', ['bouncedCheques' =>  $bouncedCheques])
+                                    @include('dashboard._index.bouncedCheques', ['bouncedCheques' =>  $bouncedCheques])
                                 </div>
 
                             </div>
