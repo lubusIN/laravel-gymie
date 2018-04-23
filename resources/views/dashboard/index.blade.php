@@ -2,10 +2,6 @@
 
 @section('content')
 
-    <?php
-    use Carbon\Carbon;
-    ?>
-
     <div class="rightside bg-grey-100">
         <!-- BEGIN PAGE HEADING -->
         <!--<div class="page-head bg-grey-100">
@@ -19,143 +15,32 @@
             <div class="row margin-top-10">
                 <!-- Total Members -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-light-blue-400">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\Member::where('status',1)->count() }}" data-speed="500" data-refresh-interval="10"></div>
-                                </div>
-
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-light-blue-100 fa fa-users"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-light-blue-50 font-weight-600">Total Members</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.totalMembers')
                 </div>
 
                 <!-- Registrations This Weeks -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-teal-400">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\Member::whereMonth('created_at','=',Carbon::today()->month)->count() }}" data-speed="500"
-                                         data-refresh-interval="10"></div>
-                                </div>
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-teal-100 fa fa-signal"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-teal-50 font-weight-600">Monthly Joinings</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.registeredThisMonth')
                 </div>
 
                 <!-- Inactive Members -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-amber-300">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\Member::where('status',0)->count() }}" data-speed="500" data-refresh-interval="10"></div>
-                                </div>
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-amber-100 fa fa-exclamation-circle"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-amber-50 font-weight-600">Inactive Members</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.inActiveMembers')
                 </div>
 
                 <!-- Members Expired -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-grey-500">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\Subscription::where('status',0)->count() }}" data-speed="500" data-refresh-interval="10"></div>
-                                </div>
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-grey-100 fa fa-ban"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-grey-50 font-weight-600">Membership Due</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.expiredMembers')
                 </div>
 
                 <!-- Outstanding Payments -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-red-400">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\Invoice::sum('pending_amount') }}" data-speed="500" data-refresh-interval="10"></div>
-                                </div>
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-red-100 fa fa-money"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-red-50 font-weight-600">Pending Payments</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.outstandingPayments')
                 </div>
 
                 <!-- Collection -->
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <div class="panel bg-green-400">
-                        <div class="panel-body padding-15-20">
-                            <div class="clearfix">
-                                <div class="pull-left">
-                                    <div class="color-white font-size-24 font-roboto font-weight-600" data-toggle="counter" data-start="0" data-from="0"
-                                         data-to="{{ App\PaymentDetail::whereMonth('created_at','=',Carbon::today()->month)->sum('payment_amount') }}"
-                                         data-speed="500" data-refresh-interval="10"></div>
-                                </div>
-                                <div class="pull-right">
-                                    <i class="font-size-24 color-green-100 fa fa-inr"></i>
-                                </div>
-
-                                <div class="clearfix"></div>
-
-                                <div class="pull-left">
-                                    <div class="display-block color-green-50 font-weight-600">Monthly Collection</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- /.panel -->
+                    @include('dashboard._index.collection')
                 </div>
             </div>
             @endpermission
@@ -186,171 +71,19 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="expiring">
-                                    <div class="table-responsive <?php echo(! $expirings->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover table-condensed">
-                                            @forelse($expirings as $expiring)
-                                                <tr>
-                                                    <td>
-                                                        <?php
-                                                        $images = $expiring->member->getMedia('profile');
-                                                        $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
-                                                        ?>
-                                                        <a href="{{ action('MembersController@show',['id' => $expiring->member->id]) }}"><img
-                                                                    src="{{ $profileImage }}"/></a>
-                                                    </td>
-
-                                                    <td>
-                                                        <a href="{{ action('MembersController@show',['id' => $expiring->member->id]) }}"><span
-                                                                    class="table-sub-data">{{ $expiring->member->member_code }}</span></a>
-                                                        <a href="{{ action('MembersController@show',['id' => $expiring->member->id]) }}"><span
-                                                                    class="table-sub-data">{{ $expiring->member->name }}</span></a>
-                                                    </td>
-                                                    <?php
-                                                    $daysLeft = Carbon::today()->diffInDays($expiring->end_date->addDays(1));
-                                                    ?>
-                                                    <td>
-                                                        <span class="table-sub-data">{{ $expiring->end_date->format('Y-m-d') }}<br></span>
-                                                        <span class="table-sub-data">{{ Carbon::today()->addDays($daysLeft)->diffForHumans() }}</span>
-                                                    </td>
-
-                                                    @permission(['manage-gymie','manage-subscriptions','renew-subscription'])
-                                                    <td>
-                                                        <a class="btn btn-info btn-xs btn pull-right"
-                                                           href="{{ action('SubscriptionsController@renew',['id' => $expiring->invoice_id]) }}">Renew</a>
-                                                    </td>
-                                                    @endpermission
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
-                                    @if(!$expirings->isEmpty())
-                                        <a class="btn btn-color btn-xs palette-concrete pull-right margin-right-10 margin-top-10"
-                                           href="{{ action('SubscriptionsController@expiring') }}">View All</a>
-                                    @endif
+                                    @include('dashboard._index.expiring', ['expirings' => $expirings])
                                 </div>
 
                                 <div class="tab-pane fade" id="expired">
-                                    <div class="table-responsive <?php echo(! $allExpired->isEmpty() ? "panel-scroll" : "") ?>
-                                            ">
-                                        <table class="table table-hover">
-                                            @forelse($allExpired as $expired)
-                                                <tr>
-                                                    <td>
-                                                        <?php
-                                                        $images = $expired->member->getMedia('profile');
-                                                        $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
-                                                        ?>
-                                                        <a href="{{ action('MembersController@show',['id' => $expired->member->id]) }}"><img
-                                                                    src="{{ $profileImage }}"/></a>
-                                                    </td>
-
-                                                    <td>
-                                                        <a href="{{ action('MembersController@show',['id' => $expired->member->id]) }}"><span
-                                                                    class="table-sub-data">{{ $expired->member->member_code }}</span></a>
-                                                        <a href="{{ action('MembersController@show',['id' => $expired->member->id]) }}"><span
-                                                                    class="table-sub-data">{{ $expired->member->name }}</span></a>
-                                                    </td>
-                                                    <?php
-                                                    $daysGone = Carbon::today()->diffInDays($expired->end_date);
-                                                    ?>
-                                                    <td>
-                                                        <span class="table-sub-data">{{ $expired->end_date->format('Y-m-d') }}<br></span>
-                                                        <span class="table-sub-data">{{ Carbon::today()->subDays($daysGone)->diffForHumans() }}</span>
-                                                    </td>
-
-                                                    <td>
-                                                        {!! Form::Open(['method' => 'POST','action' => ['SubscriptionsController@cancelSubscription',$expired->id]]) !!}
-                                                        @permission(['manage-gymie','manage-subscriptions','cancel-subscription'])
-                                                        <button class="btn btn-xs btn-danger pull-right margin-left-5" type="submit">Cancel</button>
-                                                        @endpermission
-
-                                                        @permission(['manage-gymie','manage-subscriptions','renew-subscription'])
-                                                        <a class="btn btn-xs btn-info pull-right"
-                                                           href="{{ action('SubscriptionsController@renew',['id' => $expired->invoice_id]) }}">Renew</a>
-                                                        @endpermission
-                                                        {!! Form::Close() !!}
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
-                                    @if(!$allExpired->isEmpty())
-                                        <a class="btn btn-color btn-xs palette-concrete pull-right margin-right-10 margin-top-10"
-                                           href="{{ action('SubscriptionsController@expired') }}">View All</a>
-                                    @endif
+                                    @include('dashboard._index.expired', ['allExpired' => $allExpired])
                                 </div>
 
                                 <div class="tab-pane fade" id="birthdays">
-                                    <div class="table-responsive <?php echo(! $birthdays->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover">
-                                            @forelse($birthdays as $birthday)
-                                                <tr>
-                                                    <?php
-                                                    $images = $birthday->getMedia('profile');
-                                                    $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
-                                                    ?>
-                                                    <td><a href="{{ action('MembersController@show',['id' => $birthday->id]) }}"><img
-                                                                    src="{{ $profileImage }}"/></a></td>
-                                                    <td><a href="{{ action('MembersController@show',['id' => $birthday->id]) }}">{{ $birthday->name }}</a></td>
-                                                    <td>{{ $birthday->contact }}</td>
-                                                    <td>{{ $birthday->DOB->toFormattedDateString() }}</td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.birthdays', ['birthdays' => $birthdays])
                                 </div>
 
                                 <div class="tab-pane fade" id="recent">
-                                    <div class="table-responsive <?php echo(! $recents->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover table-condensed">
-                                            @forelse($recents as $recent)
-                                                <tr>
-                                                    <td>
-                                                        <?php
-                                                        $images = $recent->getMedia('profile');
-                                                        $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
-                                                        ?>
-                                                        <a href="{{ action('MembersController@show',['id' => $recent->id]) }}"><img src="{{ $profileImage }}"/></a>
-                                                    </td>
-
-                                                    <td>
-                                                        <a href="{{ action('MembersController@show',['id' => $recent->id]) }}"><span
-                                                                    class="table-sub-data">{{ $recent->member_code }}</span></a>
-                                                        <a href="{{ action('MembersController@show',['id' => $recent->id]) }}"><span
-                                                                    class="table-sub-data">{{ $recent->name }}</span></a>
-                                                    </td>
-
-                                                    <td>
-                                                        <?php
-                                                        $daysGone = Carbon::today()->diffInDays($recent->created_at);
-                                                        ?>
-                                                        <span class="table-sub-data">{{ $recent->created_at->format('Y-m-d') }}<br></span>
-                                                        <span class="table-sub-data">{{ Carbon::today()->subDays($daysGone)->diffForHumans() }}</span>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
-                                    @if(!$recents->isEmpty())
-                                        <a class="btn btn-color btn-xs palette-concrete pull-right margin-right-10 margin-top-10"
-                                           href="{{ action('MembersController@index') }}">View All</a>
-                                    @endif
+                                    @include('dashboard._index.recents', ['recents' =>  $recents])
                                 </div>
                             </div>
                         </div>
@@ -379,55 +112,11 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="enquiries">
-                                    <div class="table-responsive <?php echo(! $enquiries->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover table-condensed">
-                                            @forelse($enquiries as $enquiry)
-                                                <tr>
-                                                    <td><i class="fa fa-user color-blue-grey-100 fa-lg"></i></td>
-                                                    <td><a href="{{ action('EnquiriesController@show',['id' => $enquiry->id]) }}">{{ $enquiry->name }}</a></td>
-                                                    <td><a href="{{ action('EnquiriesController@show',['id' => $enquiry->id]) }}">{{ $enquiry->email }}</a></td>
-                                                    <td><a href="{{ action('EnquiriesController@show',['id' => $enquiry->id]) }}">{{ $enquiry->contact }}</a>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
-
-                                    @if(!$enquiries->isEmpty())
-                                        <a class="btn btn-color btn-xs palette-concrete pull-right margin-right-10 margin-top-10"
-                                           href="{{ action('EnquiriesController@index') }}">View All</a>
-                                    @endif
+                                    @include('dashboard._index.enquiries', ['enquiries' => $enquiries])
                                 </div>
 
                                 <div class="tab-pane fade" id="reminders">
-                                    <div class="table-responsive <?php echo(! $reminders->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover">
-                                            @forelse($reminders as $reminder)
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{ action('EnquiriesController@show',['id' => $reminder->enquiry->id]) }}">{{ $reminder->enquiry->name }}</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ action('EnquiriesController@show',['id' => $reminder->enquiry->id]) }}">{{ $reminder->enquiry->contact }}</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ action('EnquiriesController@show',['id' => $reminder->enquiry->id]) }}">{{ $reminder->due_date->format('Y-m-d') }}</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ action('EnquiriesController@show',['id' => $reminder->enquiry->id]) }}">{{ Utilities::getFollowupBy ($reminder->followup_by) }}</a>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.reminders', ['reminders' => $reminders])
                                 </div>
                             </div>
                         </div>
@@ -444,8 +133,9 @@
                     <div class="panel">
                         <div class="panel-title">
                             <div class="panel-head"><i class="fa fa-inr"></i><a href="{{ action('ExpensesController@index') }}">Expenses</a></div>
-                            <div class="pull-right"><a href="{{ action('ExpensesController@create') }}" class="btn-sm btn-primary active" role="button"><i
-                                            class="fa fa-inr"></i> Add</a></div>
+                            <div class="pull-right"><a href="{{ action('ExpensesController@create') }}" class="btn-sm btn-primary active" role="button">
+                                    <i class="fa fa-inr"></i> Add</a>
+                            </div>
                         </div>
 
                         <div class="panel-body with-nav-tabs">
@@ -458,51 +148,11 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="due">
-                                    <div class="table-responsive <?php echo(! $dues->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover table-condensed">
-                                            @forelse($dues as $due)
-                                                <tr>
-                                                    <td><a href="{{ action('ExpensesController@edit',['id' => $due->id]) }}">{{ $due->name }}</a></td>
-                                                    <td><a href="{{ action('ExpensesController@edit',['id' => $due->id]) }}">{{ $due->amount }}</a></td>
-                                                    <td>
-                                                        <a href="{{ action('ExpensesController@edit',['id' => $due->id]) }}">{{ $due->due_date->format('Y-m-d') }}</a>
-                                                    </td>
-                                                    <td><a class="btn btn-info btn-xs btn pull-right"
-                                                           href="{{ action('ExpensesController@paid',['id' => $due->id]) }}">Pay</a></td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.due', ['dues' => $dues])
                                 </div>
 
                                 <div class="tab-pane fade" id="outstanding">
-                                    <div class="table-responsive <?php echo(! $outstandings->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover">
-                                            @forelse($outstandings as $outstanding)
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{ action('ExpensesController@edit',['id' => $outstanding->id]) }}">{{ $outstanding->name }}</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ action('ExpensesController@edit',['id' => $outstanding->id]) }}">{{ $outstanding->amount }}</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ action('ExpensesController@edit',['id' => $outstanding->id]) }}">{{ $outstanding->due_date->format('Y-m-d') }}</a>
-                                                    </td>
-                                                    <td><a class="btn btn-info btn-xs btn pull-right"
-                                                           href="{{ action('ExpensesController@paid',['id' => $outstanding->id]) }}">Pay</a></td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.outStanding', ['outstandings' => $outstandings])
                                 </div>
                             </div>
                         </div>
@@ -530,70 +180,15 @@
                             <!-- Tab Content -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="recieved">
-                                    <div class="table-responsive <?php echo(! $recievedCheques->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover table-condensed">
-                                            @forelse($recievedCheques as $recievedCheque)
-                                                <tr>
-                                                    <td>{{ $recievedCheque->number }}</td>
-                                                    <td>{{ $recievedCheque->date }}</td>
-                                                    <td>{{ $recievedCheque->payment->payment_amount }}</td>
-                                                    <td><a class="btn btn-info btn-xs btn pull-right"
-                                                           href="{{ action('PaymentsController@depositCheque',['id' => $recievedCheque->payment_id]) }}">Mark
-                                                            Deposited</a></td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.receivedCheque', ['recievedCheques' =>  $recievedCheques])
                                 </div>
 
                                 <div class="tab-pane fade" id="deposited">
-                                    <div class="table-responsive <?php echo(! $depositedCheques->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover">
-                                            @forelse($depositedCheques as $depositedCheque)
-                                                <tr>
-                                                    <td>{{ $depositedCheque->number }}</td>
-                                                    <td>{{ $depositedCheque->date }}</td>
-                                                    <td>{{ $depositedCheque->payment->payment_amount }}</td>
-                                                    <td>
-                                                        <a href="{{ action('PaymentsController@chequeBounce',['id' => $depositedCheque->payment_id]) }}"
-                                                           class="btn btn-xs btn-danger pull-right margin-left-5">Mark Bounced</a>
-                                                        <a class="btn btn-xs btn-success pull-right"
-                                                           href="{{ action('PaymentsController@clearCheque',['id' => $depositedCheque->payment_id]) }}">Mark
-                                                            Cleared</a>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.depositedCheques', ['depositedCheques' =>  $depositedCheques])
                                 </div>
 
                                 <div class="tab-pane fade" id="bounced">
-                                    <div class="table-responsive <?php echo(! $bouncedCheques->isEmpty() ? "panel-scroll" : "") ?>">
-                                        <table class="table table-hover">
-                                            @forelse($bouncedCheques as $bouncedCheque)
-                                                <tr>
-                                                    <td>{{ $bouncedCheque->number }}</td>
-                                                    <td>{{ $bouncedCheque->date }}</td>
-                                                    <td>{{ $bouncedCheque->payment->payment_amount }}</td>
-                                                    <td><a class="btn btn-info btn-xs btn pull-right"
-                                                           href="{{ action('PaymentsController@chequeReissue',['id' => $bouncedCheque->payment_id]) }}">Reissued</a>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <div class="tab-empty-panel font-size-24 color-grey-300">
-                                                    No Data
-                                                </div>
-                                            @endforelse
-                                        </table>
-                                    </div>
+                                    @include('dashboard._index.bouncedCheques', ['bouncedCheques' =>  $bouncedCheques])
                                 </div>
 
                             </div>
@@ -643,24 +238,7 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="table-responsive <?php echo(! $smslogs->isEmpty() ? "panel-scroll-2" : "") ?>">
-                                <table class="table table-hover">
-                                    @forelse($smslogs as $smslog)
-                                        <tr>
-                                            <td>{{ $smslog->number }}</td>
-                                            <td>{{ $smslog->status }}</td>
-                                        </tr>
-                                    @empty
-                                        <div class="tab-empty-panel sms-empty-panel font-size-24 color-grey-300">
-                                            No Data
-                                        </div>
-                                    @endforelse
-                                </table>
-                            </div>
-                            @if(!$smslogs->isEmpty())
-                                <a class="btn btn-color btn-xs palette-concrete pull-right margin-right-10 margin-top-10"
-                                   href="{{ action('SmsController@logIndex') }}">View All</a>
-                            @endif
+                            @include('dashboard._index.smsLog', ['smslogs' => $smslogs])
                         </div>
                     </div>
                 </div>
