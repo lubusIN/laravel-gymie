@@ -9,7 +9,13 @@
 <a href="https://github.com/lubusin/laravel-gymie/blob/master/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
 </p>
 
-----------
+<center>
+<a href="https://lubus.in/">
+<img src="https://user-images.githubusercontent.com/1039236/40877801-3fa8ccf6-66a4-11e8-8f42-19ed4e883ce9.png" />
+</a>
+</center>
+
+# Gymie
 
 Laravel based web application for gym & club management. Currently being used by many fitness centers. For more information, visit - https://www.gymie.in
  
@@ -37,7 +43,8 @@ Laravel based web application for gym & club management. Currently being used by
 Improper permission on `storage` & `public` folder will lead to server & application errors
 
 ##  Installation
-1. Clone to your server root `git clone git@github.com:lubusIN/laravel-gymie.git`
+1. Clone to your server root `git clone -b master git@github.com:lubusIN/laravel-gymie.git`
+> For faster updates and bleeding edge features, or if you want to help test the next version, use the `develop` branch instead of the `master` branch.
 2. Run `composer install` to install all dependencies
 3. Create .env in application root `touch .env`
 4. Add your database details & optional sentry DNS
@@ -81,18 +88,29 @@ password: password
 ```
 
 ## Changelog
-Please see [CHANGELOG](https://github.com/spatie/laravel-medialibrary/blob/master/CHANGELOG.md) for more information what has changed recently.
+
+Please see the [Changelog](CHANGELOG.md) 
 
 ## Contributing
-Please see [CONTRIBUTING](https://github.com/spatie/laravel-medialibrary/blob/master/CONTRIBUTING.md) for details.
+
+Thank you for considering contributing to the `Gymie`. You can read the contribution guide lines [here](CONTRIBUTING.md)
+
+Check the development tasklist [here](https://github.com/lubusIN/laravel-gymie/projects/1) if something interest you or suggest something [here](https://github.com/lubusIN/laravel-gymie/issues)
 
 ##  Security Vulnerabilities
 If you discover a security vulnerability within Laravel, please send an e-mail at info@lubus.in. All security vulnerabilities will be promptly addressed.  
 
 ##  Support Us
+
+<a href="https://www.patreon.com/lubus">
+<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become A Patron"/>
+</a>
+
 [LUBUS](http://lubus.in) is a web design agency based in Mumbai, India.
 
-You can pledge on [patreon](https://www.patreon.com/lubus) to support the development & maintenance of Gymie and other [opensource](https://github.com/lubusIN/) stuff we are building.
+You can pledge on [patreon](https://www.patreon.com/lubus) to support the development & maintenance of various [opensource](https://github.com/lubusIN/) stuff we are building.
 
-##  License
-Gymie is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+## License
+
+`Gymie` is open-sourced software licensed under the [MIT](LICENSE)
+
