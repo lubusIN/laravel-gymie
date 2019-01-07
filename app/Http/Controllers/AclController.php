@@ -203,12 +203,12 @@ class AclController extends Controller
             DB::commit();
             flash()->success('Role was successfully updated');
 
-            return redirect('role');
+            return redirect('user/role');
         } catch (Exception $e) {
             DB::rollback();
             flash()->error('Role was not updated');
 
-            return redirect('role');
+            return redirect('user/role');
         }
     }
 
@@ -222,12 +222,12 @@ class AclController extends Controller
             DB::commit();
             flash()->success('Role was successfully deleted');
 
-            return redirect('role');
+            return redirect('user/role');
         } catch (Exception $e) {
             DB::rollback();
             flash()->error('Role was not deleted');
 
-            return redirect('role');
+            return redirect('user/role');
         }
     }
 
@@ -256,7 +256,7 @@ class AclController extends Controller
 
         flash()->success('Permission was successfully created');
 
-        return redirect('permission');
+        return redirect('user/permission');
     }
 
     public function editPermission($id)
@@ -278,7 +278,7 @@ class AclController extends Controller
 
         flash()->success('Permission was successfully updated');
 
-        return redirect('permission');
+        return redirect('user/permission');
     }
 
     public function deletePermission($id)
@@ -287,6 +287,6 @@ class AclController extends Controller
 
         flash()->success('Permission was successfully deleted');
 
-        return redirect('permission');
+        return redirect('user/permission');
     }
 }
