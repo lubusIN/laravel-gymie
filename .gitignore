@@ -98,4 +98,5 @@ bh_unicode_properties.cache
 GitHub.sublime-settings
 
 # Media Libaray Package Image storage
+storage/medialibrary/
 media/
