@@ -46,15 +46,9 @@ Improper permission on `storage` & `public` folder will lead to server & applica
 1. Clone to your server root `git clone -b master git@github.com:lubusIN/laravel-gymie.git`
 > For faster updates and bleeding edge features, or if you want to help test the next version, use the `develop` branch instead of the `master` branch.
 2. Run `composer install` to install all dependencies
-3. Create .env in application root `touch .env`
-4. Add your database details & optional sentry DNS
-```
-DB_HOST= [HOST]
-DB_DATABASE=[DBHOST]
-DB_USERNAME=[USERNAME]
-DB_PASSWORD= [PASSWORD]
-SENTRY_DSN= [SENTRYDNS]
-```
+3. Create `.env` in application root 
+```cp .env.sample .env```
+4. Update database details and optional sentry DNS in `.env`
 5. Run `php artisan key:generate` to generate key
 6. Run `php artisan migrate --seed` to install the database & required data
 7. Add cron entry for scheduled task to update status for various modules (subscription expiration etc)
