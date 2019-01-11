@@ -57,7 +57,13 @@ SENTRY_DSN= [SENTRYDNS]
 ```
 5. Run `php artisan key:generate` to generate key
 6. Run `php artisan migrate --seed` to install the database & required data
-7. All done! use the following credentials to log in
+7. Add cron entry for scheduled task to update status for various modules (subscription expiration etc)
+```
+* * * * * cd /path-to-gymie && php artisan schedule:run >> /dev/null 2>&1
+```
+For more info: https://laravel.com/docs/5.7/scheduling#introduction
+8. All right sparky! 
+use the following credentials to log in
 ```
 email: admin@gymie.in
 password: password
