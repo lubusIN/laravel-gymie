@@ -51,22 +51,22 @@ class Invoice extends Model
         return $query->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_invoice.*', 'mst_members.name as member_name')->whereBetween('trn_invoice.created_at', [$drp_start, $drp_end])->orderBy($sorting_field, $sorting_direction);
     }
 
-    public function Member()
+    public function member()
     {
         return $this->belongsTo('App\Member', 'member_id');
     }
 
-    public function PaymentDetails()
+    public function paymentDetails()
     {
         return $this->hasMany('App\PaymentDetail');
     }
 
-    public function InvoiceDetails()
+    public function invoiceDetails()
     {
         return $this->hasMany('App\InvoiceDetail');
     }
 
-    public function Subscription()
+    public function subscription()
     {
         return $this->hasOne('App\Subscription');
     }

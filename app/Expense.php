@@ -33,7 +33,7 @@ class Expense extends Model
 
     protected $dates = ['created_at', 'updated_at', 'due_date'];
 
-    public function Category()
+    public function category()
     {
         return $this->belongsTo('App\ExpenseCategory', 'category_id');
     }

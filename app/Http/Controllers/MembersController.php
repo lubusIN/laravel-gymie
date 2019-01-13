@@ -161,11 +161,11 @@ class MembersController extends Controller
 
             // Adding media i.e. Profile & proof photo
             if ($request->hasFile('photo')) {
-                $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.$request->photo->getClientOriginalExtension())->toCollection('profile');
+                $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
             }
 
             if ($request->hasFile('proof_photo')) {
-                $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
+                $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
             }
 
             // Helper function for calculating payment status
@@ -223,10 +223,10 @@ class MembersController extends Controller
                                        'plan_id'=> $plan['id'],
                                        'item_amount'=> $plan['price'], ];
 
-                $invoice_details = new InvoiceDetail($detailsData);
-                $invoice_details->createdBy()->associate(Auth::user());
-                $invoice_details->updatedBy()->associate(Auth::user());
-                $invoice_details->save();
+                $invoiceDetails = new InvoiceDetail($detailsData);
+                $invoiceDetails->createdBy()->associate(Auth::user());
+                $invoiceDetails->updatedBy()->associate(Auth::user());
+                $invoiceDetails->save();
             }
 
             // Store Payment Details
@@ -235,14 +235,14 @@ class MembersController extends Controller
                                      'mode'=> $request->mode,
                                      'note'=> ' ', ];
 
-            $payment_details = new PaymentDetail($paymentData);
-            $payment_details->createdBy()->associate(Auth::user());
-            $payment_details->updatedBy()->associate(Auth::user());
-            $payment_details->save();
+            $paymentDetails = new PaymentDetail($paymentData);
+            $paymentDetails->createdBy()->associate(Auth::user());
+            $paymentDetails->updatedBy()->associate(Auth::user());
+            $paymentDetails->save();
 
             if ($request->mode == 0) {
                 // Store Cheque Details
-                $chequeData = ['payment_id'=> $payment_details->id,
+                $chequeData = ['payment_id'=> $paymentDetails->id,
                                       'number'=> $request->number,
                                       'date'=> $request->date,
                                       'status'=> \constChequeStatus::Recieved, ];
@@ -271,14 +271,14 @@ class MembersController extends Controller
             if ($invoice->status == \constPaymentStatus::Paid) {
                 $sms_trigger = SmsTrigger::where('alias', '=', 'member_admission_with_paid_invoice')->first();
                 $message = $sms_trigger->message;
-                $sms_text = sprintf($message, $member->name, $gym_name, $payment_details->payment_amount, $invoice->invoice_number);
+                $sms_text = sprintf($message, $member->name, $gym_name, $paymentDetails->payment_amount, $invoice->invoice_number);
                 $sms_status = $sms_trigger->status;
 
                 \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
             } elseif ($invoice->status == \constPaymentStatus::Partial) {
                 $sms_trigger = SmsTrigger::where('alias', '=', 'member_admission_with_partial_invoice')->first();
                 $message = $sms_trigger->message;
-                $sms_text = sprintf($message, $member->name, $gym_name, $payment_details->payment_amount, $invoice->invoice_number, $invoice->pending_amount);
+                $sms_text = sprintf($message, $member->name, $gym_name, $paymentDetails->payment_amount, $invoice->invoice_number, $invoice->pending_amount);
                 $sms_status = $sms_trigger->status;
 
                 \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
@@ -286,7 +286,7 @@ class MembersController extends Controller
                 if ($request->mode == 0) {
                     $sms_trigger = SmsTrigger::where('alias', '=', 'payment_with_cheque')->first();
                     $message = $sms_trigger->message;
-                    $sms_text = sprintf($message, $member->name, $payment_details->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
+                    $sms_text = sprintf($message, $member->name, $paymentDetails->payment_amount, $cheque_details->number, $invoice->invoice_number, $gym_name);
                     $sms_status = $sms_trigger->status;
 
                     \Utilities::Sms($sender_id, $member->contact, $sms_text, $sms_status);
@@ -309,15 +309,15 @@ class MembersController extends Controller
                 $invoice->updated_at = $subscription->start_date;
                 $invoice->save();
 
-                foreach ($invoice->invoice_details as $invoice_detail) {
-                    $invoice_detail->created_at = $subscription->start_date;
-                    $invoice_detail->updated_at = $subscription->start_date;
-                    $invoice_detail->save();
+                foreach ($invoice->invoiceDetails as $invoiceDetail) {
+                    $invoiceDetail->created_at = $subscription->start_date;
+                    $invoiceDetail->updated_at = $subscription->start_date;
+                    $invoiceDetail->save();
                 }
 
-                $payment_details->created_at = $subscription->start_date;
-                $payment_details->updated_at = $subscription->start_date;
-                $payment_details->save();
+                $paymentDetails->created_at = $subscription->start_date;
+                $paymentDetails->updated_at = $subscription->start_date;
+                $paymentDetails->save();
 
                 $subscription->created_at = $subscription->start_date;
                 $subscription->updated_at = $subscription->start_date;
@@ -361,18 +361,17 @@ class MembersController extends Controller
      */
     public function update($id, Request $request)
     {
-        //dd($request->all());
         $member = Member::findOrFail($id);
         $member->update($request->all());
 
         if ($request->hasFile('photo')) {
             $member->clearMediaCollection('profile');
-            $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.$request->photo->getClientOriginalExtension())->toCollection('profile');
+            $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
         }
 
         if ($request->hasFile('proof_photo')) {
             $member->clearMediaCollection('proof');
-            $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
+            $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
         }
 
         $member->updatedBy()->associate(Auth::user());
@@ -396,11 +395,11 @@ class MembersController extends Controller
 
         foreach ($invoices as $invoice) {
             InvoiceDetail::where('invoice_id', $invoice->id)->delete();
-            $payment_details = PaymentDetail::where('invoice_id', $invoice->id)->get();
+            $paymentDetails = PaymentDetail::where('invoice_id', $invoice->id)->get();
 
-            foreach ($payment_details as $payment_detail) {
-                ChequeDetail::where('payment_id', $payment_detail->id)->delete();
-                $payment_detail->delete();
+            foreach ($paymentDetails as $paymentDetail) {
+                ChequeDetail::where('payment_id', $paymentDetail->id)->delete();
+                $paymentDetail->delete();
             }
 
             $invoice->delete();

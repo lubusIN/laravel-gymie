@@ -43,12 +43,12 @@ class PaymentDetail extends Model
             ])->orderBy($sorting_field, $sorting_direction);
     }
 
-    public function Invoice()
+    public function invoice()
     {
         return $this->belongsTo('App\Invoice', 'invoice_id');
     }
 
-    public function Cheque()
+    public function cheque()
     {
         return $this->hasOne('App\ChequeDetail', 'payment_id');
     }

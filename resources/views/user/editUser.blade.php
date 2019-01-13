@@ -105,7 +105,7 @@
                                         $withGymie = App\Role::lists('name', 'id');
                                         ?>
                                         {!! Form::label('Role') !!}
-                                        {!! Form::select('role_id',(Auth::User()->hasRole('Gymie') ? $withGymie : $withoutGymie),$user->role_user->role_id,['class'=>'form-control selectpicker show-tick', 'id' => 'role_id']) !!}
+                                        {!! Form::select('role_id',(Auth::User()->hasRole('Gymie') ? $withGymie : $withoutGymie),$user->roleUser->role_id,['class'=>'form-control selectpicker show-tick', 'id' => 'role_id']) !!}
                                     </div>
                                 </div>
                             </div>

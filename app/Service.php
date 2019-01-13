@@ -25,7 +25,7 @@ class Service extends Model
         'description' => 10,
     ];
 
-    public function Plans()
+    public function plans()
     {
         return $this->hasMany('App\Plan', 'service_id');
     }

@@ -35,7 +35,7 @@
                                         <strong>Payment Mode(s)</strong><br>
                                         <?php
                                         $modes = array();
-                                        foreach ($invoice->payment_details->unique('mode') as $payment_mode) {
+                                        foreach ($invoice->paymentDetails->unique('mode') as $payment_mode) {
                                             $modes[] = Utilities::getPaymentMode($payment_mode->mode);
                                         }
                                         echo implode($modes, ',');
@@ -72,10 +72,10 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach ($invoice->invoice_details as $invoice_detail)
+                                        @foreach ($invoice->invoiceDetails as $invoiceDetail)
                                             <tr>
-                                                <td>{{ $invoice_detail->plan->plan_name }}</td>
-                                                <td class="text-right">{{ $invoice_detail->item_amount }}</td>
+                                                <td>{{ $invoiceDetail->plan->plan_name }}</td>
+                                                <td class="text-right">{{ $invoiceDetail->item_amount }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>
@@ -147,11 +147,11 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach ($invoice->payment_details as $payment_detail)
+                                        @foreach ($invoice->paymentDetails as $paymentDetail)
                                             <tr>
-                                                <td>{{ ($payment_detail->payment_amount >= 0 ? $payment_detail->payment_amount : str_replace("-","",$payment_detail->payment_amount)." (Paid)") }}</td>
-                                                <td class="text-center">{{ Utilities::getPaymentMode ($payment_detail->mode) }}</td>
-                                                <td class="text-right">{{ $payment_detail->created_at->toDayDateTimeString() }}</td>
+                                                <td>{{ ($paymentDetail->payment_amount >= 0 ? $paymentDetail->payment_amount : str_replace("-","",$paymentDetail->payment_amount)." (Paid)") }}</td>
+                                                <td class="text-center">{{ Utilities::getPaymentMode ($paymentDetail->mode) }}</td>
+                                                <td class="text-right">{{ $paymentDetail->created_at->toDayDateTimeString() }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>

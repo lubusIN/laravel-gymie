@@ -24,7 +24,7 @@ class ExpenseCategory extends Model
         return $query->where('status', '!=', \constStatus::Archive);
     }
 
-    public function Expenses()
+    public function expenses()
     {
         return $this->hasMany('App\Expense', 'category_id');
     }

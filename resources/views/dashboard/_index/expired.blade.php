@@ -1,4 +1,7 @@
-<div class="table-responsive {!! (! $allExpired->isEmpty() ? "panel-scroll" : "")  !!}  ">
+<?php
+    use Carbon\Carbon;
+?>
+<div class="table-responsive {!! (! $allExpired->isEmpty() ? 'panel-scroll' : '')  !!}  ">
     <table class="table table-hover">
         @forelse($allExpired as $expired)
             <tr>

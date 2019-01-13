@@ -15,7 +15,7 @@ class Permission extends EntrustPermission
             'group_key',
     ];
 
-    public function Roles()
+    public function roles()
     {
         return $this->belongsToMany('App\Role');
     }

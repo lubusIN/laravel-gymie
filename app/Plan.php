@@ -47,12 +47,12 @@ class Plan extends Model
         return $query->where('status', '=', \constStatus::Active);
     }
 
-    public function Subscriptions()
+    public function subscriptions()
     {
         return $this->hasMany('App\Subscription', 'plan_id');
     }
 
-    public function Service()
+    public function service()
     {
         return $this->belongsTo('App\Service', 'service_id');
     }

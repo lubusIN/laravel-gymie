@@ -1,4 +1,4 @@
-<div class="table-responsive {!! (! $reminders->isEmpty() ? "panel-scroll" : "")  !!}">
+<div class="table-responsive {!! (! $reminders->isEmpty() ? 'panel-scroll' : '')  !!}">
     <table class="table table-hover">
         @forelse($reminders as $reminder)
             <tr>

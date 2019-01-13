@@ -20,12 +20,12 @@ class InvoiceDetail extends Model
         'updated_by',
     ];
 
-    public function Invoice()
+    public function invoice()
     {
         return $this->belongsTo('App\Invoice', 'invoice_id');
     }
 
-    public function Plan()
+    public function plan()
     {
         return $this->belongsTo('App\Plan', 'plan_id');
     }

@@ -1,4 +1,4 @@
-<div class="table-responsive {!! (! $smslogs->isEmpty() ? "panel-scroll-2" : "")  !!}">
+<div class="table-responsive {!! (! $smslogs->isEmpty() ? 'panel-scroll-2' : '')  !!}">
     <table class="table table-hover">
         @forelse($smslogs as $smslog)
             <tr>

@@ -53,12 +53,12 @@ class Member extends Model implements HasMediaConversions
     }
 
     //Relationships
-    public function Subscriptions()
+    public function subscriptions()
     {
         return $this->hasMany('App\Subscription');
     }
 
-    public function Invoices()
+    public function invoices()
     {
         return $this->hasMany('App\Invoice');
     }
@@ -78,19 +78,6 @@ class Member extends Model implements HasMediaConversions
             $drp_end,
         ])->orderBy($sorting_field, $sorting_direction);
     }
-
-    // public function scopeReportQuery($query,$sorting_field,$sorting_direction,$drp_start,$drp_end)
-    // {
-    //     $sorting_field = ($sorting_field != null ? $sorting_field : 'created_at');
-    //     $sorting_direction = ($sorting_direction != null ? $sorting_direction : 'desc');
-
-    //     if ($drp_start == null or $drp_end == null)
-    //     {
-    //         return $query->leftJoin('mst_plans', 'mst_members.plan_id', '=', 'mst_plans.id')->select('mst_members.*','mst_plans.plan_name')->where('mst_members.status','!=', \constStatus::Archive)->orderBy($sorting_field,$sorting_direction);
-    //     }
-
-    //     return $query->leftJoin('mst_plans', 'mst_members.plan_id', '=', 'mst_plans.id')->select('mst_members.*','mst_plans.plan_name')->where('mst_members.status','!=', \constStatus::Archive)->whereBetween('mst_members.created_at', [$drp_start, $drp_end])->orderBy($sorting_field,$sorting_direction);
-    // }
 
     public function scopeActive($query)
     {

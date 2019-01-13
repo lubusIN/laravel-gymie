@@ -40,7 +40,7 @@
                                         {!! Form::label('subscription_amount','Subscription fee') !!}
                                         <div class="input-group">
                                             <div class="input-group-addon"><i class="fa fa-inr"></i></div>
-                                            {!! Form::text('subscription_amount',$invoice->invoice_details->sum('item_amount'),['class'=>'form-control', 'id' => 'subscription_amount','readonly' => 'readonly']) !!}
+                                            {!! Form::text('subscription_amount',$invoice->invoiceDetails->sum('item_amount'),['class'=>'form-control', 'id' => 'subscription_amount','readonly' => 'readonly']) !!}
                                         </div>
                                     </div>
                                 </div>

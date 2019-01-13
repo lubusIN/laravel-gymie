@@ -1,4 +1,4 @@
-<div class="table-responsive {!! (! $recievedCheques->isEmpty() ? "panel-scroll" : "")  !!}">
+<div class="table-responsive {!! (! $recievedCheques->isEmpty() ? 'panel-scroll' : '')  !!}">
     <table class="table table-hover table-condensed">
         @forelse($recievedCheques as $recievedCheque)
             <tr>

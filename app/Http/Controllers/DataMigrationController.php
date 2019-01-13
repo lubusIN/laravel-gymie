@@ -53,7 +53,6 @@ class DataMigrationController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
         }
     }
 
@@ -80,7 +79,6 @@ class DataMigrationController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
         }
     }
 
@@ -104,7 +102,6 @@ class DataMigrationController extends Controller
 
                 $dob = Carbon::createFromFormat('d/m/Y', $line->get('dob'))->toDateString();
                 $gender = ($line->get('gender') == 'male' ? 'm' : 'f');
-                // $explodedName = explode(" ", $line->get('name'));
                 $email = $member_code.'@evolvegym.in';
 
                 $address = (empty($line->get('address')) ? 'Naigaon east' : $line->get('address'));
@@ -219,8 +216,6 @@ class DataMigrationController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
         }
-        echo 'Ho gaya bc';
     }
 }

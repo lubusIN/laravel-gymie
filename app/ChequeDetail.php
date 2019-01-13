@@ -31,7 +31,7 @@ class ChequeDetail extends Model
         return $this->belongsTo('App\User', 'created_by');
     }
 
-    public function Payment()
+    public function payment()
     {
         return $this->belongsTo('App\PaymentDetail', 'payment_id');
     }

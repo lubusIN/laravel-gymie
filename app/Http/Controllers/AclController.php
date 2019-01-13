@@ -8,7 +8,7 @@ use App\Role;
 use App\User;
 use App\RoleUser;
 use App\Permission;
-use App\Permission_role;
+use App\PermissionRole;
 use Illuminate\Http\Request;
 
 class AclController extends Controller
@@ -88,8 +88,8 @@ class AclController extends Controller
         }
         $user->save();
 
-        if ($user->role_user->role->id != $request->role_id) {
-            RoleUser::where('user_id', $user->id)->where('role_id', $user->role_user->role_id)->delete();
+        if ($user->roleUser->role->id != $request->role_id) {
+            RoleUser::where('user_id', $user->id)->where('role_id', $user->roleUser->role_id)->delete();
             $user->attachRole($request->role_id);
         }
 
@@ -166,7 +166,7 @@ class AclController extends Controller
     {
         $role = Role::findOrFail($id);
         $permissions = Permission::all();
-        $permission_role = Permission_role::where('role_id', $id)->get();
+        $permission_role = PermissionRole::where('role_id', $id)->get();
 
         return view('user.editRole', compact('role', 'permissions', 'permission_role'));
     }
@@ -184,7 +184,7 @@ class AclController extends Controller
                           ]);
 
             //Updating permissions for the role
-            $DBpermissions = Permission_role::where('role_id', $id)->select('permission_id')->lists('permission_id');
+            $DBpermissions = PermissionRole::where('role_id', $id)->select('permission_id')->lists('permission_id');
             $ClientPermissions = collect($request->permissions);
 
             $addPermissions = $ClientPermissions->diff($DBpermissions);

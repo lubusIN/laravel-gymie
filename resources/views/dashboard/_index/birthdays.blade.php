@@ -1,4 +1,4 @@
-<div class="table-responsive {!! (! $birthdays->isEmpty() ? "panel-scroll" : "")  !!}">
+<div class="table-responsive {!! (! $birthdays->isEmpty() ? 'panel-scroll' : '')  !!}">
     <table class="table table-hover">
         @forelse($birthdays as $birthday)
             <tr>

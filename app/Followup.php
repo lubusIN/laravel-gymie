@@ -23,7 +23,7 @@ class Followup extends Model
 
     protected $dates = ['created_at', 'updated_at', 'due_date'];
 
-    public function Enquiry()
+    public function enquiry()
     {
         return $this->belongsTo('App\Enquiry', 'enquiry_id');
     }

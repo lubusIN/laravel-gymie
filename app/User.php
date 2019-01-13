@@ -59,7 +59,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $query->where('status', '!=', \constStatus::Archive);
     }
 
-    public function RoleUser()
+    public function roleUser()
     {
         return $this->hasOne('App\RoleUser');
     }
