@@ -35,7 +35,7 @@ Laravel based web application for gym & club management. Currently being used by
 - Tokenizer PHP Extension
 - XML PHP Extension
 - Ctype PHP Extension
--  JSON PHP Extension
+- JSON PHP Extension
 - GD PHP Extension
 - Imagick PHP Extension 
 
@@ -58,6 +58,7 @@ Improper permission on `storage` & `public` folder will lead to server & applica
 For more info: https://laravel.com/docs/5.7/scheduling#introduction
 
 8. All right sparky! 
+
 use the following credentials to log in
 ```
 email: admin@gymie.in

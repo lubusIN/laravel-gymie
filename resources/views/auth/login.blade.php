@@ -82,13 +82,10 @@
 <!-- bootstrap validator -->
 <script src="{{ URL::asset('assets/plugins/bootstrapValidator/bootstrapValidator.min.js') }}" type="text/javascript"></script>
 
-<!-- maniac -->
-<script src="{{ URL::asset('assets/js/maniac.js') }}" type="text/javascript"></script>
-
+<!-- Login Validators -->
 <script src="{{ URL::asset('assets/js/login.js') }}" type="text/javascript"></script>
 
-<script type="text/javascript">
-    gymie.loadvalidator();
-</script>
+<!-- gymie -->
+<script src="{{ URL::asset('assets/js/gymie.js') }}" type="text/javascript"></script>
 </body>
 </html>

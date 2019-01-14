@@ -315,8 +315,8 @@
 <!--Footer scripts-->
 @yield('footer_scripts')
 
-<!-- maniac -->
-<script src="{{ URL::asset('assets/js/maniac.js') }}" type="text/javascript"></script>
+<!-- gymie -->
+<script src="{{ URL::asset('assets/js/gymie.js') }}" type="text/javascript"></script>
 
 @yield('footer_script_init')
 
