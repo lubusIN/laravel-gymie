@@ -1,6 +1,6 @@
 <?php
 
-use App\Permission_role;
+use App\PermissionRole;
 use Illuminate\Database\Seeder;
 
 class PermissionsRoleTableSeeder extends Seeder
@@ -85,7 +85,7 @@ class PermissionsRoleTableSeeder extends Seeder
         ];
 
         foreach ($permissions_role as $permission_role) {
-            Permission_role::create($permission_role);
+            PermissionRole::create($permission_role);
         }
     }
 }
