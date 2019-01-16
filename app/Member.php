@@ -44,6 +44,11 @@ class Member extends Model implements HasMediaConversions
         'contact' => 20,
     ];
 
+    public function getDobAttribute($value)
+    {
+        return (new Carbon($value))->format('Y-m-d');
+    }
+
     // Media i.e. Image size conversion
     public function registerMediaConversions()
     {

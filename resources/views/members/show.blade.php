@@ -106,7 +106,7 @@
                                                     <label>Date Of Birth</label>
                                                 </div>
                                                 <div class="col-sm-8">
-                                                    <span class="show-data">{{$member->DOB->format('Y-m-d')}}</span>
+                                                    <span class="show-data">{{$member->DOB}}</span>
                                                 </div>
                                             </div>
                                             <hr class="margin-top-0 margin-bottom-10">
