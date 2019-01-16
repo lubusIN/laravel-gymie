@@ -158,7 +158,6 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
     ],
 
@@ -217,7 +216,6 @@ return [
         'Entrust' => Zizaco\Entrust\EntrustFacade::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
-        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
     ],
 

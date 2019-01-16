@@ -20,7 +20,6 @@
         "spatie/laravel-medialibrary": "^3.18",
         "rap2hpoutre/laravel-log-viewer": "^0.6.1",
         "zizaco/entrust": "dev-laravel-5",
-        "maatwebsite/excel": "~2.1.0",
         "sentry/sentry-laravel": "^0.7.0"
     },
     "require-dev": {
