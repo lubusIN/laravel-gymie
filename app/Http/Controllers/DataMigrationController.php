@@ -4,14 +4,9 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Plan;
 use App\Member;
 use App\Invoice;
-use App\Setting;
-use Carbon\Carbon;
-use App\Subscription;
 use App\InvoiceDetail;
-use App\PaymentDetail;
 
 class DataMigrationController extends Controller
 {
@@ -63,15 +58,15 @@ class DataMigrationController extends Controller
             $members = Member::all();
 
             foreach ($members as $member) {
-                $profileImage = base_path('public/assets/img/profile/profile_' . $member->id . '.jpg');
-                $proofImage = base_path('public/assets/img/proof/proof_' . $member->id . '.jpg');
+                $profileImage = base_path('public/assets/img/profile/profile_'.$member->id.'.jpg');
+                $proofImage = base_path('public/assets/img/proof/proof_'.$member->id.'.jpg');
 
                 if (file_exists($profileImage)) {
-                    $member->addMedia($profileImage)->usingFileName('profile_' . $member->id . '.jpg')->toCollection('profile');
+                    $member->addMedia($profileImage)->usingFileName('profile_'.$member->id.'.jpg')->toCollection('profile');
                 }
 
                 if (file_exists($proofImage)) {
-                    $member->addMedia($proofImage)->usingFileName('proof_' . $member->id . '.jpg')->toCollection('proof');
+                    $member->addMedia($proofImage)->usingFileName('proof_'.$member->id.'.jpg')->toCollection('proof');
                 }
 
                 DB::commit();
