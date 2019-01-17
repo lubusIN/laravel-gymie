@@ -39,12 +39,21 @@ class Subscription extends Model
 
     public function scopeDashboardExpiring($query)
     {
-        return $query->where('end_date', '<', Carbon::today()->addDays(7))->where('status', '=', \constSubscription::onGoing);
+        return $query
+            ->with(['members' => function ($query) {
+                    $query->where('status', '=', \constStatus::Active);
+                }])
+            ->where('end_date', '<', Carbon::today()->addDays(7))
+            ->where('status', '=', \constSubscription::onGoing);
     }
 
     public function scopeDashboardExpired($query)
     {
-        return $query->where('status', '=', \constSubscription::Expired);
+        return $query
+            ->with(['members' => function ($query) {
+                $query->where('status', '=', \constStatus::Active);
+            }])
+            ->where('status', '=', \constSubscription::Expired);
     }
 
     public function scopeIndexQuery($query, $sorting_field, $sorting_direction, $drp_start, $drp_end)
