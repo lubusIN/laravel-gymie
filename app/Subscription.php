@@ -41,8 +41,8 @@ class Subscription extends Model
     {
         return $query
             ->with(['members' => function ($query) {
-                    $query->where('status', '=', \constStatus::Active);
-                }])
+                $query->where('status', '=', \constStatus::Active);
+            }])
             ->where('end_date', '<', Carbon::today()->addDays(7))
             ->where('status', '=', \constSubscription::onGoing);
     }
