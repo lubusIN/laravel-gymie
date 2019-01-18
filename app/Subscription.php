@@ -15,16 +15,16 @@ class Subscription extends Model
     protected $table = 'trn_subscriptions';
 
     protected $fillable = [
-            'member_id',
-            'invoice_id',
-            'plan_id',
-            'status',
-            'is_renewal',
-            'start_date',
-            'end_date',
-            'created_by',
-            'updated_by',
-     ];
+        'member_id',
+        'invoice_id',
+        'plan_id',
+        'status',
+        'is_renewal',
+        'start_date',
+        'end_date',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
@@ -40,7 +40,7 @@ class Subscription extends Model
     public function scopeDashboardExpiring($query)
     {
         return $query
-            ->with(['members' => function ($query) {
+            ->with(['member' => function ($query) {
                 $query->where('status', '=', \constStatus::Active);
             }])
             ->where('end_date', '<', Carbon::today()->addDays(7))
@@ -50,7 +50,7 @@ class Subscription extends Model
     public function scopeDashboardExpired($query)
     {
         return $query
-            ->with(['members' => function ($query) {
+            ->with(['member' => function ($query) {
                 $query->where('status', '=', \constStatus::Active);
             }])
             ->where('status', '=', \constSubscription::Expired);
