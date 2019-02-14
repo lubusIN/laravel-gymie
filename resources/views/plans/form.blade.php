@@ -32,7 +32,7 @@
             <div class="form-group">
                 <?php $services = App\Service::lists('name', 'id'); ?>
                 {!! Form::label('service_id','Service') !!}
-                {!! Form::select('service_id',$services,null,['class'=>'form-control selectpicker show-tick show-menu-arrow','id'=>'service_id','data-live-search'=> 'true']) !!}
+                {!! Form::select('service_id',$services,null,['required', 'class'=>'form-control selectpicker show-tick show-menu-arrow','id'=>'service_id','data-live-search'=> 'true']) !!}
             </div>
         </div>
     </div>
