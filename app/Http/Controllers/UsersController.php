@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Lubus\Constants\Status;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use DB;
-use Auth;
 use JavaScript;
 use App\Invoice;
 use App\Service;

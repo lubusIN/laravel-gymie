@@ -80,7 +80,7 @@ class SubscriptionsController extends Controller
           'gymieToday' => Carbon::today()->format('Y-m-d'),
           'servicesCount' => Service::count(),
       ]);
-        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->generateInvoiceNumber();
+        [$invoice_number_mode, $invoiceCounter, $invoice_number] = $this->generateInvoiceNumber();
 
         return view('subscriptions.create', compact('invoice_number', 'invoiceCounter', 'invoice_number_mode'));
     }
@@ -291,7 +291,7 @@ class SubscriptionsController extends Controller
     {
 
         //Get Numbering mode
-        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->generateInvoiceNumber();
+        [$invoice_number_mode, $invoiceCounter, $invoice_number] = $this->generateInvoiceNumber();
 
         $subscriptions = Subscription::where('invoice_id', $id)->get();
         $member_id = $subscriptions->pluck('member_id')->first();

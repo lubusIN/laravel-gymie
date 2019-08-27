@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Lubus\Constants\Status;
 use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 

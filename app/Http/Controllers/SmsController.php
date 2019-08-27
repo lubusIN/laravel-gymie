@@ -8,7 +8,6 @@ use App\SmsLog;
 use App\Enquiry;
 use App\SmsEvent;
 use App\SmsTrigger;
-use Lubus\Constants\Status;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller

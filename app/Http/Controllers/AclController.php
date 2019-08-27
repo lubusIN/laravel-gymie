@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use DB;
-use Auth;
 use App\Role;
 use App\User;
 use App\RoleUser;
