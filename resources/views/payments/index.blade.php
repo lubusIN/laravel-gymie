@@ -197,7 +197,7 @@
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
 
-                                            {!! str_replace('/?', '?', $payment_details->appends(Input::Only('search'))->render()) !!}
+                                            {!! str_replace('/?', '?', $payment_details->appends(Request::Only('search'))->render()) !!}
                                         </div>
                                     </div>
                                 </div>

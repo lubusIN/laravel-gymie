@@ -23,13 +23,15 @@ class InvoicesController extends Controller
 
     public function index(Request $request)
     {
-        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $invoices->total();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -39,14 +41,20 @@ class InvoicesController extends Controller
 
     public function unpaid(Request $request)
     {
-        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 0)->paginate(10);
-        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 0)->get();
+        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 0)
+            ->paginate(10);
+        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 0)
+            ->get();
         $count = $invoicesTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -56,14 +64,20 @@ class InvoicesController extends Controller
 
     public function paid(Request $request)
     {
-        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 1)->paginate(10);
-        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 1)->get();
+        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 1)
+            ->paginate(10);
+        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 1)
+            ->get();
         $count = $invoicesTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -73,14 +87,20 @@ class InvoicesController extends Controller
 
     public function partial(Request $request)
     {
-        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 2)->paginate(10);
-        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 2)->get();
+        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 2)
+            ->paginate(10);
+        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 2)
+            ->get();
         $count = $invoicesTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -90,14 +110,20 @@ class InvoicesController extends Controller
 
     public function overpaid(Request $request)
     {
-        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 3)->paginate(10);
-        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->where('trn_invoice.status', 3)->get();
+        $invoices = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 3)
+            ->paginate(10);
+        $invoicesTotal = Invoice::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->where('trn_invoice.status', 3)
+            ->get();
         $count = $invoicesTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -166,23 +192,25 @@ class InvoicesController extends Controller
         try {
             $invoice_total = $request->admission_amount + $request->subscription_amount + $request->taxes_amount - $request->discount_amount;
             $already_paid = PaymentDetail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
-                                       ->whereRaw("trn_payment_details.invoice_id = $id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
-                                       ->sum('trn_payment_details.payment_amount');
+                ->whereRaw("trn_payment_details.invoice_id = $id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
+                ->sum('trn_payment_details.payment_amount');
 
             $pending = $invoice_total - $already_paid;
 
             $status = \Utilities::setInvoiceStatus($pending, $invoice_total);
 
-            Invoice::where('id', $id)->update(['invoice_number'=> $request->invoice_number,
-                                         'total'=> $invoice_total,
-                                         'status'=> $status,
-                                         'pending_amount'=> $pending,
-                                         'discount_amount'=> $request->discount_amount,
-                                         'discount_percent'=> $request->discount_percent,
-                                         'discount_note'=> $request->discount_note,
-                                         'tax'=> $request->taxes_amount,
-                                         'additional_fees'=> $request->additional_fees,
-                                         'note'=>' ', ]);
+            Invoice::where('id', $id)->update([
+                'invoice_number' => $request->invoice_number,
+                'total' => $invoice_total,
+                'status' => $status,
+                'pending_amount' => $pending,
+                'discount_amount' => $request->discount_amount,
+                'discount_percent' => $request->discount_percent,
+                'discount_note' => $request->discount_note,
+                'tax' => $request->taxes_amount,
+                'additional_fees' => $request->additional_fees,
+                'note' => ' ',
+            ]);
 
             DB::commit();
             flash()->success('Discount was successfully updated');

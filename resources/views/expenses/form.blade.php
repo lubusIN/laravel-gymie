@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
-            <?php $expenseCategories = App\ExpenseCategory::where('status', '=', '1')->lists('name', 'id'); ?>
+            <?php $expenseCategories = App\ExpenseCategory::where('status', '=', '1')->pluck('name', 'id'); ?>
             {!! Form::label('category_id','Category') !!}
             {!! Form::select('category_id',$expenseCategories,null,['class'=>'form-control selectpicker show-tick show-menu-arrow','id'=>'category_id','data-live-search'=> 'true']) !!}
         </div>

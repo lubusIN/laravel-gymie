@@ -17,8 +17,12 @@ class CreateMstExpensesCategoriesTable extends Migration
             $table->string('name', 50)->comment('category name');
             $table->boolean('status');
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->index('FK_mst_expenses_categories_mst_users_1');
-            $table->integer('updated_by')->unsigned()->index('FK_mst_expenses_categories_mst_users_2');
+            
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->unsignedBigInteger('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

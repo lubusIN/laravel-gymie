@@ -3,13 +3,13 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Expense extends Model
 {
-    //Eloquence Search mapping
-    use Eloquence;
+    // Search
+    use SearchableTrait;
     use createdByUser, updatedByUser;
 
     protected $table = 'trn_expenses';
@@ -26,9 +26,11 @@ class Expense extends Model
         'updated_by',
     ];
 
-    protected $searchableColumns = [
-        'name' => 20,
-        'amount' => 10,
+    protected $searchable = [
+        'columns' => [
+            'name' => 20,
+            'amount' => 10
+        ]
     ];
 
     protected $dates = ['created_at', 'updated_at', 'due_date'];

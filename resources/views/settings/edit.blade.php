@@ -53,7 +53,11 @@
                                             <div class="col-sm-12">
                                                 <div class="form-group">
                                                     {!! Form::label('gym_logo','Gym Logo') !!}<br>
-                                                    <img alt="gym logo" src="{{url('/images/Invoice/'.'gym_logo'.'.jpg') }}"/>
+                                                    @if($settings['gym_logo'])
+                                                        <img style="width: 100px;" alt="gym logo" src="{{url('assets/img/gym/'. $settings['gym_logo'] ) }}"/>
+                                                    @else
+                                                        <img alt="gym logo" src="{{url('/images/Invoice/'.'gym_logo'.'.jpg') }}"/>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

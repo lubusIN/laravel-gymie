@@ -3,8 +3,8 @@
 namespace App;
 
 use Lubus\Constants\Status;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Plan extends Model
 {
@@ -22,14 +22,16 @@ class Plan extends Model
         'updated_by',
     ];
 
-    //Eloquence Search mapping
-    use Eloquence;
+    // Search
+    use SearchableTrait;
     use createdByUser, updatedByUser;
 
-    protected $searchableColumns = [
-        'plan_code' => 20,
-        'plan_name' => 10,
-        'plan_details' => 5,
+    protected $searchable = [
+        'columns' => [
+            'plan_code' => 10,
+            'plan_name' => 10,
+            'plan_details' => 5
+        ]
     ];
 
     public function getPlanDisplayAttribute()

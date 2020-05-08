@@ -2,14 +2,13 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class SmsTrigger extends Model
 {
-    //Eloquence Search mapping
-    use Eloquence;
-    use createdByUser, updatedByUser;
+    //Eloquence Search
+    use createdByUser, updatedByUser, SearchableTrait;
 
     const CREATED_AT = null;
 
@@ -23,8 +22,10 @@ class SmsTrigger extends Model
         'updated_by',
     ];
 
-    protected $searchableColumns = [
-        'name' => 20,
-        'message' => 10,
+    protected $searchable = [
+        'columns' => [
+            'name' => 20,
+            'message' => 10
+        ]
     ];
 }

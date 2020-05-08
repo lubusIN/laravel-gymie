@@ -6,23 +6,26 @@ use Auth;
 use Lubus\Constants\Status;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasMediaConversions
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasMedia
 {
-    use Authenticatable, CanResetPassword, EntrustUserTrait, HasMediaTrait;
+    use Authenticatable, 
+        CanResetPassword, 
+        HasRoleAndPermission,
+        HasMediaTrait;
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'mst_users';
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -38,16 +41,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     protected $hidden = ['password', 'remember_token'];
 
-    // Media i.e. Image size conversion
-    public function registerMediaConversions()
-    {
-        $this->addMediaConversion('thumb')
-             ->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])
-             ->performOnCollections('staff');
+    protected $appends = [
+        'photoProfile'
+    ];
 
-        $this->addMediaConversion('form')
-             ->setManipulations(['w' => 70, 'h' => 70, 'q' => 100, 'fit' => 'crop'])
-             ->performOnCollections('staff');
+    public function getPhotoProfileAttribute()
+    {
+        $images = $this->getMedia('staff');
+        if($images->isEmpty()) return url('assets/img/web/profile-default.png');
+        return $images->last()->getFullUrl();
     }
 
     public function scopeExcludeArchive($query)
@@ -59,8 +61,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $query->where('status', '!=', \constStatus::Archive);
     }
 
-    public function roleUser()
-    {
-        return $this->hasOne('App\RoleUser');
-    }
 }

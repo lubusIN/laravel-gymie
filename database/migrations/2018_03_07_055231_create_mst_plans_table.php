@@ -22,8 +22,12 @@ class CreateMstPlansTable extends Migration
             $table->integer('amount')->comment('amount to charge for the plan');
             $table->boolean('status')->comment('0 for inactive , 1 for active');
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->index('FK_mst_plans_mst_users_1');
-            $table->integer('updated_by')->unsigned()->nullable()->index('FK_mst_plans_mst_users_2');
+            
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->unsignedBigInteger('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Member;
 use App\SmsLog;
-use JavaScript;
 use App\Enquiry;
 use App\Expense;
 use App\Setting;
@@ -13,6 +12,7 @@ use App\Followup;
 use App\ChequeDetail;
 use App\Subscription;
 use Illuminate\Http\Request;
+use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 
 class DashboardController extends Controller
 {
@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
     public function index()
     {
-        JavaScript::put([
+        JavaScriptFacade::put([
             'jsRegistraionsCount' => \Utilities::registrationsTrend(),
             'jsMembersPerPlan' => \Utilities::membersPerPlan(),
         ]);

@@ -3,15 +3,17 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\Models\Media;
 
-class Member extends Model implements HasMediaConversions
+class Member extends Model implements HasMedia
 {
-    use HasMediaTrait, Eloquence;
+    use HasMediaTrait;
     use createdByUser, updatedByUser;
+    use SearchableTrait;
 
     protected $table = 'mst_members';
 
@@ -37,11 +39,19 @@ class Member extends Model implements HasMediaConversions
 
     protected $dates = ['created_at', 'updated_at', 'DOB'];
 
-    protected $searchableColumns = [
-        'member_code' => 20,
-        'name' => 20,
-        'email' => 20,
-        'contact' => 20,
+    protected $searchable = [
+        'columns' => [
+            'member_code' => 10,
+            'name'        => 10,
+            'email'       => 10,
+            'address'     => 5,
+            'contact'     => 5
+        ]
+    ];
+
+    protected $appends = [
+        'photo',
+        'photoProfile'
     ];
 
     public function getDobAttribute($value)
@@ -49,8 +59,22 @@ class Member extends Model implements HasMediaConversions
         return (new Carbon($value))->format('Y-m-d');
     }
 
+    public function getPhotoProfileAttribute()
+    {
+        $images = $this->getMedia('proof');
+        if($images->isEmpty()) return url('assets/img/web/profile-default.png');
+        return $images->last()->getFullUrl();
+    }
+
+    public function getPhotoAttribute()
+    {
+        $images = $this->getMedia('profile');
+        if($images->isEmpty()) return url('assets/img/web/profile-default.png');
+        return $images->last()->getFullUrl();
+    }
+
     // Media i.e. Image size conversion
-    public function registerMediaConversions()
+    public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')->setManipulations(['w' => 50, 'h' => 50, 'q' => 100, 'fit' => 'crop'])->performOnCollections('profile');
 

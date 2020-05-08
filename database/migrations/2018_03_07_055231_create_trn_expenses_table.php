@@ -19,11 +19,15 @@ class CreateTrnExpensesTable extends Migration
             $table->integer('amount')->comment('expense amount');
             $table->date('due_date')->comment('Due Date for the expense created');
             $table->boolean('repeat')->comment('0 = never repeat , 1 = every day , 2 = every week , 3 = every month , 4 = every year');
-            $table->boolean('paid')->comment('0 = false , 1 = true i.e. paid');
-            $table->string('note', 50);
+            $table->boolean('paid')->comment('0 = false , 1 = true i.e. paid')->default(false);
+            $table->string('note', 50)->nullable();
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->index('FK_trn_expenses_mst_users_2');
-            $table->integer('updated_by')->unsigned()->nullable()->index('FK_trn_expenses_mst_users_3');
+
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->unsignedBigInteger('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

@@ -2,13 +2,13 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Service extends Model
 {
-    //Eloquence Search mapping
-    use Eloquence;
+    //Eloquence Search
+    use SearchableTrait;
     use createdByUser, updatedByUser;
 
     protected $table = 'mst_services';
@@ -20,9 +20,11 @@ class Service extends Model
         'updated_by',
     ];
 
-    protected $searchableColumns = [
-        'name' => 20,
-        'description' => 10,
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 5
+        ]
     ];
 
     public function plans()

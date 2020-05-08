@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
-                <?php $services = App\Service::lists('name', 'id'); ?>
+                <?php $services = App\Service::pluck('name', 'id'); ?>
                 {!! Form::label('service_id','Service') !!}
                 {!! Form::select('service_id',$services,null,['class'=>'form-control selectpicker show-tick show-menu-arrow','id'=>'service_id','data-live-search'=> 'true']) !!}
             </div>

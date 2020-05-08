@@ -33,7 +33,7 @@
                             <div class="row">
                                 <div class="col-sm-5">
                                     <div class="form-group">
-                                        <?php $member_code = App\Member::where('status', '=', '1')->lists('member_code', 'id'); ?>
+                                        <?php $member_code = App\Member::where('status', '=', '1')->pluck('member_code', 'id'); ?>
                                         {!! Form::label('member_id','Member Code') !!}
                                         {!! Form::select('member_id',$member_code,$member_id,['class'=>'form-control selectpicker show-tick show-menu-arrow','id'=>'member_id','data-live-search' => 'true']) !!}
                                     </div>

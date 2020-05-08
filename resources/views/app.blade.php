@@ -8,6 +8,9 @@
     <meta content="" name="description"/>
     <meta content="" name="author"/>
 
+    {{-- CSRF Token --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Gymie</title>
 
     <!-- BEGIN CORE FRAMEWORK -->
@@ -67,7 +70,7 @@
                 <div class="thumb">
                     <?php
                     $media = Auth::user()->getMedia();
-                    $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($media[0]->getUrl('thumb')));
+                    $image = ($media->isEmpty() ? url('assets/img/web/profile-default.png') : url($media[0]->getUrl('thumb')));
                     ?>
                     <img src="{{ $image }}" class="img-circle" alt=""/>
                 </div>

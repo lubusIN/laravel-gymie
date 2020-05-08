@@ -237,6 +237,10 @@
 	-webkit-border-radius: 30px!important;
 }
 
+.rounded-full {
+	border-radius: 9999px;
+}
+
 /* border */
 .border-1 {
 	border-width: 1px !important;
@@ -965,6 +969,10 @@
 }
 .width-500 {
 	width: 500px !important;
+}
+
+.w-100 {
+	width: 100% !important;
 }
 
 /* font sizes */

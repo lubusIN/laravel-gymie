@@ -62,11 +62,11 @@ class DataMigrationController extends Controller
                 $proofImage = base_path('public/assets/img/proof/proof_'.$member->id.'.jpg');
 
                 if (file_exists($profileImage)) {
-                    $member->addMedia($profileImage)->usingFileName('profile_'.$member->id.'.jpg')->toCollection('profile');
+                    $member->addMedia($profileImage)->usingFileName('profile_'.$member->id.'.jpg')->toMediaCollection('profile');
                 }
 
                 if (file_exists($proofImage)) {
-                    $member->addMedia($proofImage)->usingFileName('proof_'.$member->id.'.jpg')->toCollection('proof');
+                    $member->addMedia($proofImage)->usingFileName('proof_'.$member->id.'.jpg')->toMediaCollection('proof');
                 }
 
                 DB::commit();

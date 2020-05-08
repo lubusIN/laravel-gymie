@@ -63,11 +63,7 @@
                                                     <label>&nbsp;</label>
                                                 </div>
                                             </div>
-                                            <?php
-                                            $images = $member->getMedia('profile');
-                                            $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=22&txt=NA&w=200&h=180' : url($images[0]->getUrl()));
-                                            ?>
-                                            <img class="AutoFitResponsive" src="{{ $profileImage }}"/>
+                                            <img class="AutoFitResponsive" src="{{ $member->photoProfile }}"/>
                                         </div>
 
 

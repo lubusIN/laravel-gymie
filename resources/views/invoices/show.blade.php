@@ -38,7 +38,7 @@
                                         foreach ($invoice->paymentDetails->unique('mode') as $payment_mode) {
                                             $modes[] = Utilities::getPaymentMode($payment_mode->mode);
                                         }
-                                        echo implode($modes, ',');
+                                        echo implode(',',$modes);
                                         ?><br>
                                         <strong>Payment</strong><br>
                                         {{ Utilities::getInvoiceStatus ($invoice->status) }}<br>

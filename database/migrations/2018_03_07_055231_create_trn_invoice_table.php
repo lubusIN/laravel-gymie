@@ -20,14 +20,19 @@ class CreateTrnInvoiceTable extends Migration
             $table->text('note', 65535)->comment('note regarding payments');
             $table->boolean('status')->comment('0 = Unpaid, 1 = Paid,  2 = Partial 3 = overpaid');
             $table->string('invoice_number', 50)->comment('number of the inovice/reciept');
-            $table->string('discount_percent', 50);
-            $table->string('discount_amount', 50);
-            $table->string('discount_note', 50);
+            $table->string('discount_percent', 50)->nullable();
+            $table->string('discount_amount', 50)->nullable();
+            $table->string('discount_note', 50)->nullable();
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->index('FK_trn_payments_mst_users_3');
-            $table->integer('updated_by')->unsigned()->index('FK_trn_payments_mst_users_4');
+            
             $table->integer('tax');
             $table->integer('additional_fees')->nullable();
+
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->unsignedBigInteger('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

@@ -20,7 +20,9 @@ class PlansController extends Controller
      */
     public function index(Request $request)
     {
-        $plans = Plan::excludeArchive()->search('"'.$request->input('search').'"')->paginate(10);
+        $plans = Plan::excludeArchive()
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $plans->total();
 
         return view('plans.index', compact('plans', 'count'));

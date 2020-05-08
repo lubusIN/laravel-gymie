@@ -217,7 +217,8 @@ var gymie = (function ($) {
 				}, function () {
 					$.ajax({
 						url: gotoUrl,
-						type: "POST"
+						type: "POST",
+						headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
 					})
 						.done(function (data) {
 							swal({
@@ -271,7 +272,8 @@ var gymie = (function ($) {
 					}, function () {
 						$.ajax({
 							url: deleteUrl,
-							type: "POST"
+							type: "POST",
+							headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
 						})
 							.done(function (data) {
 								swal({

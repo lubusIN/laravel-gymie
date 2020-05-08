@@ -37,7 +37,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         {!! Form::label('display_name','Display name') !!}
-                                        {!! Form::text('display_name',$role->display_name,['class'=>'form-control', 'id' => 'display_name']) !!}
+                                        {!! Form::text('display_name',$role->slug,['class'=>'form-control', 'id' => 'display_name']) !!}
                                     </div>
                                 </div>
 
@@ -60,12 +60,12 @@
                                 <h5>{{$permission_group->pluck('group_key')->pop()}}</h5>
                                 <div class="row">
                                     @foreach($permission_group as $permission)
-                                        <?php $status = ($permission_role->contains('permission_id', $permission->id) ? 'checked="checked"' : '') ?>
+                                        <?php $status = ($permission_role->contains('id', $permission->id) ? 'checked="checked"' : '') ?>
                                         <div class="col-xs-4">
                                             <div class="checkbox checkbox-theme">
                                                 <input type="checkbox" name="permissions[]" id="permission_{{$permission->id}}"
                                                        value="{{$permission->id}}" {{ $status }} >
-                                                <label for="permission_{{$permission->id}}">{{ $permission->display_name }}</label>
+                                                <label for="permission_{{$permission->id}}">{{ $permission->name }}</label>
                                             </div>
                                         </div>
                                     @endforeach

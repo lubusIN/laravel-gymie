@@ -140,7 +140,7 @@
 
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
-                                            {!! str_replace('/?', '?', $invoices->appends(Input::Only('search'))->render()) !!}
+                                            {!! str_replace('/?', '?', $invoices->appends(Request::only('search'))->render()) !!}
                                         </div>
                                     </div>
                                 </div>

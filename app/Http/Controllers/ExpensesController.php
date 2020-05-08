@@ -20,14 +20,18 @@ class ExpensesController extends Controller
     */
     public function index(Request $request)
     {
-        $expenses = Expense::indexQuery($request->category_id, $request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $expenseTotal = Expense::indexQuery($request->category_id, $request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
+        $expenses = Expense::indexQuery($request->category_id, $request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
+        $expenseTotal = Expense::indexQuery($request->category_id, $request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->get();
         $count = $expenseTotal->sum('amount');
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -65,12 +69,14 @@ class ExpensesController extends Controller
      */
     public function store(Request $request)
     {
-        $expenseData = ['name' => $request->name,
-                             'category_id' => $request->category_id,
-                             'due_date' => $request->due_date,
-                             'repeat' => $request->repeat,
-                             'note' => $request->note,
-                             'amount' => $request->amount, ];
+        $expenseData = [
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'due_date' => $request->due_date,
+            'repeat' => $request->repeat,
+            'note' => $request->note,
+            'amount' => $request->amount,
+        ];
 
         $expense = new Expense($expenseData);
         $expense->createdBy()->associate(Auth::user());
