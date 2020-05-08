@@ -21,9 +21,9 @@ class Utilities
     // Get Setting
     public static function getSetting($key)
     {
-        $settingValue = Setting::where('key', '=', $key)->pluck('value');
+        $settingValue = Setting::where('key', $key)->first();
 
-        return $settingValue;
+        return $settingValue->value;
     }
 
     //get Settings
@@ -503,9 +503,10 @@ class Utilities
                 $fileName = 'gym_logo.jpg';
                 $destinationPath = public_path($upload_path);
                 $request->file($upload_field)->move($destinationPath, $fileName);
-                Image::make($destinationPath.'/'.$fileName)->resize(600, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save();
+                // Image::make($destinationPath.'/'.$fileName)->resize(600, null, function ($constraint) {
+                //     $constraint->aspectRatio();
+                // })->save();
+                Image::make($destinationPath.'/'.$fileName)->save();
             }
         }
     }
@@ -513,7 +514,8 @@ class Utilities
     public static function registrationsTrend()
     {
         // Get Financial date
-        $startDate = new Carbon(Setting::where('key', '=', 'financial_start')->pluck('value'));
+        $financialStart = Setting::where('key', '=', 'financial_start')->first();
+        $startDate = new Carbon($financialStart->value);
         $data = [];
 
         for ($i = 1; $i <= 12; $i++) {

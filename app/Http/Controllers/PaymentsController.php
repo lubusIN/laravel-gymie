@@ -19,8 +19,8 @@ class PaymentsController extends Controller
 
     public function index(Request $request)
     {
-        $payment_details = PaymentDetail::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
-        $paymentTotal = PaymentDetail::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->get();
+        $payment_details = PaymentDetail::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search($request->input('search'))->paginate(10);
+        $paymentTotal = PaymentDetail::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search($request->input('search'))->get();
         $count = $paymentTotal->sum('payment_amount');
 
         if (! $request->has('drp_start') or ! $request->has('drp_end')) {

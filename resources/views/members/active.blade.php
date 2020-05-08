@@ -101,11 +101,9 @@
                                         foreach ($subscriptions as $subscription) {
                                             $plansArray[] = $subscription->plan->plan_name;
                                         }
-                                        $images = $member->getMedia('profile');
-                                        $profileImage = ($images->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($images[0]->getUrl('thumb')));
                                         ?>
                                         <tr>
-                                            <td><a href="{{ action('MembersController@show',['id' => $member->id]) }}"><img src="{{ $profileImage }}"/></a></td>
+                                            <td><a href="{{ action('MembersController@show',['id' => $member->id]) }}"><img class="profile-sm" src="{{ $member->photoProfile }}"/></a></td>
                                             <td><a href="{{ action('MembersController@show',['id' => $member->id]) }}">{{ $member->member_code}}</a></td>
                                             <td><a href="{{ action('MembersController@show',['id' => $member->id]) }}">{{ $member->name}}</a></td>
                                             <td>{{ $member->contact}}</td>
@@ -155,7 +153,7 @@
                                     </div>
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
-                                            {!! str_replace('/?', '?', $members->appends(Input::all())->render()) !!}
+                                            {!! str_replace('/?', '?', $members->appends(Request::all())->render()) !!}
                                         </div>
                                     </div>
                                 </div>

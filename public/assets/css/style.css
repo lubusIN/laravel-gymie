@@ -210,6 +210,14 @@ a:focus {
 	box-shadow: none;
 }
 
+.form-control[disabled]:focus, 
+.form-control[readonly]:focus, 
+fieldset[disabled] .form-control:focus {
+	background-color: #eee;
+	opacity: 1;
+	border: 1px solid #eee;
+}
+
 label {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;

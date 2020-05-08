@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Auth;
 use App\Member;
-use JavaScript;
+use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 use App\Enquiry;
 use App\Invoice;
 use App\Service;
@@ -32,38 +32,40 @@ class MembersController extends Controller
      */
     public function index(Request $request)
     {
-        $members = Member::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $members = Member::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
-        return view('members.index', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.index', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function active(Request $request)
     {
-        $members = Member::active($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $members = Member::active($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"' . $request->input('search') . '"')->paginate(10);
         $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
-        return view('members.active', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.active', compact('members', 'count', 'drp_placeholder'));
     }
 
     public function inactive(Request $request)
     {
-        $members = Member::inactive($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $members = Member::inactive($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"' . $request->input('search') . '"')->paginate(10);
         $count = $members->total();
 
         $drp_placeholder = $this->drpPlaceholder($request);
 
         $request->flash();
 
-        return view('members.inactive', compact('members', 'count', 'drp_placeholder', 'old_sort'));
+        return view('members.inactive', compact('members', 'count', 'drp_placeholder'));
     }
 
     /**
@@ -75,7 +77,6 @@ class MembersController extends Controller
     public function show($id)
     {
         $member = Member::findOrFail($id);
-
         return view('members.show', compact('member'));
     }
 
@@ -87,7 +88,7 @@ class MembersController extends Controller
     public function create()
     {
         // For Tax calculation
-        JavaScript::put([
+        JavaScriptFacade::put([
             'taxes' => \Utilities::getSetting('taxes'),
             'gymieToday' => Carbon::today()->format('Y-m-d'),
             'servicesCount' => Service::count(),
@@ -101,7 +102,7 @@ class MembersController extends Controller
         if ($invoice_number_mode == \constNumberingMode::Auto) {
             $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
             $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoice_number = $invoicePrefix.$invoiceCounter;
+            $invoice_number = $invoicePrefix . $invoiceCounter;
         } else {
             $invoice_number = '';
             $invoiceCounter = '';
@@ -111,7 +112,7 @@ class MembersController extends Controller
         if ($member_number_mode == \constNumberingMode::Auto) {
             $memberCounter = \Utilities::getSetting('member_last_number') + 1;
             $memberPrefix = \Utilities::getSetting('member_prefix');
-            $member_code = $memberPrefix.$memberCounter;
+            $member_code = $memberPrefix . $memberCounter;
         } else {
             $member_code = '';
             $memberCounter = '';
@@ -127,32 +128,38 @@ class MembersController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // Member Model Validation
-        $this->validate($request, ['email' => 'unique:mst_members,email',
-                                   'contact' => 'unique:mst_members,contact',
-                                   'member_code' => 'unique:mst_members,member_code', ]);
+        $this->validate($request, [
+            'email'       => 'unique:mst_members,email',
+            'contact'     => 'unique:mst_members,contact',
+            'member_code' => 'unique:mst_members,member_code',
+            'plan.*.id'   => 'required'
+        ]);
 
         // Start Transaction
         DB::beginTransaction();
 
         try {
             // Store member's personal details
-            $memberData = ['name'=>$request->name,
-                                    'DOB'=> $request->DOB,
-                                    'gender'=> $request->gender,
-                                    'contact'=> $request->contact,
-                                    'emergency_contact'=> $request->emergency_contact,
-                                    'health_issues'=> $request->health_issues,
-                                    'email'=> $request->email,
-                                    'address'=> $request->address,
-                                    'member_id'=> $request->member_id,
-                                    'proof_name'=> $request->proof_name,
-                                    'member_code'=> $request->member_code,
-                                    'status'=> $request->status,
-                                    'pin_code'=> $request->pin_code,
-                                    'occupation'=> $request->occupation,
-                                    'aim'=> $request->aim,
-                                    'source'=> $request->source, ];
+            $memberData = [
+                'name' => $request->name,
+                'DOB' => $request->DOB,
+                'gender' => $request->gender,
+                'contact' => $request->contact,
+                'emergency_contact' => $request->emergency_contact,
+                'health_issues' => $request->health_issues,
+                'email' => $request->email,
+                'address' => $request->address,
+                'member_id' => $request->member_id,
+                'proof_name' => $request->proof_name,
+                'member_code' => $request->member_code,
+                'status' => $request->status,
+                'pin_code' => $request->pin_code,
+                'occupation' => $request->occupation,
+                'aim' => $request->aim,
+                'source' => $request->source,
+            ];
 
             $member = new Member($memberData);
             $member->createdBy()->associate(Auth::user());
@@ -161,11 +168,11 @@ class MembersController extends Controller
 
             // Adding media i.e. Profile & proof photo
             if ($request->hasFile('photo')) {
-                $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
+                $member->addMedia($request->file('photo'))->usingFileName('profile_' . $member->id . '.' . $request->photo->getClientOriginalExtension())->toMediaCollection('profile');
             }
 
             if ($request->hasFile('proof_photo')) {
-                $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
+                $member->addMedia($request->file('proof_photo'))->usingFileName('proof_' . $member->id . '.' . $request->proof_photo->getClientOriginalExtension())->toMediaCollection('proof');
             }
 
             // Helper function for calculating payment status
@@ -186,17 +193,19 @@ class MembersController extends Controller
             }
 
             // Storing Invoice
-            $invoiceData = ['invoice_number'=> $request->invoice_number,
-                                     'member_id'=> $member->id,
-                                     'total'=> $invoice_total,
-                                     'status'=> $paymentStatus,
-                                     'pending_amount'=> $pending,
-                                     'discount_amount'=> $request->discount_amount,
-                                     'discount_percent'=> $request->discount_percent,
-                                     'discount_note'=> $request->discount_note,
-                                     'tax'=> $request->taxes_amount,
-                                     'additional_fees'=> $request->additional_fees,
-                                     'note'=>' ', ];
+            $invoiceData = [
+                'invoice_number' => $request->invoice_number,
+                'member_id' => $member->id,
+                'total' => $invoice_total,
+                'status' => $paymentStatus,
+                'pending_amount' => $pending,
+                'discount_amount' => $request->discount_amount,
+                'discount_percent' => $request->discount_percent,
+                'discount_note' => $request->discount_note,
+                'tax' => $request->taxes_amount,
+                'additional_fees' => $request->additional_fees,
+                'note' => ' ',
+            ];
 
             $invoice = new Invoice($invoiceData);
             $invoice->createdBy()->associate(Auth::user());
@@ -205,13 +214,15 @@ class MembersController extends Controller
 
             // Storing subscription
             foreach ($request->plan as $plan) {
-                $subscriptionData = ['member_id'=> $member->id,
-                                            'invoice_id'=> $invoice->id,
-                                            'plan_id'=> $plan['id'],
-                                            'start_date'=> $plan['start_date'],
-                                            'end_date'=> $plan['end_date'],
-                                            'status'=> \constSubscription::onGoing,
-                                            'is_renewal'=>'0', ];
+                $subscriptionData = [
+                    'member_id' => $member->id,
+                    'invoice_id' => $invoice->id,
+                    'plan_id' => $plan['id'],
+                    'start_date' => $plan['start_date'],
+                    'end_date' => $plan['end_date'],
+                    'status' => \constSubscription::onGoing,
+                    'is_renewal' => '0',
+                ];
 
                 $subscription = new Subscription($subscriptionData);
                 $subscription->createdBy()->associate(Auth::user());
@@ -219,9 +230,11 @@ class MembersController extends Controller
                 $subscription->save();
 
                 //Adding subscription to invoice(Invoice Details)
-                $detailsData = ['invoice_id'=> $invoice->id,
-                                       'plan_id'=> $plan['id'],
-                                       'item_amount'=> $plan['price'], ];
+                $detailsData = [
+                    'invoice_id' => $invoice->id,
+                    'plan_id' => $plan['id'],
+                    'item_amount' => $plan['price'],
+                ];
 
                 $invoiceDetails = new InvoiceDetail($detailsData);
                 $invoiceDetails->createdBy()->associate(Auth::user());
@@ -230,10 +243,12 @@ class MembersController extends Controller
             }
 
             // Store Payment Details
-            $paymentData = ['invoice_id'=> $invoice->id,
-                                     'payment_amount'=> $request->payment_amount,
-                                     'mode'=> $request->mode,
-                                     'note'=> ' ', ];
+            $paymentData = [
+                'invoice_id' => $invoice->id,
+                'payment_amount' => $request->payment_amount,
+                'mode' => $request->mode,
+                'note' => ' ',
+            ];
 
             $paymentDetails = new PaymentDetail($paymentData);
             $paymentDetails->createdBy()->associate(Auth::user());
@@ -242,10 +257,12 @@ class MembersController extends Controller
 
             if ($request->mode == 0) {
                 // Store Cheque Details
-                $chequeData = ['payment_id'=> $paymentDetails->id,
-                                      'number'=> $request->number,
-                                      'date'=> $request->date,
-                                      'status'=> \constChequeStatus::Recieved, ];
+                $chequeData = [
+                    'payment_id' => $paymentDetails->id,
+                    'number' => $request->number,
+                    'date' => $request->date,
+                    'status' => \constChequeStatus::Recieved,
+                ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -330,9 +347,9 @@ class MembersController extends Controller
             return redirect(action('MembersController@show', ['id' => $member->id]));
         } catch (\Exception $e) {
             DB::rollback();
-            flash()->error('Error while creating the member');
-
-            return redirect(action('MembersController@index'));
+            // flash()->error('Error while creating the member');
+            flash()->error($e);
+            return back()->withInput();
         }
     }
 
@@ -366,12 +383,12 @@ class MembersController extends Controller
 
         if ($request->hasFile('photo')) {
             $member->clearMediaCollection('profile');
-            $member->addMedia($request->file('photo'))->usingFileName('profile_'.$member->id.'.'.$request->photo->getClientOriginalExtension())->toCollection('profile');
+            $member->addMedia($request->file('photo'))->usingFileName('profile_' . $member->id . '.' . $request->photo->getClientOriginalExtension())->toMediaCollection('profile');
         }
 
         if ($request->hasFile('proof_photo')) {
             $member->clearMediaCollection('proof');
-            $member->addMedia($request->file('proof_photo'))->usingFileName('proof_'.$member->id.'.'.$request->proof_photo->getClientOriginalExtension())->toCollection('proof');
+            $member->addMedia($request->file('proof_photo'))->usingFileName('proof_' . $member->id . '.' . $request->proof_photo->getClientOriginalExtension())->toMediaCollection('proof');
         }
 
         $member->updatedBy()->associate(Auth::user());
@@ -411,7 +428,7 @@ class MembersController extends Controller
 
         $member->delete();
 
-        return back();
+        return redirect('members');
     }
 
     public function transfer($id, Request $request)
@@ -431,7 +448,7 @@ class MembersController extends Controller
         if ($invoice_number_mode == \constNumberingMode::Auto) {
             $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
             $invoicePrefix = \Utilities::getSetting('invoice_prefix');
-            $invoice_number = $invoicePrefix.$invoiceCounter;
+            $invoice_number = $invoicePrefix . $invoiceCounter;
         } else {
             $invoice_number = '';
             $invoiceCounter = '';
@@ -441,7 +458,7 @@ class MembersController extends Controller
         if ($member_number_mode == \constNumberingMode::Auto) {
             $memberCounter = \Utilities::getSetting('member_last_number') + 1;
             $memberPrefix = \Utilities::getSetting('member_prefix');
-            $member_code = $memberPrefix.$memberCounter;
+            $member_code = $memberPrefix . $memberCounter;
         } else {
             $member_code = '';
             $memberCounter = '';
@@ -459,7 +476,7 @@ class MembersController extends Controller
     private function drpPlaceholder(Request $request)
     {
         if ($request->has('drp_start') and $request->has('drp_end')) {
-            return $request->drp_start.' - '.$request->drp_end;
+            return $request->drp_start . ' - ' . $request->drp_end;
         }
 
         return 'Select daterange filter';

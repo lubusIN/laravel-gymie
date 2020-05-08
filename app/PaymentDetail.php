@@ -2,14 +2,13 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class PaymentDetail extends Model
 {
     //Eloquence Search mapping
-    use Eloquence;
-    use createdByUser,updatedByUser;
+    use createdByUser,updatedByUser, SearchableTrait;
 
     protected $table = 'trn_payment_details';
 
@@ -22,10 +21,12 @@ class PaymentDetail extends Model
         'updated_by',
     ];
 
-    protected $searchableColumns = [
-        'payment_amount' => 20,
-        'Invoice.invoice_number' => 20,
-        'Invoice.member.name' => 20,
+    protected $searchable = [
+        'columns' => [
+            'payment_amount' => 20,
+            'Invoice.invoice_number' => 20,
+            'Invoice.member.name' => 20,
+        ]
     ];
 
     public function scopeIndexQuery($query, $sorting_field, $sorting_direction, $drp_start, $drp_end)

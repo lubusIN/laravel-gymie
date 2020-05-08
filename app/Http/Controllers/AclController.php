@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use DB;
 use Auth;
-use App\Role;
 use App\User;
-use App\RoleUser;
-use App\Permission;
-use App\PermissionRole;
 use Illuminate\Http\Request;
+use jeremykenedy\LaravelRoles\Models\Permission;
+use jeremykenedy\LaravelRoles\Models\Role;
 
 class AclController extends Controller
 {
@@ -30,25 +28,30 @@ class AclController extends Controller
 
     public function createUser()
     {
-        return view('user.createUser');
+        $roles = Role::pluck('name', 'id');
+        return view('user.createUser', compact('roles'));
     }
 
     public function storeUser(Request $request)
     {
-        $this->validate($request, ['name' => 'required|max:255',
-                                   'email' => 'required|email|max:255|unique:mst_users',
-                                   'password' => 'required|confirmed|min:6', ]);
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:6',
+        ]);
 
-        $user = User::create(['name' => $request['name'],
-                                'email' => $request['email'],
-                                'password' => bcrypt($request['password']),
-                              'status'=> $request->status, ]);
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password']),
+            'status' => $request->status,
+        ]);
 
         $user->save();
 
         // Adding Photo
         if ($request->hasFile('photo')) {
-            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.$request->photo->getClientOriginalExtension())->toCollection('staff');
+            $user->addMedia($request->file('photo'))->usingFileName('staff_' . $user->id . $request->photo->getClientOriginalExtension())->toMediaCollection('staff');
         }
         $user->save();
 
@@ -62,8 +65,9 @@ class AclController extends Controller
     public function editUser($id)
     {
         $user = User::findOrFail($id);
-
-        return view('user.editUser', compact('user'));
+        $rolesWithoutGymie = Role::where('name', '!=', 'Gymie')->pluck('name','id');
+        $roles = Role::pluck('name','id');
+        return view('user.editUser', compact('user','rolesWithoutGymie','roles'));
     }
 
     public function updateUser($id, Request $request)
@@ -73,7 +77,7 @@ class AclController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
 
-        if (! empty($request->password)) {
+        if (!empty($request->password)) {
             $this->validate($request, ['password' => 'required|string|min:6|confirmed']);
             $user->password = bcrypt($request->password);
         }
@@ -84,12 +88,13 @@ class AclController extends Controller
 
         if ($request->hasFile('photo')) {
             $user->clearMediaCollection('staff');
-            $user->addMedia($request->file('photo'))->usingFileName('staff_'.$user->id.$request->photo->getClientOriginalExtension())->toCollection('staff');
+            $user->addMedia($request->file('photo'))->usingFileName('staff_' . $user->id . $request->photo->getClientOriginalExtension())->toMediaCollection('staff');
         }
         $user->save();
 
-        if ($user->roleUser->role->id != $request->role_id) {
-            RoleUser::where('user_id', $user->id)->where('role_id', $user->roleUser->role_id)->delete();
+        if ($user->roles[0]->id != $request->role_id) {
+            // RoleUser::where('user_id', $user->id)->where('role_id', $user->roleUser->role_id)->delete();
+            $user->detachAllRoles();
             $user->attachRole($request->role_id);
         }
 
@@ -125,7 +130,7 @@ class AclController extends Controller
      */
     public function roleIndex()
     {
-        $roles = Role::excludeGymie()->get();
+        $roles = Role::where('name', '!=', 'Gymie')->get();
 
         return view('user.roleIndex', compact('roles'));
     }
@@ -141,13 +146,17 @@ class AclController extends Controller
     {
         DB::beginTransaction();
         try {
-            $role = Role::create(['name' => $request->name,
-                                  'display_name' => $request->display_name,
-                                  'description' => $request->description,
-                                 ]);
+            $role = Role::create([
+                'name'        => $request->name,
+                'slug'        => $request->display_name,
+                'description' => $request->description,
+                'level'       => 1
+            ]);
 
             if ($request->has('permissions')) {
-                $role->attachPermissions($request->permissions);
+                foreach ($request->permissions as $addPerm) {
+                    $role->attachPermission($addPerm);
+                }
             }
 
             DB::commit();
@@ -166,8 +175,8 @@ class AclController extends Controller
     {
         $role = Role::findOrFail($id);
         $permissions = Permission::all();
-        $permission_role = PermissionRole::where('role_id', $id)->get();
-
+        $permission_role = $role->permissions;
+        // dd($permission_role);
         return view('user.editRole', compact('role', 'permissions', 'permission_role'));
     }
 
@@ -178,25 +187,29 @@ class AclController extends Controller
             //Updating Role
             $role = Role::findOrFail($id);
 
-            $role->update(['name' => $request->name,
-                           'display_name' => $request->display_name,
-                           'description' => $request->description,
-                          ]);
+            $role->update([
+                'name' => $request->name,
+                'slug' => $request->display_name,
+                'description' => $request->description,
+            ]);
 
             //Updating permissions for the role
-            $DBpermissions = PermissionRole::where('role_id', $id)->select('permission_id')->lists('permission_id');
+            $DBpermissions = $role->permissions()->pluck('permissions.id');
             $ClientPermissions = collect($request->permissions);
 
             $addPermissions = $ClientPermissions->diff($DBpermissions);
             $deletePermissions = $DBpermissions->diff($ClientPermissions);
 
             if ($addPermissions->count()) {
-                $role->attachPermissions($addPermissions);
+                foreach ($addPermissions as $addPerm) {
+                    $role->attachPermission($addPerm);
+                }
             }
 
             if ($deletePermissions->count()) {
                 foreach ($deletePermissions as $deletePermission) {
-                    Permission_role::where('role_id', $id)->where('permission_id', $deletePermission)->delete();
+                    // PermissionRole::where('role_id', $id)->where('permission_id', $deletePermission)->delete();
+                    $role->detachPermission($deletePermission);
                 }
             }
 
@@ -248,11 +261,12 @@ class AclController extends Controller
 
     public function storePermission(Request $request)
     {
-        Permission::create(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                           ]);
+        Permission::create([
+            'name' => $request->name,
+            'display_name' => $request->display_name,
+            'description' => $request->description,
+            'group_key' => $request->group_key,
+        ]);
 
         flash()->success('Permission was successfully created');
 
@@ -270,11 +284,12 @@ class AclController extends Controller
     {
         $permission = Permission::findOrFail($id);
 
-        $permission->update(['name' => $request->name,
-                            'display_name' => $request->display_name,
-                            'description' => $request->description,
-                            'group_key' => $request->group_key,
-                            ]);
+        $permission->update([
+            'name' => $request->name,
+            'display_name' => $request->display_name,
+            'description' => $request->description,
+            'group_key' => $request->group_key,
+        ]);
 
         flash()->success('Permission was successfully updated');
 

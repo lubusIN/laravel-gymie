@@ -1,6 +1,5 @@
 <?php
 
-use App\Role;
 use Illuminate\Database\Seeder;
 
 class RolesTableSeeder extends Seeder
@@ -12,21 +11,66 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        // Create Roles
-        $roles = [
+        /*
+         * Role Types
+         *
+         */
+        // $RoleItems = [
+        //     [
+        //         'name'        => 'Admin',
+        //         'slug'        => 'admin',
+        //         'description' => 'Admin Role',
+        //         'level'       => 5,
+        //     ],
+        //     [
+        //         'name'        => 'User',
+        //         'slug'        => 'user',
+        //         'description' => 'User Role',
+        //         'level'       => 1,
+        //     ],
+        //     [
+        //         'name'        => 'Unverified',
+        //         'slug'        => 'unverified',
+        //         'description' => 'Unverified Role',
+        //         'level'       => 0,
+        //     ],
+        // ];
+
+        $RoleItems = [
             [
-                'name'  =>  'Gymie',
+                'name'  => 'Gymie',
+                'slug'  => 'gymie',
+                'description' => '',
+                'level' => 1
             ],
             [
-                'name'  =>  'Admin',
+                'name'  => 'Admin',
+                'slug'  => 'admin',
+                'description' => '',
+                'level' => 1
             ],
             [
-                'name'  =>  'Manager',
+                'name'  => 'Manager',
+                'slug'  => 'manager',
+                'description' => '',
+                'level' => 1
             ],
         ];
 
-        foreach ($roles as $role) {
-            Role::create($role);
+        /*
+         * Add Role Items
+         *
+         */
+        foreach ($RoleItems as $RoleItem) {
+            $newRoleItem = config('roles.models.role')::where('slug', '=', $RoleItem['slug'])->first();
+            if ($newRoleItem === null) {
+                $newRoleItem = config('roles.models.role')::create([
+                    'name'          => $RoleItem['name'],
+                    'slug'          => $RoleItem['slug'],
+                    'description'   => $RoleItem['description'],
+                    'level'         => $RoleItem['level'],
+                ]);
+            }
         }
     }
 }

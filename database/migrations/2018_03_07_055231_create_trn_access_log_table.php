@@ -14,7 +14,7 @@ class CreateTrnAccessLogTable extends Migration
     {
         Schema::create('trn_access_log', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('user_id')->unsigned()->default(0)->index('FK_trn_activities_mst_users_1');
+            $table->integer('user_id')->unsigned()->default(0)->index('FK_trn_activities_users_1');
             $table->dateTime('created_at');
             $table->string('action', 50);
             $table->string('module', 50);

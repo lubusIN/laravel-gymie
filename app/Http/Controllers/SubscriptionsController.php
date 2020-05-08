@@ -15,6 +15,7 @@ use App\Subscription;
 use App\InvoiceDetail;
 use App\PaymentDetail;
 use Illuminate\Http\Request;
+use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 
 class SubscriptionsController extends Controller
 {
@@ -25,14 +26,18 @@ class SubscriptionsController extends Controller
 
     public function index(Request $request)
     {
-        $subscriptions = Subscription::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end, $request->plan_name)->search('"'.$request->input('search').'"')->paginate(10);
-        $subscriptionTotal = Subscription::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end, $request->plan_name)->search('"'.$request->input('search').'"')->get();
+        $subscriptions = Subscription::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end, $request->plan_name)
+            ->search($request->input('search'))
+            ->paginate(10);
+        $subscriptionTotal = Subscription::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end, $request->plan_name)
+            ->search($request->input('search'))
+            ->get();
         $count = $subscriptionTotal->count();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -42,13 +47,15 @@ class SubscriptionsController extends Controller
 
     public function expiring(Request $request)
     {
-        $expirings = Subscription::expiring($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $expirings = Subscription::expiring($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $expirings->total();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -58,13 +65,15 @@ class SubscriptionsController extends Controller
 
     public function expired(Request $request)
     {
-        $allExpired = Subscription::expired($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $allExpired = Subscription::expired($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $allExpired->total();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -75,11 +84,11 @@ class SubscriptionsController extends Controller
     public function create()
     {
         // For Tax calculation
-        JavaScript::put([
-          'taxes' => \Utilities::getSetting('taxes'),
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'servicesCount' => Service::count(),
-      ]);
+        JavaScriptFacade::put([
+            'taxes' => \Utilities::getSetting('taxes'),
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'servicesCount' => Service::count(),
+        ]);
         list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->generateInvoiceNumber();
 
         return view('subscriptions.create', compact('invoice_number', 'invoiceCounter', 'invoice_number_mode'));
@@ -108,17 +117,19 @@ class SubscriptionsController extends Controller
             }
 
             // Storing Invoice
-            $invoiceData = ['invoice_number'=> $request->invoice_number,
-                                     'member_id'=> $request->member_id,
-                                     'total'=> $invoice_total,
-                                     'status'=> $paymentStatus,
-                                     'pending_amount'=> $pending,
-                                     'discount_amount'=> $request->discount_amount,
-                                     'discount_percent'=> $request->discount_percent,
-                                     'discount_note'=> $request->discount_note,
-                                     'tax'=> $request->taxes_amount,
-                                     'additional_fees'=> $request->additional_fees,
-                                     'note'=>' ', ];
+            $invoiceData = [
+                'invoice_number' => $request->invoice_number,
+                'member_id' => $request->member_id,
+                'total' => $invoice_total,
+                'status' => $paymentStatus,
+                'pending_amount' => $pending,
+                'discount_amount' => $request->discount_amount,
+                'discount_percent' => $request->discount_percent,
+                'discount_note' => $request->discount_note,
+                'tax' => $request->taxes_amount,
+                'additional_fees' => $request->additional_fees,
+                'note' => ' ',
+            ];
 
             $invoice = new Invoice($invoiceData);
             $invoice->createdBy()->associate(Auth::user());
@@ -127,13 +138,15 @@ class SubscriptionsController extends Controller
 
             // Storing subscription
             foreach ($request->plan as $plan) {
-                $subscriptionData = ['member_id'=> $request->member_id,
-                                            'invoice_id'=> $invoice->id,
-                                            'plan_id'=> $plan['id'],
-                                            'start_date'=> $plan['start_date'],
-                                            'end_date'=> $plan['end_date'],
-                                            'status'=> \constSubscription::onGoing,
-                                            'is_renewal'=>'0', ];
+                $subscriptionData = [
+                    'member_id' => $request->member_id,
+                    'invoice_id' => $invoice->id,
+                    'plan_id' => $plan['id'],
+                    'start_date' => $plan['start_date'],
+                    'end_date' => $plan['end_date'],
+                    'status' => \constSubscription::onGoing,
+                    'is_renewal' => '0',
+                ];
 
                 $subscription = new Subscription($subscriptionData);
                 $subscription->createdBy()->associate(Auth::user());
@@ -141,9 +154,11 @@ class SubscriptionsController extends Controller
                 $subscription->save();
 
                 //Adding subscription to invoice(Invoice Details)
-                $detailsData = ['invoice_id'=> $invoice->id,
-                                       'plan_id'=> $plan['id'],
-                                       'item_amount'=> $plan['price'], ];
+                $detailsData = [
+                    'invoice_id' => $invoice->id,
+                    'plan_id' => $plan['id'],
+                    'item_amount' => $plan['price'],
+                ];
 
                 $invoice_details = new InvoiceDetail($detailsData);
                 $invoice_details->createdBy()->associate(Auth::user());
@@ -152,10 +167,12 @@ class SubscriptionsController extends Controller
             }
 
             //Payment Details
-            $paymentData = ['invoice_id'=> $invoice->id,
-                                   'payment_amount'=> $request->payment_amount,
-                                   'mode'=> $request->mode,
-                                   'note'=> ' ', ];
+            $paymentData = [
+                'invoice_id' => $invoice->id,
+                'payment_amount' => $request->payment_amount,
+                'mode' => $request->mode,
+                'note' => ' ',
+            ];
 
             $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
@@ -164,10 +181,12 @@ class SubscriptionsController extends Controller
 
             if ($request->mode == 0) {
                 // Store Cheque Details
-                $chequeData = ['payment_id'=> $payment_details->id,
-                                    'number'=> $request->number,
-                                    'date'=> $request->date,
-                                    'status'=> \constChequeStatus::Recieved, ];
+                $chequeData = [
+                    'payment_id' => $payment_details->id,
+                    'number' => $request->number,
+                    'date' => $request->date,
+                    'status' => \constChequeStatus::Recieved,
+                ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -267,10 +286,10 @@ class SubscriptionsController extends Controller
         $gymieDiff = $subscription->end_date->addDays($diff);
 
         JavaScript::put([
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'gymieEndDate' => $subscription->end_date->format('Y-m-d'),
-          'gymieDiff' => $gymieDiff->format('Y-m-d'),
-      ]);
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'gymieEndDate' => $subscription->end_date->format('Y-m-d'),
+            'gymieDiff' => $gymieDiff->format('Y-m-d'),
+        ]);
 
         return view('subscriptions.edit', compact('subscription'));
     }
@@ -366,14 +385,14 @@ class SubscriptionsController extends Controller
         $subscription = Subscription::findOrFail($id);
 
         $already_paid = PaymentDetail::leftJoin('trn_cheque_details', 'trn_payment_details.id', '=', 'trn_cheque_details.payment_id')
-                                     ->whereRaw("trn_payment_details.invoice_id = $subscription->invoice_id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
-                                     ->sum('trn_payment_details.payment_amount');
+            ->whereRaw("trn_payment_details.invoice_id = $subscription->invoice_id AND (trn_cheque_details.`status` = 2 or trn_cheque_details.`status` IS NULL)")
+            ->sum('trn_payment_details.payment_amount');
 
         JavaScript::put([
-          'taxes' => \Utilities::getSetting('taxes'),
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'servicesCount' => Service::count(),
-      ]);
+            'taxes' => \Utilities::getSetting('taxes'),
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'servicesCount' => Service::count(),
+        ]);
 
         return view('subscriptions.change', compact('subscription', 'already_paid'));
     }
@@ -402,35 +421,43 @@ class SubscriptionsController extends Controller
                 }
             }
 
-            Invoice::where('id', $subscription->invoice_id)->update(['invoice_number'=> $request->invoice_number,
-                                                               'total'=> $invoice_total,
-                                                               'status'=> $paymentStatus,
-                                                               'pending_amount'=> $pending,
-                                                               'discount_amount'=> $request->discount_amount,
-                                                               'discount_percent'=> $request->discount_percent,
-                                                               'discount_note'=> $request->discount_note,
-                                                               'tax'=> $request->taxes_amount,
-                                                               'additional_fees'=> $request->additional_fees,
-                                                               'note'=>' ', ]);
+            Invoice::where('id', $subscription->invoice_id)->update([
+                'invoice_number' => $request->invoice_number,
+                'total' => $invoice_total,
+                'status' => $paymentStatus,
+                'pending_amount' => $pending,
+                'discount_amount' => $request->discount_amount,
+                'discount_percent' => $request->discount_percent,
+                'discount_note' => $request->discount_note,
+                'tax' => $request->taxes_amount,
+                'additional_fees' => $request->additional_fees,
+                'note' => ' ',
+            ]);
 
             foreach ($request->plan as $plan) {
-                $subscription->update(['plan_id'=> $plan['id'],
-                                        'start_date'=> $plan['start_date'],
-                                        'end_date'=> $plan['end_date'],
-                                        'status'=> \constSubscription::onGoing,
-                                        'is_renewal'=>'0', ]);
+                $subscription->update([
+                    'plan_id' => $plan['id'],
+                    'start_date' => $plan['start_date'],
+                    'end_date' => $plan['end_date'],
+                    'status' => \constSubscription::onGoing,
+                    'is_renewal' => '0',
+                ]);
 
                 //Adding subscription to invoice(Invoice Details)
 
-                InvoiceDetail::where('invoice_id', $subscription->invoice_id)->update(['plan_id'=> $plan['id'],
-                                                                                         'item_amount'=> $plan['price'], ]);
+                InvoiceDetail::where('invoice_id', $subscription->invoice_id)->update([
+                    'plan_id' => $plan['id'],
+                    'item_amount' => $plan['price'],
+                ]);
             }
 
             //Payment Details
-            $paymentData = ['invoice_id'=> $subscription->invoice_id,
-                                   'payment_amount'=> $request->payment_amount,
-                                   'mode'=> $request->mode,
-                                   'note'=> ' ', ];
+            $paymentData = [
+                'invoice_id' => $subscription->invoice_id,
+                'payment_amount' => $request->payment_amount,
+                'mode' => $request->mode,
+                'note' => ' ',
+            ];
 
             $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
@@ -439,10 +466,12 @@ class SubscriptionsController extends Controller
 
             if ($request->mode == 0) {
                 // Store Cheque Details
-                $chequeData = ['payment_id'=> $payment_details->id,
-                                    'number'=> $request->number,
-                                    'date'=> $request->date,
-                                    'status'=> \constChequeStatus::Recieved, ];
+                $chequeData = [
+                    'payment_id' => $payment_details->id,
+                    'number' => $request->number,
+                    'date' => $request->date,
+                    'status' => \constChequeStatus::Recieved,
+                ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -473,7 +502,7 @@ class SubscriptionsController extends Controller
         //Generating Invoice number
         if ($invoiceNumberMode == \constNumberingMode::Auto) {
             $invoiceCounter = \Utilities::getSetting('invoice_last_number') + 1;
-            $invoiceNumber = \Utilities::getSetting('invoice_prefix').$invoiceCounter;
+            $invoiceNumber = \Utilities::getSetting('invoice_prefix') . $invoiceCounter;
         } else {
             $invoiceNumber = '';
             $invoiceCounter = '';

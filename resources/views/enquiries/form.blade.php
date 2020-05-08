@@ -61,7 +61,7 @@
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
-            <?php $services = App\Service::lists('name', 'id'); ?>
+            <?php $services = App\Service::pluck('name', 'id'); ?>
             {!! Form::label('interested_in','Interested In') !!}
             {!! Form::select('interested_in[]',$services,1,['class'=>'form-control selectpicker show-tick show-menu-arrow','multiple' => 'multiple','id' => 'interested_in']) !!}
         </div>

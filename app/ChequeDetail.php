@@ -2,14 +2,13 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class ChequeDetail extends Model
 {
-    //Eloquence Search mapping
-    use Eloquence;
-    use updatedByUser;
+    //Eloquence Search
+    use updatedByUser, SearchableTrait;
 
     protected $table = 'trn_cheque_details';
 
@@ -22,8 +21,10 @@ class ChequeDetail extends Model
             'updated_by',
      ];
 
-    protected $searchableColumns = [
-        'number' => 20,
+    protected $searchable = [
+        'columns' => [
+            'number' => 20
+        ]
     ];
 
     public function createdBy()

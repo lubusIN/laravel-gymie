@@ -21,13 +21,7 @@
                                                     class="glyphicon glyphicon-refresh"></i></span>Refresh</a>
                                 </div>
                                 <div class="col-xs-6 col-md-3 pull-right">
-                                    {!! Form::Open(['method' => 'GET']) !!}
-                                    <div class="btn-inline pull-right">
-                                        <input name="search" id="search" type="text" class="form-control padding-right-35" placeholder="Search...">
-                                        <button class="btn btn-link no-shadow bg-transparent no-padding-top padding-right-10" type="button"><i
-                                                    class="ion-search"></i></button>
-                                    </div>
-                                    {!! Form::Close() !!}
+                                    @include('partials.searchform-basic')
                                 </div>
                             </div>
 
@@ -66,7 +60,7 @@
 
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
-                                            {!! str_replace('/?', '?', $smslogs->appends(Input::Only('search'))->render()) !!}
+                                            {!! str_replace('/?', '?', $smslogs->appends(Request::Only('search'))->render()) !!}
                                         </div>
                                     </div>
                                 </div>

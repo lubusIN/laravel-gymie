@@ -2,41 +2,46 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Invoice extends Model
 {
+    use createdByUser, updatedByUser, SearchableTrait;
+
     protected $table = 'trn_invoice';
 
     protected $fillable = [
-            'total',
-            'pending_amount',
-            'member_id',
-            'note',
-            'status',
-            'tax',
-            'additional_fees',
-            'invoice_number',
-            'discount_percent',
-            'discount_amount',
-            'discount_note',
-            'created_by',
-            'updated_by',
-     ];
+        'total',
+        'pending_amount',
+        'member_id',
+        'note',
+        'status',
+        'tax',
+        'additional_fees',
+        'invoice_number',
+        'discount_percent',
+        'discount_amount',
+        'discount_note',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $dates = ['created_at', 'updated_at'];
 
-    //Eloquence Search mapping
-    use Eloquence;
-    use createdByUser, updatedByUser;
+    //Eloquence Search
 
-    protected $searchableColumns = [
-        'invoice_number' => 20,
-        'total' => 20,
-        'pending_amount' => 20,
-        'Member.name' => 15,
-        'Member.member_code' => 10,
+    protected $searchable = [
+        'columns' => [
+            'invoice_number'          => 10,
+            'total'                   => 10,
+            'pending_amount'          => 10,
+            'members.name'        => 10,
+            'members.member_code' => 10
+        ],
+        'joins' => [
+            'mst_members as members' => [ 'trn_invoice.member_id','members.id' ]
+        ]
     ];
 
     public function scopeIndexQuery($query, $sorting_field, $sorting_direction, $drp_start, $drp_end)

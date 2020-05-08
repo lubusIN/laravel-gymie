@@ -19,13 +19,15 @@ class EnquiriesController extends Controller
 
     public function index(Request $request)
     {
-        $enquiries = Enquiry::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)->search('"'.$request->input('search').'"')->paginate(10);
+        $enquiries = Enquiry::indexQuery($request->sort_field, $request->sort_direction, $request->drp_start, $request->drp_end)
+            ->search($request->input('search'))
+            ->paginate(10);
         $count = $enquiries->total();
 
-        if (! $request->has('drp_start') or ! $request->has('drp_end')) {
+        if (!$request->has('drp_start') or !$request->has('drp_end')) {
             $drp_placeholder = 'Select daterange filter';
         } else {
-            $drp_placeholder = $request->drp_start.' - '.$request->drp_end;
+            $drp_placeholder = $request->drp_start . ' - ' . $request->drp_end;
         }
 
         $request->flash();
@@ -50,27 +52,32 @@ class EnquiriesController extends Controller
     public function store(Request $request)
     {
         // unique values check
-        $this->validate($request, ['email' => 'unique:mst_enquiries,email',
-                                'contact' => 'unique:mst_enquiries,contact', ]);
+        $this->validate($request, [
+            'email' => 'unique:mst_enquiries,email',
+            'contact' => 'unique:mst_enquiries,contact',
+        ]);
 
         // Start Transaction
         DB::beginTransaction();
 
         try {
             // store enquiries details
-            $enquiryData = ['name'=>$request->name,
-                                    'DOB'=> $request->DOB,
-                                    'gender'=> $request->gender,
-                                    'contact'=> $request->contact,
-                                    'email'=> $request->email,
-                                    'address'=> $request->address,
-                                    'status'=> \constEnquiryStatus::Lead,
-                                    'pin_code'=> $request->pin_code,
-                                    'occupation'=> $request->occupation,
-                                    'start_by'=> $request->start_by,
-                                    'interested_in'=> implode(',', $request->interested_in),
-                                    'aim'=> $request->aim,
-                                    'source'=> $request->source, ];
+            $interests = $request->interested_in != null ? implode(',', $request->interested_in) : '';
+            $enquiryData = [
+                'name' => $request->name,
+                'DOB' => $request->DOB,
+                'gender' => $request->gender,
+                'contact' => $request->contact,
+                'email' => $request->email,
+                'address' => $request->address,
+                'status' => \constEnquiryStatus::Lead,
+                'pin_code' => $request->pin_code,
+                'occupation' => $request->occupation,
+                'start_by' => $request->start_by,
+                'interested_in' => $interests,
+                'aim' => $request->aim,
+                'source' => $request->source,
+            ];
 
             $enquiry = new Enquiry($enquiryData);
             $enquiry->createdBy()->associate(Auth::user());
@@ -78,11 +85,13 @@ class EnquiriesController extends Controller
             $enquiry->save();
 
             //Store the followup details
-            $followupData = ['enquiry_id'=>$enquiry->id,
-                                     'followup_by'=>$request->followup_by,
-                                     'due_date'=>$request->due_date,
-                                     'status'=> \constFollowUpStatus::Pending,
-                                     'outcome'=>'', ];
+            $followupData = [
+                'enquiry_id' => $enquiry->id,
+                'followup_by' => $request->followup_by,
+                'due_date' => $request->due_date,
+                'status' => \constFollowUpStatus::Pending,
+                'outcome' => '',
+            ];
 
             $followup = new Followup($followupData);
             $followup->createdBy()->associate(Auth::user());
@@ -106,9 +115,10 @@ class EnquiriesController extends Controller
             return redirect(action('EnquiriesController@show', ['id' => $enquiry->id]));
         } catch (\Exception $e) {
             DB::rollback();
-            flash()->error('Error while creating the Enquiry');
-
-            return redirect(action('EnquiriesController@index'));
+            flash()->error($e->getMessage());
+            // flash()->error('Error while creating the Enquiry');
+            return back()->withInput();
+            // redirect(action('EnquiriesController@index'));
         }
     }
 
@@ -125,6 +135,7 @@ class EnquiriesController extends Controller
     {
         $enquiry = Enquiry::findOrFail($id);
 
+        $interests = $request->interested_in != null ? implode(',', $request->interested_in) : '';
         $enquiry->name = $request->name;
         $enquiry->DOB = $request->DOB;
         $enquiry->gender = $request->gender;
@@ -134,7 +145,7 @@ class EnquiriesController extends Controller
         $enquiry->pin_code = $request->pin_code;
         $enquiry->occupation = $request->occupation;
         $enquiry->start_by = $request->start_by;
-        $enquiry->interested_in = implode(',', $request->interested_in);
+        $enquiry->interested_in = $interests;
         $enquiry->aim = $request->aim;
         $enquiry->source = $request->source;
         $enquiry->createdBy()->associate(Auth::user());

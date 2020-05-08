@@ -32,14 +32,25 @@
 
                                 <tr>
                                     @foreach ($users as $user)
-                                        <?php
-                                        $media = $user->getMedia('staff');
-                                        $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=50&h=50' : url($media[0]->getUrl('thumb')));
-                                        ?>
-                                        <td class="text-center"><img src="{{ $image }}"></td>
+                                        <td class="text-center">
+                                            <img class="profile-sm" src="{{ $user->photoProfile }}">
+                                        </td>
                                         <td class="text-center">{{ $user->name}}</td>
                                         <td class="text-center">{{ $user->email}}</td>
-                                        <td class="text-center">{{ $user->roleUser->role->name }}</td>
+                                        <td class="text-center">
+                                            @foreach ($user->roles as $user_role)
+                                                    @if ($user_role->name == 'Gymie')
+                                                        @php $badgeClass = 'bg-green-400' @endphp
+                                                    @elseif ($user_role->name == 'Admin')
+                                                        @php $badgeClass = 'bg-blue-400' @endphp
+                                                    @elseif ($user_role->name == 'Manager')
+                                                        @php $badgeClass = 'bg-amber-800' @endphp
+                                                    @else
+                                                        @php $badgeClass = 'bg-grey-600' @endphp
+                                                    @endif
+                                                    <span class="badge rounded-full p-1 text-white {{$badgeClass}}">{{ $user_role->name }}</span>
+                                            @endforeach
+                                        </td>
 
                                         <td class="text-center">
                                             <div class="btn-group">

@@ -51,10 +51,7 @@
                                 </div>
 
                                 @if(isset($user))
-                                    <?php
-                                    $media = $user->getMedia('staff');
-                                    $image = ($media->isEmpty() ? 'https://placeholdit.imgix.net/~text?txtsize=18&txt=NA&w=70&h=70' : url($media[0]->getUrl('form')));
-                                    ?>
+                                    
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             {!! Form::label('photo','Photo') !!}
@@ -62,7 +59,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-2">
-                                        <img alt="staff photo" class="pull-right" src="{{ $image }}"/>
+                                        <img alt="staff photo" class="pull-right" src="{{ $user->photoProfile }}"/>
                                     </div>
                                 @else
                                     <div class="col-sm-6">
@@ -100,12 +97,8 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <?php
-                                        $withoutGymie = App\Role::where('name', '!=', 'Gymie')->lists('name', 'id');
-                                        $withGymie = App\Role::lists('name', 'id');
-                                        ?>
                                         {!! Form::label('Role') !!}
-                                        {!! Form::select('role_id',(Auth::User()->hasRole('Gymie') ? $withGymie : $withoutGymie),$user->roleUser->role_id,['class'=>'form-control selectpicker show-tick', 'id' => 'role_id']) !!}
+                                        {!! Form::select('role_id',(Auth::User()->hasRole('Gymie') ? $roles : $rolesWithoutGymie),$user->roles[0]->id,['class'=>'form-control selectpicker show-tick', 'id' => 'role_id']) !!}
                                     </div>
                                 </div>
                             </div>

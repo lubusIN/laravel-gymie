@@ -3,11 +3,13 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class SmsLog extends Model
 {
+    use SearchableTrait;
+
     protected $table = 'trn_sms_log';
 
     protected $fillable = [
@@ -24,12 +26,13 @@ class SmsLog extends Model
     protected $dates = ['send_time'];
 
     //Eloquence Search mapping
-    use Eloquence;
 
-    protected $searchableColumns = [
-        'number' => 20,
-        'message' => 10,
-        'status' => 5,
+    protected $searchable = [
+        'columns' => [
+            'number' => 20,
+            'message' => 10,
+            'status' => 5,
+        ]
     ];
 
     public function scopeDashboardLogs($query)

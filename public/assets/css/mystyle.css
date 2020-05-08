@@ -156,3 +156,12 @@ span.show-data {
 .table-bordered > thead > tr > th {
     vertical-align: middle;
 }
+
+
+/* Profile pictures */
+.profile-sm {
+	width: 40px;
+	height: 40px;
+	object-fit: cover;
+	border-radius: 999px;
+}

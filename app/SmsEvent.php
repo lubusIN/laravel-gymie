@@ -2,11 +2,13 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class SmsEvent extends Model
 {
+    use SearchableTrait;
+
     protected $table = 'mst_sms_events';
 
     protected $fillable = [
@@ -23,12 +25,13 @@ class SmsEvent extends Model
     protected $dates = ['created_at', 'updated_at', 'date'];
 
     //Eloquence Search mapping
-    use Eloquence;
     use createdByUser, updatedByUser;
 
-    protected $searchableColumns = [
-        'name' => 20,
-        'date' => 10,
-        'message' => 5,
+    protected $searchable = [
+        'columns' => [
+            'name' => 20,
+            'date' => 10,
+            'message' => 5
+        ]
     ];
 }

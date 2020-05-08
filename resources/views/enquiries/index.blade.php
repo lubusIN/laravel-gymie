@@ -36,7 +36,7 @@
                                     <div class="col-sm-12 no-padding">
                                         {!! Form::Open(['method' => 'GET']) !!}
                                         <div class="col-sm-3">
-                                            {!! Form::label('enquiry-daterangepicker','Date range') !!}
+                                            {!! Form::label('enquiry-daterangepicker','Date range',array('class' => 'w-100')) !!}
                                             <div id="enquiry-daterangepicker"
                                                  class="gymie-daterangepicker btn bg-grey-50 daterange-padding no-border color-grey-600 hidden-xs no-shadow">
                                                 <i class="ion-calendar margin-right-10"></i>
@@ -165,7 +165,7 @@
 
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
-                                            {!! str_replace('/?', '?', $enquiries->appends(Input::Only('search'))->render()) !!}
+                                            {!! str_replace('/?', '?', $enquiries->appends(Request::only('search'))->render()) !!}
                                         </div>
                                     </div>
                                 </div><!-- / Table bottom row -->

@@ -123,7 +123,7 @@
 
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
-                                            {!! str_replace('/?', '?', $events->appends(Input::Only('search'))->render()) !!}
+                                            {!! str_replace('/?', '?', $events->appends(Request::Only('search'))->render()) !!}
                                         </div>
                                     </div>
                                 </div>

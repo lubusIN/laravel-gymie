@@ -110,34 +110,34 @@ class SmsController extends Controller
         foreach ($request->send as $sendnow) {
             switch ($sendnow) {
                 case 0:
-                        $recievers = Member::where('status', 1)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
-                        break;
+                    $recievers = Member::where('status', 1)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
+                    break;
 
-                    case 1:
-                        $recievers = Member::where('status', 0)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
-                        break;
+                case 1:
+                    $recievers = Member::where('status', 0)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
+                    break;
 
-                    case 2:
-                        $recievers = Enquiry::where('status', 1)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
+                case 2:
+                    $recievers = Enquiry::where('status', 1)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
 
-                        break;
+                    break;
 
-                    case 3:
-                        $recievers = Enquiry::where('status', 0)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
+                case 3:
+                    $recievers = Enquiry::where('status', 0)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
 
-                        break;
+                    break;
 
                 case 4:
                     if ($request->customcontacts != '') {
@@ -163,7 +163,9 @@ class SmsController extends Controller
 
     public function logIndex(Request $request)
     {
-        $smslogs = SmsLog::orderBy('send_time', 'desc')->search('"'.$request->input('search').'"')->paginate(10);
+        $smslogs = SmsLog::orderBy('send_time', 'desc')
+            ->search($request->input('search'))
+            ->paginate(10);
 
         return view('sms.log', compact('smslogs'));
     }

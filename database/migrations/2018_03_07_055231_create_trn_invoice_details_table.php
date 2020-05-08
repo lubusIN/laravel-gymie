@@ -17,9 +17,13 @@ class CreateTrnInvoiceDetailsTable extends Migration
             $table->integer('invoice_id')->index('FK_trn_invoice_details_trn_invoice_1')->comment('links to unique record id of trn_invoice');
             $table->integer('item_amount')->comment('amount of the items');
             $table->timestamps();
-            $table->integer('created_by')->unsigned()->index('FK_trn_invoice_details_mst_staff_2');
-            $table->integer('updated_by')->unsigned()->index('FK_trn_invoice_details_mst_staff_3');
             $table->integer('plan_id')->default(1)->index('trn_invoice_details_plan_id_foreign');
+
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users');
+
+            $table->unsignedBigInteger('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

@@ -3,14 +3,13 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Subscription extends Model
 {
     //Eloquence Search mapping
-    use Eloquence;
-    use createdByUser, updatedByUser;
+    use createdByUser, updatedByUser, SearchableTrait;
 
     protected $table = 'trn_subscriptions';
 
@@ -28,13 +27,20 @@ class Subscription extends Model
 
     protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
-    protected $searchableColumns = [
-        'Member.member_code' => 20,
-        'start_date' => 20,
-        'end_date' => 20,
-        'Member.name' => 20,
-        'Plan.plan_name' => 20,
-        'Invoice.invoice_number' => 20,
+    protected $searchable = [
+        'columns' => [
+            'members.member_code' => 20,
+            'members.name' => 20,
+            'start_date' => 20,
+            'end_date' => 20,
+            'plans.plan_name' => 20,
+            'invoices.invoice_number' => 20,
+        ],
+        'joins' => [
+            'mst_members as members'  => [ 'trn_subscriptions.member_id','members.id' ],
+            'mst_plans as plans'      => [ 'trn_subscriptions.plan_id','plans.id' ],
+            'trn_invoice as invoices' => [ 'trn_subscriptions.invoice_id','invoices.id' ]
+        ]
     ];
 
     public function scopeDashboardExpiring($query)

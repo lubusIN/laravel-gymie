@@ -28,6 +28,7 @@ class SettingsController extends Controller
 
     public function save(Request $request)
     {
+        // dd($request->all());
         // Get All Inputs Except '_Token' to loop through and save
         $settings = $request->except('_token');
 
@@ -38,6 +39,7 @@ class SettingsController extends Controller
                 $value = $key.'.jpg'; // Image Name For DB
             }
 
+            if($value == NULL) $value = '';
             Setting::where('key', '=', $key)->update(['value' => $value]);
         }
 

@@ -5,6 +5,7 @@
     <div class="rightside bg-grey-100">
         <div class="container-fluid">
 
+            @include('flash::message')
             <!-- Error Log -->
             @if ($errors->any())
                 <div class="alert alert-danger">

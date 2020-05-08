@@ -182,7 +182,7 @@
                                     <div class="col-xs-6">
                                         <div class="gymie_paging pull-right">
 
-                                            {!! str_replace('/?', '?', $subscriptions->appends(Input::all())->render()) !!}
+                                            {!! str_replace('/?', '?', $subscriptions->appends(Request::all())->render()) !!}
                                         </div>
                                     </div>
                                 </div>

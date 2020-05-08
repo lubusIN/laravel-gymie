@@ -64,7 +64,7 @@
                                         <div class="col-xs-4">
                                             <div class="checkbox checkbox-theme">
                                                 <input type="checkbox" name="permissions[]" id="permission_{{$permission->id}}" value="{{$permission->id}}">
-                                                <label for="permission_{{$permission->id}}">{{ $permission->display_name }}</label>
+                                                <label for="permission_{{$permission->id}}">{{ $permission->name }}</label>
                                             </div>
                                         </div>
                                     @endforeach

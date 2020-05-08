@@ -32,7 +32,7 @@
                                 <tr>
                                     @foreach ($roles as $role)
                                         <td class="text-center">{{ $role->name}}</td>
-                                        <td class="text-center">{{ $role->display_name}}</td>
+                                        <td class="text-center">{{ $role->slug}}</td>
                                         <td class="text-center">{{ $role->description}}</td>
 
                                         <td class="text-center">

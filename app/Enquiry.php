@@ -2,14 +2,14 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Enquiry extends Model
 {
     //Eloquence Search mapping
-    use Eloquence;
     use createdByUser, updatedByUser;
+    use SearchableTrait;
 
     protected $table = 'mst_enquiries';
 
@@ -31,10 +31,12 @@ class Enquiry extends Model
         'updated_by',
     ];
 
-    protected $searchableColumns = [
-        'name' => 20,
-        'email' => 20,
-        'contact' => 20,
+    protected $searchable = [
+        'columns' => [
+            'name'    => 10,
+            'email'   => 10,
+            'contact' => 10
+        ]
     ];
 
     public function Followups()

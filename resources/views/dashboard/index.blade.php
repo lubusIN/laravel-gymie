@@ -5,7 +5,7 @@
     <div class="rightside bg-grey-100">
 
         <div class="container-fluid">
-            @include('flash::message')
+            {{-- @include('flash::message') --}}
             @permission(['manage-gymie','view-dashboard-quick-stats'])
             <!-- Stat Tile  -->
             <div class="row margin-top-10">
@@ -282,8 +282,8 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Confirm request new sms pack</h4>
                         </div>
+                        {{-- {!! Form::Open(['action' => 'DashboardController@smsRequest']) !!}
                         <div class="modal-body">
-                            {!! Form::Open(['action' => 'DashboardController@smsRequest']) !!}
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -296,8 +296,8 @@
                         </div>
                         <div class="modal-footer">
                             <input type="submit" class="btn btn-info" value="Submit" id="smsRequest"/>
-                            {!! Form::Close() !!}
                         </div>
+                        {!! Form::Close() !!} --}}
                     </div>
                 </div>
             </div>
