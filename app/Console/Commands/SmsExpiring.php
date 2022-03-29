@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use App\SmsTrigger;
 use App\Subscription;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SmsExpiring extends Command

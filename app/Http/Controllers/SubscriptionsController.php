@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use JavaScript;
-use App\Invoice;
-use App\Service;
-use App\Setting;
-use Carbon\Carbon;
-use App\SmsTrigger;
 use App\ChequeDetail;
-use App\Subscription;
+use App\Invoice;
 use App\InvoiceDetail;
 use App\PaymentDetail;
+use App\Service;
+use App\Setting;
+use App\SmsTrigger;
+use App\Subscription;
+use Auth;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
+use JavaScript;
 
 class SubscriptionsController extends Controller
 {
@@ -76,11 +76,11 @@ class SubscriptionsController extends Controller
     {
         // For Tax calculation
         JavaScript::put([
-          'taxes' => \Utilities::getSetting('taxes'),
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'servicesCount' => Service::count(),
-      ]);
-        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->generateInvoiceNumber();
+            'taxes' => \Utilities::getSetting('taxes'),
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'servicesCount' => Service::count(),
+        ]);
+        [$invoice_number_mode, $invoiceCounter, $invoice_number] = $this->generateInvoiceNumber();
 
         return view('subscriptions.create', compact('invoice_number', 'invoiceCounter', 'invoice_number_mode'));
     }
@@ -109,16 +109,16 @@ class SubscriptionsController extends Controller
 
             // Storing Invoice
             $invoiceData = ['invoice_number'=> $request->invoice_number,
-                                     'member_id'=> $request->member_id,
-                                     'total'=> $invoice_total,
-                                     'status'=> $paymentStatus,
-                                     'pending_amount'=> $pending,
-                                     'discount_amount'=> $request->discount_amount,
-                                     'discount_percent'=> $request->discount_percent,
-                                     'discount_note'=> $request->discount_note,
-                                     'tax'=> $request->taxes_amount,
-                                     'additional_fees'=> $request->additional_fees,
-                                     'note'=>' ', ];
+                'member_id'=> $request->member_id,
+                'total'=> $invoice_total,
+                'status'=> $paymentStatus,
+                'pending_amount'=> $pending,
+                'discount_amount'=> $request->discount_amount,
+                'discount_percent'=> $request->discount_percent,
+                'discount_note'=> $request->discount_note,
+                'tax'=> $request->taxes_amount,
+                'additional_fees'=> $request->additional_fees,
+                'note'=>' ', ];
 
             $invoice = new Invoice($invoiceData);
             $invoice->createdBy()->associate(Auth::user());
@@ -128,12 +128,12 @@ class SubscriptionsController extends Controller
             // Storing subscription
             foreach ($request->plan as $plan) {
                 $subscriptionData = ['member_id'=> $request->member_id,
-                                            'invoice_id'=> $invoice->id,
-                                            'plan_id'=> $plan['id'],
-                                            'start_date'=> $plan['start_date'],
-                                            'end_date'=> $plan['end_date'],
-                                            'status'=> \constSubscription::onGoing,
-                                            'is_renewal'=>'0', ];
+                    'invoice_id'=> $invoice->id,
+                    'plan_id'=> $plan['id'],
+                    'start_date'=> $plan['start_date'],
+                    'end_date'=> $plan['end_date'],
+                    'status'=> \constSubscription::onGoing,
+                    'is_renewal'=>'0', ];
 
                 $subscription = new Subscription($subscriptionData);
                 $subscription->createdBy()->associate(Auth::user());
@@ -142,8 +142,8 @@ class SubscriptionsController extends Controller
 
                 //Adding subscription to invoice(Invoice Details)
                 $detailsData = ['invoice_id'=> $invoice->id,
-                                       'plan_id'=> $plan['id'],
-                                       'item_amount'=> $plan['price'], ];
+                    'plan_id'=> $plan['id'],
+                    'item_amount'=> $plan['price'], ];
 
                 $invoice_details = new InvoiceDetail($detailsData);
                 $invoice_details->createdBy()->associate(Auth::user());
@@ -153,9 +153,9 @@ class SubscriptionsController extends Controller
 
             //Payment Details
             $paymentData = ['invoice_id'=> $invoice->id,
-                                   'payment_amount'=> $request->payment_amount,
-                                   'mode'=> $request->mode,
-                                   'note'=> ' ', ];
+                'payment_amount'=> $request->payment_amount,
+                'mode'=> $request->mode,
+                'note'=> ' ', ];
 
             $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
@@ -165,9 +165,9 @@ class SubscriptionsController extends Controller
             if ($request->mode == 0) {
                 // Store Cheque Details
                 $chequeData = ['payment_id'=> $payment_details->id,
-                                    'number'=> $request->number,
-                                    'date'=> $request->date,
-                                    'status'=> \constChequeStatus::Recieved, ];
+                    'number'=> $request->number,
+                    'date'=> $request->date,
+                    'status'=> \constChequeStatus::Recieved, ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -267,10 +267,10 @@ class SubscriptionsController extends Controller
         $gymieDiff = $subscription->end_date->addDays($diff);
 
         JavaScript::put([
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'gymieEndDate' => $subscription->end_date->format('Y-m-d'),
-          'gymieDiff' => $gymieDiff->format('Y-m-d'),
-      ]);
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'gymieEndDate' => $subscription->end_date->format('Y-m-d'),
+            'gymieDiff' => $gymieDiff->format('Y-m-d'),
+        ]);
 
         return view('subscriptions.edit', compact('subscription'));
     }
@@ -291,7 +291,7 @@ class SubscriptionsController extends Controller
     {
 
         //Get Numbering mode
-        list($invoice_number_mode, $invoiceCounter, $invoice_number) = $this->generateInvoiceNumber();
+        [$invoice_number_mode, $invoiceCounter, $invoice_number] = $this->generateInvoiceNumber();
 
         $subscriptions = Subscription::where('invoice_id', $id)->get();
         $member_id = $subscriptions->pluck('member_id')->first();
@@ -370,10 +370,10 @@ class SubscriptionsController extends Controller
                                      ->sum('trn_payment_details.payment_amount');
 
         JavaScript::put([
-          'taxes' => \Utilities::getSetting('taxes'),
-          'gymieToday' => Carbon::today()->format('Y-m-d'),
-          'servicesCount' => Service::count(),
-      ]);
+            'taxes' => \Utilities::getSetting('taxes'),
+            'gymieToday' => Carbon::today()->format('Y-m-d'),
+            'servicesCount' => Service::count(),
+        ]);
 
         return view('subscriptions.change', compact('subscription', 'already_paid'));
     }
@@ -403,34 +403,34 @@ class SubscriptionsController extends Controller
             }
 
             Invoice::where('id', $subscription->invoice_id)->update(['invoice_number'=> $request->invoice_number,
-                                                               'total'=> $invoice_total,
-                                                               'status'=> $paymentStatus,
-                                                               'pending_amount'=> $pending,
-                                                               'discount_amount'=> $request->discount_amount,
-                                                               'discount_percent'=> $request->discount_percent,
-                                                               'discount_note'=> $request->discount_note,
-                                                               'tax'=> $request->taxes_amount,
-                                                               'additional_fees'=> $request->additional_fees,
-                                                               'note'=>' ', ]);
+                'total'=> $invoice_total,
+                'status'=> $paymentStatus,
+                'pending_amount'=> $pending,
+                'discount_amount'=> $request->discount_amount,
+                'discount_percent'=> $request->discount_percent,
+                'discount_note'=> $request->discount_note,
+                'tax'=> $request->taxes_amount,
+                'additional_fees'=> $request->additional_fees,
+                'note'=>' ', ]);
 
             foreach ($request->plan as $plan) {
                 $subscription->update(['plan_id'=> $plan['id'],
-                                        'start_date'=> $plan['start_date'],
-                                        'end_date'=> $plan['end_date'],
-                                        'status'=> \constSubscription::onGoing,
-                                        'is_renewal'=>'0', ]);
+                    'start_date'=> $plan['start_date'],
+                    'end_date'=> $plan['end_date'],
+                    'status'=> \constSubscription::onGoing,
+                    'is_renewal'=>'0', ]);
 
                 //Adding subscription to invoice(Invoice Details)
 
                 InvoiceDetail::where('invoice_id', $subscription->invoice_id)->update(['plan_id'=> $plan['id'],
-                                                                                         'item_amount'=> $plan['price'], ]);
+                    'item_amount'=> $plan['price'], ]);
             }
 
             //Payment Details
             $paymentData = ['invoice_id'=> $subscription->invoice_id,
-                                   'payment_amount'=> $request->payment_amount,
-                                   'mode'=> $request->mode,
-                                   'note'=> ' ', ];
+                'payment_amount'=> $request->payment_amount,
+                'mode'=> $request->mode,
+                'note'=> ' ', ];
 
             $payment_details = new PaymentDetail($paymentData);
             $payment_details->createdBy()->associate(Auth::user());
@@ -440,9 +440,9 @@ class SubscriptionsController extends Controller
             if ($request->mode == 0) {
                 // Store Cheque Details
                 $chequeData = ['payment_id'=> $payment_details->id,
-                                    'number'=> $request->number,
-                                    'date'=> $request->date,
-                                    'status'=> \constChequeStatus::Recieved, ];
+                    'number'=> $request->number,
+                    'date'=> $request->date,
+                    'status'=> \constChequeStatus::Recieved, ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());

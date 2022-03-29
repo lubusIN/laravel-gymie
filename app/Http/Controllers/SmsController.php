@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use App\Member;
-use App\SmsLog;
 use App\Enquiry;
+use App\Member;
 use App\SmsEvent;
+use App\SmsLog;
 use App\SmsTrigger;
-use Lubus\Constants\Status;
+use Auth;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller

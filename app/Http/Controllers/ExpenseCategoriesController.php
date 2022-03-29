@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\ExpenseCategory;
+use Auth;
 use Illuminate\Http\Request;
 
 class ExpenseCategoriesController extends Controller

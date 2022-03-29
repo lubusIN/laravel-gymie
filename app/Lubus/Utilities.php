@@ -1,11 +1,11 @@
 <?php
 
-use App\Plan;
 use App\Member;
-use App\SmsLog;
+use App\Plan;
 use App\Setting;
-use Carbon\Carbon;
+use App\SmsLog;
 use App\Subscription;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class Utilities
@@ -606,11 +606,11 @@ class Utilities
                 if (str_contains($response, 'SMS-SHOOT-ID')) {
                     //Log entry for SMS_log table
                     $SmsLogData = ['shoot_id' => substr($response, strpos($response, 'SMS-SHOOT-ID/') + 13),
-                                        'number' => $member_contact,
-                                        'message' => $sms_text,
-                                        'sender_id' => $sender_id,
-                                        'send_time' => Carbon::now(),
-                                        'status' => 'NA', ];
+                        'number' => $member_contact,
+                        'message' => $sms_text,
+                        'sender_id' => $sender_id,
+                        'send_time' => Carbon::now(),
+                        'status' => 'NA', ];
 
                     $SmsLog = new SmsLog($SmsLogData);
                     $SmsLog->save();
@@ -619,11 +619,11 @@ class Utilities
                 self::smsBalance();
             } else {
                 $SmsLogData = ['shoot_id' => '',
-                                    'number' => $member_contact,
-                                    'message' => $sms_text,
-                                    'sender_id' => $sender_id,
-                                    'send_time' => Carbon::now(),
-                                    'status' => 'offline', ];
+                    'number' => $member_contact,
+                    'message' => $sms_text,
+                    'sender_id' => $sender_id,
+                    'send_time' => Carbon::now(),
+                    'status' => 'offline', ];
 
                 $SmsLog = new SmsLog($SmsLogData);
                 $SmsLog->save();
@@ -650,11 +650,11 @@ class Utilities
             if (str_contains($response, 'SMS-SHOOT-ID')) {
                 //Log entry for SMS_log table
                 $log->update(['shoot_id' => substr($response, strpos($response, 'SMS-SHOOT-ID/') + 13),
-                              'number' => $member_contact,
-                              'message' => $sms_text,
-                              'sender_id' => $sender_id,
-                              'send_time' => Carbon::now(),
-                              'status' => 'NA', ]);
+                    'number' => $member_contact,
+                    'message' => $sms_text,
+                    'sender_id' => $sender_id,
+                    'send_time' => Carbon::now(),
+                    'status' => 'NA', ]);
                 $log->save();
             }
             //Update SMS balance

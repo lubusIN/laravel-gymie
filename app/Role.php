@@ -10,9 +10,9 @@ class Role extends EntrustRole
     protected $table = 'roles';
 
     protected $fillable = [
-            'name',
-            'display_name',
-            'description',
+        'name',
+        'display_name',
+        'description',
     ];
 
     public function users()

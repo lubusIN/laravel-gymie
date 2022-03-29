@@ -9,9 +9,9 @@ class Setting extends Model
     protected $table = 'trn_settings';
 
     protected $fillable = [
-            'key',
-            'value',
-     ];
+        'key',
+        'value',
+    ];
 
     const CREATED_AT = null;
 

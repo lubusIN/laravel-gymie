@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Member;
 use App\Enquiry;
+use App\Member;
+use App\SmsEvent as SmsEventModel;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\SmsEvent as SmsEventModel;
 
 class SmsEvent extends Command
 {

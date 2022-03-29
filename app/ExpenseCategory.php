@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Lubus\Constants\Status;
 use Illuminate\Database\Eloquent\Model;
 
 class ExpenseCategory extends Model
@@ -12,11 +11,11 @@ class ExpenseCategory extends Model
     protected $table = 'mst_expenses_categories';
 
     protected $fillable = [
-            'name',
-            'total_expense',
-            'status',
-            'created_by',
-            'updated_by',
+        'name',
+        'total_expense',
+        'status',
+        'created_by',
+        'updated_by',
     ];
 
     public function scopeExcludeArchive($query)
