@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Enquiry extends Model
 {

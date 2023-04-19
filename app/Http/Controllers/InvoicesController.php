@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use JavaScript;
-use App\Invoice;
-use App\Service;
-use Carbon\Carbon;
 use App\ChequeDetail;
-use App\Subscription;
+use App\Invoice;
 use App\InvoiceDetail;
 use App\PaymentDetail;
+use App\Service;
+use App\Subscription;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
+use JavaScript;
 
 class InvoicesController extends Controller
 {
@@ -174,15 +173,15 @@ class InvoicesController extends Controller
             $status = \Utilities::setInvoiceStatus($pending, $invoice_total);
 
             Invoice::where('id', $id)->update(['invoice_number'=> $request->invoice_number,
-                                         'total'=> $invoice_total,
-                                         'status'=> $status,
-                                         'pending_amount'=> $pending,
-                                         'discount_amount'=> $request->discount_amount,
-                                         'discount_percent'=> $request->discount_percent,
-                                         'discount_note'=> $request->discount_note,
-                                         'tax'=> $request->taxes_amount,
-                                         'additional_fees'=> $request->additional_fees,
-                                         'note'=>' ', ]);
+                'total'=> $invoice_total,
+                'status'=> $status,
+                'pending_amount'=> $pending,
+                'discount_amount'=> $request->discount_amount,
+                'discount_percent'=> $request->discount_percent,
+                'discount_note'=> $request->discount_note,
+                'tax'=> $request->taxes_amount,
+                'additional_fees'=> $request->additional_fees,
+                'note'=>' ', ]);
 
             DB::commit();
             flash()->success('Discount was successfully updated');

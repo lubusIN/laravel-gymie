@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use App\Member;
-use App\SmsLog;
 use App\Enquiry;
+use App\Member;
 use App\SmsEvent;
+use App\SmsLog;
 use App\SmsTrigger;
-use Lubus\Constants\Status;
+use Auth;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller
@@ -110,38 +109,38 @@ class SmsController extends Controller
         foreach ($request->send as $sendnow) {
             switch ($sendnow) {
                 case 0:
-                        $recievers = Member::where('status', 1)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
-                        break;
+                    $recievers = Member::where('status', 1)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
+                    break;
 
-                    case 1:
-                        $recievers = Member::where('status', 0)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
-                        break;
+                case 1:
+                    $recievers = Member::where('status', 0)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
+                    break;
 
-                    case 2:
-                        $recievers = Enquiry::where('status', 1)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
+                case 2:
+                    $recievers = Enquiry::where('status', 1)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
 
-                        break;
+                    break;
 
-                    case 3:
-                        $recievers = Enquiry::where('status', 0)->get();
-                        foreach ($recievers as $reciever) {
-                            \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
-                        }
+                case 3:
+                    $recievers = Enquiry::where('status', 0)->get();
+                    foreach ($recievers as $reciever) {
+                        \Utilities::Sms($sender_id, $reciever->contact, $sms_text, true);
+                    }
 
-                        break;
+                    break;
 
                 case 4:
                     if ($request->customcontacts != '') {
-                        $custom = explode(',', str_replace(' ', '', ($request->customcontacts)));
+                        $custom = explode(',', str_replace(' ', '', $request->customcontacts));
                         foreach ($custom as $number) {
                             if (starts_with($number, '0')) {
                                 $number = substr($number, 1);

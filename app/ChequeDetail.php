@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class ChequeDetail extends Model
 {
@@ -14,13 +14,13 @@ class ChequeDetail extends Model
     protected $table = 'trn_cheque_details';
 
     protected $fillable = [
-            'payment_id',
-            'number',
-            'date',
-            'status',
-            'created_by',
-            'updated_by',
-     ];
+        'payment_id',
+        'number',
+        'date',
+        'status',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $searchableColumns = [
         'number' => 20,
