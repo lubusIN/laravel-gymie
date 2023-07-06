@@ -18,7 +18,7 @@
         "sofa/eloquence": "~5.1@dev",
         "tymon/jwt-auth": "0.5.*",
         "spatie/laravel-medialibrary": "^3.18",
-        "rap2hpoutre/laravel-log-viewer": "^0.6.1",
+        "rap2hpoutre/laravel-log-viewer": "^0.13.0",
         "zizaco/entrust": "dev-laravel-5",
         "sentry/sentry-laravel": "^0.7.0"
     },
