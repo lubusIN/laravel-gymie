@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use App\Member;
 use App\Enquiry;
 use App\Followup;
 use App\SmsTrigger;
+use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class EnquiriesController extends Controller
@@ -51,7 +50,7 @@ class EnquiriesController extends Controller
     {
         // unique values check
         $this->validate($request, ['email' => 'unique:mst_enquiries,email',
-                                'contact' => 'unique:mst_enquiries,contact', ]);
+            'contact' => 'unique:mst_enquiries,contact', ]);
 
         // Start Transaction
         DB::beginTransaction();
@@ -59,18 +58,18 @@ class EnquiriesController extends Controller
         try {
             // store enquiries details
             $enquiryData = ['name'=>$request->name,
-                                    'DOB'=> $request->DOB,
-                                    'gender'=> $request->gender,
-                                    'contact'=> $request->contact,
-                                    'email'=> $request->email,
-                                    'address'=> $request->address,
-                                    'status'=> \constEnquiryStatus::Lead,
-                                    'pin_code'=> $request->pin_code,
-                                    'occupation'=> $request->occupation,
-                                    'start_by'=> $request->start_by,
-                                    'interested_in'=> implode(',', $request->interested_in),
-                                    'aim'=> $request->aim,
-                                    'source'=> $request->source, ];
+                'DOB'=> $request->DOB,
+                'gender'=> $request->gender,
+                'contact'=> $request->contact,
+                'email'=> $request->email,
+                'address'=> $request->address,
+                'status'=> \constEnquiryStatus::Lead,
+                'pin_code'=> $request->pin_code,
+                'occupation'=> $request->occupation,
+                'start_by'=> $request->start_by,
+                'interested_in'=> implode(',', $request->interested_in),
+                'aim'=> $request->aim,
+                'source'=> $request->source, ];
 
             $enquiry = new Enquiry($enquiryData);
             $enquiry->createdBy()->associate(Auth::user());
@@ -79,10 +78,10 @@ class EnquiriesController extends Controller
 
             //Store the followup details
             $followupData = ['enquiry_id'=>$enquiry->id,
-                                     'followup_by'=>$request->followup_by,
-                                     'due_date'=>$request->due_date,
-                                     'status'=> \constFollowUpStatus::Pending,
-                                     'outcome'=>'', ];
+                'followup_by'=>$request->followup_by,
+                'due_date'=>$request->due_date,
+                'status'=> \constFollowUpStatus::Pending,
+                'outcome'=>'', ];
 
             $followup = new Followup($followupData);
             $followup->createdBy()->associate(Auth::user());

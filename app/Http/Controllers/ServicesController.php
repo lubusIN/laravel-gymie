@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Service;
+use Auth;
 use Illuminate\Http\Request;
 
 class ServicesController extends Controller

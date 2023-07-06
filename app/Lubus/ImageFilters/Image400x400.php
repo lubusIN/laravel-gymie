@@ -2,8 +2,8 @@
 
 namespace App\Lubus\ImageFilters;
 
-use Intervention\Image\Image;
 use Intervention\Image\Filters\FilterInterface;
+use Intervention\Image\Image;
 
 class Image400x400 implements FilterInterface
 {

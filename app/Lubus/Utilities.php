@@ -1,11 +1,11 @@
 <?php
 
-use App\Plan;
 use App\Member;
-use App\SmsLog;
+use App\Plan;
 use App\Setting;
-use Carbon\Carbon;
+use App\SmsLog;
 use App\Subscription;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class Utilities
@@ -43,268 +43,268 @@ class Utilities
     public static function getFollowUpStatus($status)
     {
         switch ($status) {
-        case '1':
-            return 'Done';
-            break;
+            case '1':
+                return 'Done';
+                break;
 
-        default:
-            return 'Pending';
-            break;
-    }
+            default:
+                return 'Pending';
+                break;
+        }
     }
 
     //Follow up by
     public static function getFollowupBy($followUpBy)
     {
         switch ($followUpBy) {
-        case '1':
-            return 'SMS';
-            break;
+            case '1':
+                return 'SMS';
+                break;
 
-        case '2':
-            return 'Personal';
-            break;
+            case '2':
+                return 'Personal';
+                break;
 
-        default:
-            return 'Call';
-            break;
-    }
+            default:
+                return 'Call';
+                break;
+        }
     }
 
     //FollowUp Status Icon bg
     public static function getIconBg($status)
     {
         switch ($status) {
-        case '1':
-            return 'bg-blue-400 border-blue-700';
-            break;
+            case '1':
+                return 'bg-blue-400 border-blue-700';
+                break;
 
-        default:
-            return 'bg-orange-400 border-orange-700';
-            break;
-    }
+            default:
+                return 'bg-orange-400 border-orange-700';
+                break;
+        }
     }
 
     //Followup Status Icon
     public static function getStatusIcon($status)
     {
         switch ($status) {
-        case '1':
-            return 'fa fa-thumbs-up';
-            break;
+            case '1':
+                return 'fa fa-thumbs-up';
+                break;
 
-        default:
-            return 'fa fa-refresh';
-            break;
-    }
+            default:
+                return 'fa fa-refresh';
+                break;
+        }
     }
 
     // Aim for member & enquiry creation
     public static function getAim($aim)
     {
         switch ($aim) {
-        case '1':
-            return 'Networking';
-            break;
+            case '1':
+                return 'Networking';
+                break;
 
-        case '2':
-            return 'Body Building';
-            break;
+            case '2':
+                return 'Body Building';
+                break;
 
-        case '3':
-            return 'Fatloss';
-            break;
+            case '3':
+                return 'Fatloss';
+                break;
 
-        case '4':
-            return 'Weightgain';
-            break;
+            case '4':
+                return 'Weightgain';
+                break;
 
-        case '5':
-            return 'Others';
-            break;
+            case '5':
+                return 'Others';
+                break;
 
-        default:
-            return 'Fitness';
-            break;
-    }
+            default:
+                return 'Fitness';
+                break;
+        }
     }
 
     // Invoice Labels
     public static function getInvoiceLabel($status)
     {
         switch ($status) {
-        case '0':
-            return 'label label-danger';
-            break;
+            case '0':
+                return 'label label-danger';
+                break;
 
-        case '1':
-            return 'label label-success';
-            break;
+            case '1':
+                return 'label label-success';
+                break;
 
-        case '3':
-            return 'label label-default';
-            break;
+            case '3':
+                return 'label label-default';
+                break;
 
-        default:
-            return 'label label-primary';
-            break;
-    }
+            default:
+                return 'label label-primary';
+                break;
+        }
     }
 
     // Expense alert repeat
     public static function expenseRepeatIntervel($repeat)
     {
         switch ($repeat) {
-        case '0':
-            return 'Never Repeat';
-            break;
+            case '0':
+                return 'Never Repeat';
+                break;
 
-        case '1':
-            return 'Every Day';
-            break;
+            case '1':
+                return 'Every Day';
+                break;
 
-        case '2':
-            return 'Every Week';
-            break;
+            case '2':
+                return 'Every Week';
+                break;
 
-        case '3':
-            return 'Every Month';
-            break;
+            case '3':
+                return 'Every Month';
+                break;
 
-        default:
-            return 'Every Year';
-            break;
-    }
+            default:
+                return 'Every Year';
+                break;
+        }
     }
 
     //Paid Unpaid Labels
     public static function getPaidUnpaid($status)
     {
         switch ($status) {
-        case '0':
-            return 'label label-danger';
-            break;
+            case '0':
+                return 'label label-danger';
+                break;
 
-        default:
-            return 'label label-primary';
-            break;
-    }
+            default:
+                return 'label label-primary';
+                break;
+        }
     }
 
     //Active-Inactive Labels
     public static function getActiveInactive($status)
     {
         switch ($status) {
-        case '0':
-            return 'label label-danger';
-            break;
+            case '0':
+                return 'label label-danger';
+                break;
 
-        default:
-            return 'label label-primary';
-            break;
-    }
+            default:
+                return 'label label-primary';
+                break;
+        }
     }
 
     // Occupation of members
     public static function getOccupation($occupation)
     {
         switch ($occupation) {
-        case '1':
-            return 'Housewife';
-            break;
+            case '1':
+                return 'Housewife';
+                break;
 
-        case '2':
-            return 'Self Employed';
-            break;
+            case '2':
+                return 'Self Employed';
+                break;
 
-        case '3':
-            return 'Professional';
-            break;
+            case '3':
+                return 'Professional';
+                break;
 
-        case '4':
-            return 'Freelancer';
-            break;
+            case '4':
+                return 'Freelancer';
+                break;
 
-        case '5':
-            return 'Others';
-            break;
+            case '5':
+                return 'Others';
+                break;
 
-        default:
-            return 'Student';
-            break;
-    }
+            default:
+                return 'Student';
+                break;
+        }
     }
 
     // Source for member & enquiry creation
     public static function getSource($source)
     {
         switch ($source) {
-        case '1':
-            return 'Word of mouth';
-            break;
+            case '1':
+                return 'Word of mouth';
+                break;
 
-        case '2':
-            return 'Others';
-            break;
+            case '2':
+                return 'Others';
+                break;
 
-        default:
-            return 'Promotions';
-            break;
-    }
+            default:
+                return 'Promotions';
+                break;
+        }
     }
 
     // Member Status
     public static function getStatusValue($status)
     {
         switch ($status) {
-        case '0':
-            return 'Inactive';
-            break;
+            case '0':
+                return 'Inactive';
+                break;
 
-        case '2':
-            return 'Archived';
-            break;
+            case '2':
+                return 'Archived';
+                break;
 
-        default:
-            return 'Active';
-            break;
-    }
+            default:
+                return 'Active';
+                break;
+        }
     }
 
     // Enquiry Status
     public static function getEnquiryStatus($status)
     {
         switch ($status) {
-        case '0':
-            return 'Lost';
-            break;
+            case '0':
+                return 'Lost';
+                break;
 
-        case '2':
-            return 'Member';
-            break;
+            case '2':
+                return 'Member';
+                break;
 
-        default:
-            return 'Lead';
-            break;
-    }
+            default:
+                return 'Lead';
+                break;
+        }
     }
 
     // Enquiry Label
     public static function getEnquiryLabel($status)
     {
         switch ($status) {
-        case '0':
-            return 'label label-danger';
-            break;
+            case '0':
+                return 'label label-danger';
+                break;
 
-        case '2':
-            return 'label label-success';
-            break;
+            case '2':
+                return 'label label-success';
+                break;
 
-        default:
-            return 'label label-primary';
-            break;
-    }
+            default:
+                return 'label label-primary';
+                break;
+        }
     }
 
     // Set invoice status
@@ -327,148 +327,148 @@ class Utilities
     public static function getInvoiceStatus($status)
     {
         switch ($status) {
-        case '1':
-            return 'Paid';
-            break;
+            case '1':
+                return 'Paid';
+                break;
 
-        case '2':
-            return 'Partial';
-            break;
+            case '2':
+                return 'Partial';
+                break;
 
-        case '3':
-            return 'Overpaid';
-            break;
+            case '3':
+                return 'Overpaid';
+                break;
 
-        default:
-            return 'Unpaid';
-            break;
-    }
+            default:
+                return 'Unpaid';
+                break;
+        }
     }
 
     // Subcription Status
     public static function getSubscriptionStatus($status)
     {
         switch ($status) {
-        case '0':
-            return 'Expired';
-            break;
+            case '0':
+                return 'Expired';
+                break;
 
-        case '2':
-            return 'Renewed';
-            break;
+            case '2':
+                return 'Renewed';
+                break;
 
-        case '3':
-            return 'Cancelled';
-            break;
+            case '3':
+                return 'Cancelled';
+                break;
 
-        default:
-            return 'OnGoing';
-            break;
-    }
+            default:
+                return 'OnGoing';
+                break;
+        }
     }
 
     // Subcription Label
     public static function getSubscriptionLabel($status)
     {
         switch ($status) {
-        case '0':
-            return 'label label-danger';
-            break;
+            case '0':
+                return 'label label-danger';
+                break;
 
-        case '2':
-            return 'label label-success';
-            break;
+            case '2':
+                return 'label label-success';
+                break;
 
-        case '3':
-            return 'label label-default';
-            break;
+            case '3':
+                return 'label label-default';
+                break;
 
-        default:
-            return 'label label-primary';
-            break;
-    }
+            default:
+                return 'label label-primary';
+                break;
+        }
     }
 
     // Payment Mode
     public static function getPaymentMode($status)
     {
         switch ($status) {
-        case '0':
-            return 'Cheque';
-            break;
+            case '0':
+                return 'Cheque';
+                break;
 
-        default:
-            return 'Cash';
-            break;
-    }
+            default:
+                return 'Cash';
+                break;
+        }
     }
 
     // Cheque status
     public static function getChequeStatus($status)
     {
         switch ($status) {
-        case '1':
-            return 'Deposited';
-            break;
+            case '1':
+                return 'Deposited';
+                break;
 
-        case '2':
-            return 'Cleared';
-            break;
+            case '2':
+                return 'Cleared';
+                break;
 
-        case '3':
-            return 'Bounced';
-            break;
+            case '3':
+                return 'Bounced';
+                break;
 
-        case '4':
-            return 'Reissued';
-            break;
+            case '4':
+                return 'Reissued';
+                break;
 
-        default:
-            return 'Recieved';
-            break;
-    }
+            default:
+                return 'Recieved';
+                break;
+        }
     }
 
     // Get Gender
     public static function getGender($gender)
     {
         switch ($gender) {
-        case 'm':
-            return 'Male';
-            break;
+            case 'm':
+                return 'Male';
+                break;
 
-        case 'f':
-            return 'Female';
-            break;
-    }
+            case 'f':
+                return 'Female';
+                break;
+        }
     }
 
     //Get invoice display name type
     public static function getDisplay($display)
     {
         switch ($display) {
-        case 'gym_logo':
-            return 'Gym Logo';
-            break;
+            case 'gym_logo':
+                return 'Gym Logo';
+                break;
 
-        default:
-            return 'Gym Name';
-            break;
-    }
+            default:
+                return 'Gym Name';
+                break;
+        }
     }
 
     // Get Numbering mode
     public static function getMode($mode)
     {
         switch ($mode) {
-        case '0':
-            return 'Manual';
-            break;
+            case '0':
+                return 'Manual';
+                break;
 
-        default:
-            return 'Automatic';
-            break;
-    }
+            default:
+                return 'Automatic';
+                break;
+        }
     }
 
     public static function getGreeting()
@@ -479,13 +479,13 @@ class Utilities
         if ($time < '12') {
             echo 'Good morning';
         } elseif /* If the time is grater than or equal to 1200 hours, but less than 1700 hours, so good afternoon */
-    ($time >= '12' && $time < '17') {
+        ($time >= '12' && $time < '17') {
             echo 'Good afternoon';
         } elseif /* Should the time be between or equal to 1700 and 1900 hours, show good evening */
-    ($time >= '17' && $time < '22') {
+        ($time >= '17' && $time < '22') {
             echo 'Good evening';
         } elseif /* Finally, show good night if the time is greater than or equal to 2200 hours */
-    ($time >= '22') {
+        ($time >= '22') {
             echo 'Good night';
         }
     }
@@ -606,11 +606,11 @@ class Utilities
                 if (str_contains($response, 'SMS-SHOOT-ID')) {
                     //Log entry for SMS_log table
                     $SmsLogData = ['shoot_id' => substr($response, strpos($response, 'SMS-SHOOT-ID/') + 13),
-                                        'number' => $member_contact,
-                                        'message' => $sms_text,
-                                        'sender_id' => $sender_id,
-                                        'send_time' => Carbon::now(),
-                                        'status' => 'NA', ];
+                        'number' => $member_contact,
+                        'message' => $sms_text,
+                        'sender_id' => $sender_id,
+                        'send_time' => Carbon::now(),
+                        'status' => 'NA', ];
 
                     $SmsLog = new SmsLog($SmsLogData);
                     $SmsLog->save();
@@ -619,11 +619,11 @@ class Utilities
                 self::smsBalance();
             } else {
                 $SmsLogData = ['shoot_id' => '',
-                                    'number' => $member_contact,
-                                    'message' => $sms_text,
-                                    'sender_id' => $sender_id,
-                                    'send_time' => Carbon::now(),
-                                    'status' => 'offline', ];
+                    'number' => $member_contact,
+                    'message' => $sms_text,
+                    'sender_id' => $sender_id,
+                    'send_time' => Carbon::now(),
+                    'status' => 'offline', ];
 
                 $SmsLog = new SmsLog($SmsLogData);
                 $SmsLog->save();
@@ -650,11 +650,11 @@ class Utilities
             if (str_contains($response, 'SMS-SHOOT-ID')) {
                 //Log entry for SMS_log table
                 $log->update(['shoot_id' => substr($response, strpos($response, 'SMS-SHOOT-ID/') + 13),
-                              'number' => $member_contact,
-                              'message' => $sms_text,
-                              'sender_id' => $sender_id,
-                              'send_time' => Carbon::now(),
-                              'status' => 'NA', ]);
+                    'number' => $member_contact,
+                    'message' => $sms_text,
+                    'sender_id' => $sender_id,
+                    'send_time' => Carbon::now(),
+                    'status' => 'NA', ]);
                 $log->save();
             }
             //Update SMS balance

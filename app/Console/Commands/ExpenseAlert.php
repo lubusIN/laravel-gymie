@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Expense;
-use Carbon\Carbon;
 use App\SmsTrigger;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ExpenseAlert extends Command

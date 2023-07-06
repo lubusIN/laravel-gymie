@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class PaymentDetail extends Model
 {
@@ -38,9 +38,9 @@ class PaymentDetail extends Model
         }
 
         return $query->leftJoin('trn_invoice', 'trn_payment_details.invoice_id', '=', 'trn_invoice.id')->leftJoin('mst_members', 'trn_invoice.member_id', '=', 'mst_members.id')->select('trn_payment_details.id', 'trn_payment_details.created_at', 'trn_payment_details.payment_amount', 'trn_payment_details.mode', 'trn_invoice.invoice_number', 'mst_members.name as member_name', 'mst_members.member_code')->whereBetween('trn_payment_details.created_at', [
-                $drp_start,
-                $drp_end,
-            ])->orderBy($sorting_field, $sorting_direction);
+            $drp_start,
+            $drp_end,
+        ])->orderBy($sorting_field, $sorting_direction);
     }
 
     public function invoice()

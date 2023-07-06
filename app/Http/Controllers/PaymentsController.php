@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use App\Invoice;
-use App\SmsTrigger;
 use App\ChequeDetail;
+use App\Invoice;
 use App\PaymentDetail;
+use App\SmsTrigger;
+use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
@@ -52,9 +52,9 @@ class PaymentsController extends Controller
             if ($request->mode == \constPaymentMode::Cheque) {
                 // Store Cheque Details
                 $chequeData = ['payment_id'=> $payment_detail->id,
-                                  'number'=> $request->number,
-                                  'date'=> $request->date,
-                                  'status'=> \constChequeStatus::Recieved, ];
+                    'number'=> $request->number,
+                    'date'=> $request->date,
+                    'status'=> \constChequeStatus::Recieved, ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -134,8 +134,8 @@ class PaymentsController extends Controller
                 // Store Cheque Details
                 $cheque_detail = ChequeDetail::where('payment_id', $id)->first();
                 $cheque_detail->update(['number' => $request->number,
-                                      'date' => $request->date,
-                                    ]);
+                    'date' => $request->date,
+                ]);
                 $cheque_detail->updatedBy()->associate(Auth::user());
                 $cheque_detail->save();
             } elseif ($request->mode == \constPaymentMode::Cash) {
