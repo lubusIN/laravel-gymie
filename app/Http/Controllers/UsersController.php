@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Lubus\Constants\Status;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -53,10 +52,10 @@ class UsersController extends Controller
         $this->validate($request, ['email' => 'unique:mst_users,email']);
 
         $user = ['name'=>$request->name,
-                    'email'=> $request->email,
-                    'photo'=> '',
-                    'password' => bcrypt($request->password),
-                    'status'=> $request->status, ];
+            'email'=> $request->email,
+            'photo'=> '',
+            'password' => bcrypt($request->password),
+            'status'=> $request->status, ];
         $user = new User($user);
         $user->save();
 

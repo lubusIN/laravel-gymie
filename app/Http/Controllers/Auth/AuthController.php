@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Contracts\Auth\Guard;
 
 class AuthController extends Controller
 {
     /**
      * the model instance.
+     *
      * @var User
      */
     protected $user;

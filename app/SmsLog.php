@@ -3,20 +3,20 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class SmsLog extends Model
 {
     protected $table = 'trn_sms_log';
 
     protected $fillable = [
-            'shoot_id',
-            'number',
-            'message',
-            'status',
-            'sender_id',
-            'send_time',
+        'shoot_id',
+        'number',
+        'message',
+        'status',
+        'sender_id',
+        'send_time',
     ];
 
     public $timestamps = false;

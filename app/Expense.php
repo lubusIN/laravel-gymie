@@ -3,8 +3,8 @@
 namespace App;
 
 use Carbon\Carbon;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Expense extends Model
 {

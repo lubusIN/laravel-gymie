@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Plan;
+use Auth;
 use Illuminate\Http\Request;
 
 class PlansController extends Controller
@@ -58,7 +58,7 @@ class PlansController extends Controller
     {
         //Model Validation
         $this->validate($request, ['plan_code' => 'unique:mst_plans,plan_code',
-                                   'plan_name' => 'unique:mst_plans,plan_name', ]);
+            'plan_name' => 'unique:mst_plans,plan_name', ]);
 
         $plan = new Plan($request->all());
 

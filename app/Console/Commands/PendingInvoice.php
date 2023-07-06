@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use DB;
 use App\Invoice;
 use App\SmsTrigger;
+use DB;
 use Illuminate\Console\Command;
 
 class PendingInvoice extends Command

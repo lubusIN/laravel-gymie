@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Followup;
+use Auth;
 use Illuminate\Http\Request;
 
 class FollowupsController extends Controller

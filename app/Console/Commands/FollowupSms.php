@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Followup;
-use Carbon\Carbon;
 use App\SmsTrigger;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class FollowupSms extends Command

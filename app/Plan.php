@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Lubus\Constants\Status;
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Plan extends Model
 {

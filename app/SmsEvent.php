@@ -2,22 +2,22 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class SmsEvent extends Model
 {
     protected $table = 'mst_sms_events';
 
     protected $fillable = [
-            'name',
-            'date',
-            'message',
-            'description',
-            'status',
-            'send_to',
-            'created_by',
-            'updated_by',
+        'name',
+        'date',
+        'message',
+        'description',
+        'status',
+        'send_to',
+        'created_by',
+        'updated_by',
     ];
 
     protected $dates = ['created_at', 'updated_at', 'date'];

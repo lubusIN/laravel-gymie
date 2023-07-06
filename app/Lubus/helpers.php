@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * Set active page.
  *

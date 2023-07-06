@@ -2,28 +2,28 @@
 
 namespace App;
 
-use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Eloquence;
 
 class Invoice extends Model
 {
     protected $table = 'trn_invoice';
 
     protected $fillable = [
-            'total',
-            'pending_amount',
-            'member_id',
-            'note',
-            'status',
-            'tax',
-            'additional_fees',
-            'invoice_number',
-            'discount_percent',
-            'discount_amount',
-            'discount_note',
-            'created_by',
-            'updated_by',
-     ];
+        'total',
+        'pending_amount',
+        'member_id',
+        'note',
+        'status',
+        'tax',
+        'additional_fees',
+        'invoice_number',
+        'discount_percent',
+        'discount_amount',
+        'discount_note',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $dates = ['created_at', 'updated_at'];
 

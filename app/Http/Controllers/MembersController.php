@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Auth;
-use App\Member;
-use JavaScript;
+use App\ChequeDetail;
 use App\Enquiry;
 use App\Invoice;
+use App\InvoiceDetail;
+use App\Member;
+use App\PaymentDetail;
 use App\Service;
 use App\Setting;
-use Carbon\Carbon;
 use App\SmsTrigger;
-use App\ChequeDetail;
 use App\Subscription;
-use App\InvoiceDetail;
-use App\PaymentDetail;
+use Auth;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
+use JavaScript;
 
 class MembersController extends Controller
 {
@@ -129,8 +129,8 @@ class MembersController extends Controller
     {
         // Member Model Validation
         $this->validate($request, ['email' => 'unique:mst_members,email',
-                                   'contact' => 'unique:mst_members,contact',
-                                   'member_code' => 'unique:mst_members,member_code', ]);
+            'contact' => 'unique:mst_members,contact',
+            'member_code' => 'unique:mst_members,member_code', ]);
 
         // Start Transaction
         DB::beginTransaction();
@@ -138,21 +138,21 @@ class MembersController extends Controller
         try {
             // Store member's personal details
             $memberData = ['name'=>$request->name,
-                                    'DOB'=> $request->DOB,
-                                    'gender'=> $request->gender,
-                                    'contact'=> $request->contact,
-                                    'emergency_contact'=> $request->emergency_contact,
-                                    'health_issues'=> $request->health_issues,
-                                    'email'=> $request->email,
-                                    'address'=> $request->address,
-                                    'member_id'=> $request->member_id,
-                                    'proof_name'=> $request->proof_name,
-                                    'member_code'=> $request->member_code,
-                                    'status'=> $request->status,
-                                    'pin_code'=> $request->pin_code,
-                                    'occupation'=> $request->occupation,
-                                    'aim'=> $request->aim,
-                                    'source'=> $request->source, ];
+                'DOB'=> $request->DOB,
+                'gender'=> $request->gender,
+                'contact'=> $request->contact,
+                'emergency_contact'=> $request->emergency_contact,
+                'health_issues'=> $request->health_issues,
+                'email'=> $request->email,
+                'address'=> $request->address,
+                'member_id'=> $request->member_id,
+                'proof_name'=> $request->proof_name,
+                'member_code'=> $request->member_code,
+                'status'=> $request->status,
+                'pin_code'=> $request->pin_code,
+                'occupation'=> $request->occupation,
+                'aim'=> $request->aim,
+                'source'=> $request->source, ];
 
             $member = new Member($memberData);
             $member->createdBy()->associate(Auth::user());
@@ -187,16 +187,16 @@ class MembersController extends Controller
 
             // Storing Invoice
             $invoiceData = ['invoice_number'=> $request->invoice_number,
-                                     'member_id'=> $member->id,
-                                     'total'=> $invoice_total,
-                                     'status'=> $paymentStatus,
-                                     'pending_amount'=> $pending,
-                                     'discount_amount'=> $request->discount_amount,
-                                     'discount_percent'=> $request->discount_percent,
-                                     'discount_note'=> $request->discount_note,
-                                     'tax'=> $request->taxes_amount,
-                                     'additional_fees'=> $request->additional_fees,
-                                     'note'=>' ', ];
+                'member_id'=> $member->id,
+                'total'=> $invoice_total,
+                'status'=> $paymentStatus,
+                'pending_amount'=> $pending,
+                'discount_amount'=> $request->discount_amount,
+                'discount_percent'=> $request->discount_percent,
+                'discount_note'=> $request->discount_note,
+                'tax'=> $request->taxes_amount,
+                'additional_fees'=> $request->additional_fees,
+                'note'=>' ', ];
 
             $invoice = new Invoice($invoiceData);
             $invoice->createdBy()->associate(Auth::user());
@@ -206,12 +206,12 @@ class MembersController extends Controller
             // Storing subscription
             foreach ($request->plan as $plan) {
                 $subscriptionData = ['member_id'=> $member->id,
-                                            'invoice_id'=> $invoice->id,
-                                            'plan_id'=> $plan['id'],
-                                            'start_date'=> $plan['start_date'],
-                                            'end_date'=> $plan['end_date'],
-                                            'status'=> \constSubscription::onGoing,
-                                            'is_renewal'=>'0', ];
+                    'invoice_id'=> $invoice->id,
+                    'plan_id'=> $plan['id'],
+                    'start_date'=> $plan['start_date'],
+                    'end_date'=> $plan['end_date'],
+                    'status'=> \constSubscription::onGoing,
+                    'is_renewal'=>'0', ];
 
                 $subscription = new Subscription($subscriptionData);
                 $subscription->createdBy()->associate(Auth::user());
@@ -220,8 +220,8 @@ class MembersController extends Controller
 
                 //Adding subscription to invoice(Invoice Details)
                 $detailsData = ['invoice_id'=> $invoice->id,
-                                       'plan_id'=> $plan['id'],
-                                       'item_amount'=> $plan['price'], ];
+                    'plan_id'=> $plan['id'],
+                    'item_amount'=> $plan['price'], ];
 
                 $invoiceDetails = new InvoiceDetail($detailsData);
                 $invoiceDetails->createdBy()->associate(Auth::user());
@@ -231,9 +231,9 @@ class MembersController extends Controller
 
             // Store Payment Details
             $paymentData = ['invoice_id'=> $invoice->id,
-                                     'payment_amount'=> $request->payment_amount,
-                                     'mode'=> $request->mode,
-                                     'note'=> ' ', ];
+                'payment_amount'=> $request->payment_amount,
+                'mode'=> $request->mode,
+                'note'=> ' ', ];
 
             $paymentDetails = new PaymentDetail($paymentData);
             $paymentDetails->createdBy()->associate(Auth::user());
@@ -243,9 +243,9 @@ class MembersController extends Controller
             if ($request->mode == 0) {
                 // Store Cheque Details
                 $chequeData = ['payment_id'=> $paymentDetails->id,
-                                      'number'=> $request->number,
-                                      'date'=> $request->date,
-                                      'status'=> \constChequeStatus::Recieved, ];
+                    'number'=> $request->number,
+                    'date'=> $request->date,
+                    'status'=> \constChequeStatus::Recieved, ];
 
                 $cheque_details = new ChequeDetail($chequeData);
                 $cheque_details->createdBy()->associate(Auth::user());
@@ -453,7 +453,7 @@ class MembersController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return string
      */
     private function drpPlaceholder(Request $request)
