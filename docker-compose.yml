@@ -1,0 +1,73 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-gymie
+    container_name: laravel_gymie_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - mysql
+    networks:
+      - laravel_gymie
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+
+  mysql:
+    image: mysql:5.7
+    container_name: laravel_gymie_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: gymie
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: gymie
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel_gymie
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+
+  nginx:
+    image: nginx:latest
+    container_name: laravel_gymie_nginx
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www
+    depends_on:
+      - app
+    networks:
+      - laravel_gymie
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+
+networks:
+  laravel_gymie:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
