@@ -65,6 +65,103 @@ email: admin@gymie.in
 password: password
 ```
 
+### Docker Method
+
+1. Clone to your server root
+    ```sh
+    git clone -b master git@github.com:lubusIN/laravel-gymie.git
+    ```
+    > For faster updates and bleeding edge features, or if you want to help test the next version, use the `develop` branch instead of the `master` branch.
+    
+2. Ensure Docker and Docker Compose are installed on your system.
+
+3. Build and start Docker containers:
+    ```sh
+    docker-compose up --build -d
+    ```
+
+4. Wait for MySQL to be ready (can take a few moments). Ensure MySQL is ready before proceeding.
+
+5. Create necessary directories and set permissions:
+    ```sh
+    docker-compose exec app sh -c "mkdir -p /var/www/vendor && chown -R www-data:www-data /var/www/vendor"
+    docker-compose exec app sh -c "mkdir -p /var/www/storage && chown -R www-data:www-data /var/www/storage"
+    docker-compose exec app sh -c "mkdir -p /var/www/bootstrap/cache && chown -R www-data:www-data /var/www/bootstrap/cache"
+    docker-compose exec app sh -c "mkdir -p /var/www/html && chown -R www-data:www-data /var/www/html"
+    ```
+
+6. Install composer dependencies:
+    ```sh
+    docker-compose exec app composer install
+    ```
+
+7. Copy `.env.example` to `.env` and update it:
+    ```sh
+    cp .env.example .env
+    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+    sed -i "s/DB_HOST=.*/DB_HOST=mysql/" .env
+    sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
+    sed -i "s/DB_DATABASE=.*/DB_DATABASE=gymie/" .env
+    sed -i "s/DB_USERNAME=.*/DB_USERNAME=gymie/" .env
+    sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=password/" .env
+    ```
+
+8. Generate application key:
+    ```sh
+    docker-compose exec app php artisan key:generate
+    ```
+
+9. Run migrations and seed the database:
+    ```sh
+    docker-compose exec app php artisan migrate --seed
+    ```
+
+10. Set permissions for storage and cache inside container:
+    ```sh
+    docker-compose exec app sh -c "chown -R www-data:www-data storage bootstrap/cache && chmod -R ug+rwx storage bootstrap/cache"
+    ```
+
+11. Modify php-fpm listen directive:
+    ```sh
+    docker-compose exec app sh -c "sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf"
+    ```
+
+12. Restart php-fpm to apply changes:
+    ```sh
+    docker-compose exec app sh -c "pkill -o -USR2 php-fpm"
+    ```
+
+13. Create test PHP file:
+    ```sh
+    docker-compose exec app sh -c "echo '<?php phpinfo(); ?>' > /var/www/html/test.php"
+    ```
+
+14. Add cron job for scheduled tasks:
+    ```sh
+    (crontab -l 2>/dev/null; echo "* * * * * cd $(pwd) && docker-compose exec app php artisan schedule:run >> /dev/null 2>&1") | crontab -
+    ```
+
+15. All set! Use the following credentials to log in:
+    ```
+    email: admin@gymie.in
+    password: password
+    ```
+
+#### Particularities for Docker
+
+- We are using Nginx as a reverse proxy to access the PHP application due to compatibility issues with the PHP version.
+
+#### Using the setup script
+
+If you prefer to use a script to automate the setup process, you can use `setup_gymie_docker.sh` located in the project directory:
+
+```sh
+./setup_gymie_docker.sh
+```
+#### Particularities for Docker
+
+- We are using Nginx as a reverse proxy to access the PHP application due to compatibility issues with the PHP version.
+
 ## Troubleshooting
 
 **APP_KEY not getting added to .env**
