@@ -33,7 +33,7 @@ class UsersResource extends Resource
                     ->extraAttributes(['class' => 'cursor-pointer'])
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn($record) => $record)
+                Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn ($record) => $record)
                     ->prefixIcon('heroicon-m-envelope'),
                 Forms\Components\Select::make('roles')
                     ->relationship('roles', 'name')
@@ -42,14 +42,14 @@ class UsersResource extends Resource
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->hiddenOn('view')
-                    ->dehydrated(fn($state) => filled($state))
-                    ->required(fn(string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->revealable(),
                 Forms\Components\TextInput::make('password_confirmation')
                     ->password()
                     ->hiddenOn('view')
                     ->revealable()
-                    ->required(fn(callable $get): bool => filled($get('password')))
+                    ->required(fn (callable $get): bool => filled($get('password')))
                     ->same('password'),
             ]);
     }
@@ -62,7 +62,7 @@ class UsersResource extends Resource
                 Tables\Columns\ImageColumn::make('avatar')
                     ->circular()
                     ->toggleable(isToggledHiddenByDefault: false)
-                    ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
+                    ->defaultImageUrl(fn (User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name='.$record->name),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: false),
             ])
@@ -77,8 +77,8 @@ class UsersResource extends Resource
                     ->modalHeading('Edit User')
                     ->hiddenLabel(),
                 Tables\Actions\DeleteAction::make()
-                    ->hiddenLabel()
-            ])         
+                    ->hiddenLabel(),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -96,7 +96,7 @@ class UsersResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/')
+            'index' => Pages\ListUsers::route('/'),
         ];
     }
 }
