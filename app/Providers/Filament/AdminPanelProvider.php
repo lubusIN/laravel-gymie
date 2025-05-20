@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Gymie')
             ->colors([
                 'primary' => [
-                    50 => '248, 11, 252', // Closest to #F8FAFC (very light gray)
+                    50  => '248, 11, 252', // Closest to #F8FAFC (very light gray)
                     100 => '248, 11, 252', // Closest to #F8FAFC (very light gray)
                     200 => '203, 11, 225', // Lighter shade of #CBD5E1 (light blue-gray)
                     300 => '180, 11, 210', // Slightly darker shade of #CBD5E1
@@ -42,9 +42,9 @@ class AdminPanelProvider extends PanelProvider
                     900 => '10, 10, 10',    // Exactly #0A0A0A (very dark gray)
                     950 => '248, 250, 252', // Closest to #F8FAFC (very light gray)
                 ],
-                'danger' => Color::Rose,
-                'gray' => Color::Gray,
-                'info' => Color::Blue,
+                'danger'  => Color::Rose,
+                'gray'    => Color::Gray,
+                'info'    => Color::Blue,
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
