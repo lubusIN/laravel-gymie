@@ -31,17 +31,17 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Gymie')
             ->colors([
                 'primary' => [
-                    50 => '248, 11, 252', // Closest to #F8FAFC (very light gray)
-                    100 => '248, 11, 252', // Closest to #F8FAFC (very light gray)
-                    200 => '203, 11, 225', // Lighter shade of #CBD5E1 (light blue-gray)
-                    300 => '180, 11, 210', // Slightly darker shade of #CBD5E1
-                    400 => '150, 11, 190', // Darker shade of #CBD5E1
-                    500 => '10, 10, 10',    // Exactly #CBD5E1 (light blue-gray)
-                    600 => '50, 50, 50',    // Lighter shade of #0A0A0A (very dark gray)
-                    700 => '10, 10, 10',    // Exactly #0A0A0A (very dark gray)
-                    800 => '10, 10, 10',    // Exactly #0A0A0A (very dark gray)
-                    900 => '10, 10, 10',    // Exactly #0A0A0A (very dark gray)
-                    950 => '248, 250, 252', // Closest to #F8FAFC (very light gray)
+                    50 => '240, 253, 250',   // #F0FDFA - very light teal
+                    100 => '204, 251, 241',  // #CCFBF1
+                    200 => '153, 246, 228',  // #99F6E4
+                    300 => '94, 234, 212',   // #5EEAD4
+                    400 => '45, 212, 191',   // #2DD4BF
+                    500 => '20, 184, 166',   // #14B8A6 - main teal
+                    600 => '13, 148, 136',   // #0D9488
+                    700 => '15, 118, 110',   // #0F766E
+                    800 => '17, 94, 89',     // #115E59
+                    900 => '19, 78, 74',     // #134E4A
+                    950 => '4, 47, 46',      // #042F2E - very dark teal
                 ],
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
