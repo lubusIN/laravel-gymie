@@ -3,7 +3,6 @@
 <p align="center">
 <a href="https://github.com/lubusIN/laravel-gymie/releases"><img src="https://img.shields.io/github/release/lubusIN/laravel-gymie.svg?style=flat-square" alt="Latest Stable Version"></a>
 <a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie/build-status/master"><img src="https://img.shields.io/scrutinizer/build/g/lubusIN/laravel-gymie.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://styleci.io/repos/123349662"><img src="https://styleci.io/repos/123349662/shield" alt="StyleCI Status"></a>
 <a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie"><img src="https://img.shields.io/scrutinizer/g/lubusin/laravel-gymie.svg?style=flat-square" alt="Scrutinizer Code Quality"></a>
 <a href="https://github.com/lubusIN/laravel-gymie/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
 <a href="https://github.com/lubusin/laravel-gymie/blob/master/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
@@ -95,22 +94,15 @@ Please see the [Changelog](CHANGELOG.md)
 
 ## Contributing
 
-Thank you for considering contributing to the `Gymie`. You can read the contribution guide lines [here](CONTRIBUTING.md)
+Thank you for considering contributing to the `Gymie`. You can read the contribution guidelines [here](CONTRIBUTING.md)
 
 Check the development tasklist [here](https://github.com/lubusIN/laravel-gymie/projects/1) if something interest you or suggest something [here](https://github.com/lubusIN/laravel-gymie/issues)
 
 ##  Security Vulnerabilities
-If you discover a security vulnerability within Laravel, please send an e-mail at info@lubus.in. All security vulnerabilities will be promptly addressed.  
+If you discover a security vulnerability in Laravel, please email info@lubus.in. We will promptly address all security vulnerabilities.  
 
-##  Support Us
-
-<a href="https://www.patreon.com/lubus">
-<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become A Patron"/>
-</a>
-
+##  About Us
 [LUBUS](http://lubus.in) is a web design agency based in Mumbai, India.
-
-You can pledge on [patreon](https://www.patreon.com/lubus) to support the development & maintenance of various [opensource](https://github.com/lubusIN/) stuff we are building.
 
 ## License
 
