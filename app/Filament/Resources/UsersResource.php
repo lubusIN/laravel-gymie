@@ -70,8 +70,15 @@ class UsersResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\ViewAction::make('view')
+                    ->modal('View User')
+                    ->hiddenLabel(),
+                Tables\Actions\EditAction::make()
+                    ->modalHeading('Edit User')
+                    ->hiddenLabel(),
+                Tables\Actions\DeleteAction::make()
+                    ->hiddenLabel()
+            ])         
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
