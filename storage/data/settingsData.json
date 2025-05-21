@@ -1,0 +1,22 @@
+{
+    "general": {
+        "gym_logo": [],
+        "gym_name": null,
+        "gym_email": null,
+        "gym_contact": null,
+        "address": null,
+        "country": null,
+        "state": null,
+        "city": null,
+        "zip": null
+    },
+    "invoice": {
+        "invoice_prefix": null,
+        "invoice_number": null,
+        "name_type": null
+    },
+    "member": {
+        "member_prefix": null,
+        "member_number": null
+    }
+}
