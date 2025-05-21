@@ -5,7 +5,7 @@
 
 
 ## Installation
-To set up Munim, follow these steps:
+To set up Gymie, follow these steps:
 1. Clone the repository:
     `git clone git@github.com:lubusIN/laravel-gymie.git`
 2. Create a `.env` file from the example file:
