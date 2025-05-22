@@ -25,10 +25,13 @@ class Settings extends Page implements HasForms
     /** @var string|null Page title */
     protected static ?string $title = 'Settings';
 
+    /** @var string|null Navigation Icon for the settings page */
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
+    /** @var string View file for the settings page */
     protected static string $view = 'filament.pages.settings';
 
+    /** @var array|null Stores the settings data */
     public ?array $data = [];
 
     /** @var string|null Stores the uploaded settings file */
@@ -68,6 +71,7 @@ class Settings extends Page implements HasForms
                 ])
         ];
     }
+
     /**
      * Business Info Tab Schema.
      *
@@ -153,7 +157,7 @@ class Settings extends Page implements HasForms
                     ])
                     ->columnSpan(3),
 
-                
+
             ]);
     }
 
@@ -166,29 +170,29 @@ class Settings extends Page implements HasForms
     {
         return (
             Tab::make('Invoice')->icon('heroicon-m-document-text')
-                ->schema([
-                    Grid::make(3)
-                        ->schema([
-                            TextInput::make('invoice.invoice_prefix')
-                                ->label('Prefix')
-                                ->placeholder('GY'),
-                            TextInput::make('invoice.invoice_number')
-                                ->label('Number')
-                                ->numeric()
-                                ->maxLength(10),
-                            Select::make('invoice.name_type')
-                                ->label('Name Type')
-                                ->native(false)
-                                ->options([
-                                    'gym_name' => 'Gym Name',
-                                    'gym_logo' => 'Gym Logo'
-                                ]),
-                        ]),
-                ])
+            ->schema([
+                Grid::make(3)
+                    ->schema([
+                        TextInput::make('invoice.invoice_prefix')
+                            ->label('Prefix')
+                            ->placeholder('GY'),
+                        TextInput::make('invoice.invoice_number')
+                            ->label('Number')
+                            ->numeric()
+                            ->maxLength(10),
+                        Select::make('invoice.name_type')
+                            ->label('Name Type')
+                            ->native(false)
+                            ->options([
+                                'gym_name' => 'Gym Name',
+                                'gym_logo' => 'Gym Logo'
+                            ]),
+                    ]),
+            ])
         );
     }
 
-     /**
+    /**
      * Invoice Tab Schema.
      *
      * @return Forms\Components\Tabs\Tab
@@ -197,18 +201,18 @@ class Settings extends Page implements HasForms
     {
         return (
             Tab::make('Member')->icon('heroicon-m-user-group')
-                ->schema([
-                    Grid::make(2)
-                        ->schema([
-                            TextInput::make('member.invoice_prefix')
-                                ->label('Prefix')
-                                ->placeholder('GY'),
-                            TextInput::make('member.invoice_number')
-                                ->label('Number')
-                                ->numeric()
-                                ->maxLength(10),
-                        ]),
-                ])
+            ->schema([
+                Grid::make(2)
+                    ->schema([
+                        TextInput::make('member.invoice_prefix')
+                            ->label('Prefix')
+                            ->placeholder('GY'),
+                        TextInput::make('member.invoice_number')
+                            ->label('Number')
+                            ->numeric()
+                            ->maxLength(10),
+                    ]),
+            ])
         );
     }
 
