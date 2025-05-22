@@ -16,6 +16,23 @@ class Helpers
     public static function getSettings(): array
     {
         $filePath = storage_path(self::SETTINGS_PATH);
+
+        if (!file_exists($filePath)) {
+            // Check if example file exists
+            $exampleFilePath = storage_path('data/settingsData.json.example');
+
+            if (file_exists($exampleFilePath)) {
+                // Copy example file to create settingsData.json
+                copy($exampleFilePath, $filePath);
+            } else {
+                // If no example file, create an empty settings file
+                file_put_contents($filePath, json_encode([
+                    "general" => [],
+                    "invoice" => [],
+                    "member" => [],
+                ], JSON_PRETTY_PRINT));
+            }
+        }
         return json_decode(file_get_contents($filePath), true) ?? [];
     }
 
