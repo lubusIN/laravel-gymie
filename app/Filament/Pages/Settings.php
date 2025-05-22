@@ -198,7 +198,7 @@ class Settings extends Page implements HasForms
         return (
             Tab::make('Member')->icon('heroicon-m-user-group')
                 ->schema([
-                    Grid::make(3)
+                    Grid::make(2)
                         ->schema([
                             TextInput::make('member.invoice_prefix')
                                 ->label('Prefix')
