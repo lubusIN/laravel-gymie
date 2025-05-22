@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,39 +30,111 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\FileUpload::make('avatar')
-                    ->hiddenLabel()
-                    ->placeholder('Upload a avatar (max 10MB)')
-                    ->avatar()
-                    ->imageEditor()
-                    ->preserveFilenames()
-                    ->maxSize(1024 * 1024 * 10)
-                    ->disk('public')
-                    ->directory('images')
-                    ->image()
-                    ->extraAttributes(['class' => 'cursor-pointer'])
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('email')->email()->required()->unique(ignorable: fn($record) => $record)
-                    ->prefixIcon('heroicon-m-envelope'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->hiddenOn('view')
-                    ->dehydrated(fn($state) => filled($state))
-                    ->required(fn(string $operation): bool => $operation === 'create')
-                    ->revealable(),
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->hiddenOn('view')
-                    ->revealable()
-                    ->required(fn(callable $get): bool => filled($get('password')))
-                    ->same('password'),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    ])
-                    ->required()
+                Forms\Components\Section::make('User Information')
+                    ->schema([
+                        Forms\Components\Grid::make()
+                            ->columns(3)
+                            ->schema([
+                                Forms\Components\FileUpload::make('photo')
+                                    ->hiddenLabel()
+                                    ->placeholder('Upload the profile photo (max 10MB)')
+                                    ->avatar()
+                                    ->imageEditor()
+                                    ->preserveFilenames()
+                                    ->maxSize(1024 * 1024 * 10)
+                                    ->disk('public')
+                                    ->directory('images')
+                                    ->image()
+                                    ->required()
+                                    ->extraAttributes(['class' => 'cursor-pointer'])
+                                    ->columnSpan(1),
+                                Forms\Components\Grid::make()
+                                    ->columns(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('email')
+                                            ->email()
+                                            ->required()
+                                            ->unique(ignorable: fn($record) => $record)
+                                            ->prefixIcon('heroicon-m-envelope'),
+                                        Forms\Components\TextInput::make('password')
+                                            ->password()
+                                            ->hiddenOn('view')
+                                            ->dehydrated(fn($state) => filled($state))
+                                            ->required(fn(string $operation): bool => $operation === 'create')
+                                            ->revealable(),
+                                        Forms\Components\TextInput::make('password_confirmation')
+                                            ->password()
+                                            ->hiddenOn('view')
+                                            ->revealable()
+                                            ->required(fn(callable $get): bool => filled($get('password')))
+                                            ->same('password'),
+                                    ])
+                                    ->columnSpan(2),
+                                Forms\Components\TextInput::make('contact')
+                                    ->label('Contact')
+                                    ->prefixIcon('heroicon-m-phone')
+                                    ->tel()
+                                    ->placeholder('+91 555-123-4567')
+                                    ->maxLength(20)
+                                    ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                    ->required(),
+                                Forms\Components\Select::make('gender')
+                                    ->options([
+                                        'none' => 'None',
+                                        'male' => 'Male',
+                                        'female' => 'Female',
+                                    ])
+                                    ->default('none')
+                                    ->selectablePlaceholder(false)
+                                    ->required(),
+                                Forms\Components\Select::make('status')
+                                    ->options([
+                                        '' => 'No Status',
+                                        'active' => 'Active',
+                                        'inactive' => 'Inactive',
+                                    ])
+                                    ->required()
+                                    ->selectablePlaceholder(false)
+                            ]),
+                    ]),
+                Forms\Components\Section::make('Address')
+                    ->schema([
+                        Forms\Components\Textarea::make('address')
+                            ->required(),
+                        Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\Select::make('country')
+                                    ->label('Country')
+                                    ->placeholder('Select an country')
+                                    ->options(Helpers::getCountries())
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, callable $set) => [
+                                        $set('state', null),
+                                        $set('city', null),
+                                    ]),
+                                Forms\Components\Select::make('state')
+                                    ->label('State')
+                                    ->placeholder('Select an state')
+                                    ->options(fn($get) => Helpers::getStates($get('country')))
+                                    ->searchable()
+                                    ->reactive(),
+                                Forms\Components\Select::make('city')
+                                    ->label('City')
+                                    ->placeholder('Select an city')
+                                    ->options(fn($get) => Helpers::getCities($get('state')))
+                                    ->searchable()
+                                    ->reactive(),
+                                Forms\Components\TextInput::make('pincode')
+                                    ->numeric(),
+                            ])->columns(4),
+                    ]),
+
+
+
             ]);
     }
 
@@ -76,12 +149,19 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable()->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('avatar')
+                Tables\Columns\ImageColumn::make('photo')
                     ->circular()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('contact')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('gender')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('address')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('country')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('state')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('city')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('pincode')->searchable()->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
@@ -91,18 +171,32 @@ class UserResource extends Resource
                     ->label(fn(User $record): string => 'View ' . $record->name)
                     ->hiddenLabel()
                     ->infolist([
-                        ImageEntry::make('avatar')
-                            ->hiddenLabel()
-                            ->height(100)
-                            ->circular()
-                            ->columnSpanFull()
-                            ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
-                        Grid::make(3)
+                        Grid::make(2)
                             ->schema([
-                                TextEntry::make('name'),
-                                TextEntry::make('email'),
-                                TextEntry::make('status')
+                                ImageEntry::make('photo')
+                                    ->hiddenLabel()
+                                    ->height(100)
+                                    ->circular()
+                                    ->columnSpanFull(1)
+                                    ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
+                                Grid::make()
+                                    ->columns(3)
+                                    ->schema([
+                                        TextEntry::make('name'),
+                                        TextEntry::make('email'),
+                                        TextEntry::make('status'),
+                                        TextEntry::make('contact'),
+                                        TextEntry::make('gender'),
+                                        TextEntry::make('address'),
+                                        TextEntry::make('country')->hidden(fn($record) => empty($record->country)),
+                                        TextEntry::make('state')->hidden(fn($record) => empty($record->state)),
+                                        TextEntry::make('city')->hidden(fn($record) => empty($record->city)),
+                                        TextEntry::make('pincode')->hidden(fn($record) => empty($record->pincode)),
+                                    ])->columnSpan(2)
+
                             ])
+
+
                     ])->modalSubmitAction(false)
                     ->modalCancelAction(false),
                 Tables\Actions\EditAction::make()
