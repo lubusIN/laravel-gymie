@@ -39,20 +39,26 @@ cd laravel-gymie
 composer install
 ```
 
-### 3. Create a `.env` file from the example file:
-   `cp .env.example .env`
+### 4. Prepare the environment
+Run the following script to prepare your environment:
 
-### 4. Update the `.env` file
-- Set your database credentials.
-- Update other relevant configuration values.
-- Set your application URL:
-
-```env
-APP_URL=https://gymie.test
+```bash
+composer run prepare-env
 ```
+This will:
+- Copy `.env.example` to `.env` (if missing)
+- Clear config cache
+- Generate application key
+- Create a symbolic link to the storage folder
 
-### 5. Generate the application key:
-`php artisan key:generate`
+### 5. Configure the `.env` file
+- Set your database credentials.  
+- Update other relevant configuration values.  
+- Set your application URL:
+    
+  ```env
+  APP_URL=https://gymie.test
+  ```
 
 ### 6. Run database migrations:
 
@@ -136,7 +142,7 @@ php artisan schedule:work
 ```
 > [!NOTE]
 > The scheduler must be running continuously to trigger time-based tasks (e.g., status updates).
-
+>
 > If those tasks dispatch queued jobs (like import/export or notifications), then the queue worker must also be running to process them.
 
 ## Meet Your Artisans
