@@ -7,6 +7,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -19,6 +21,9 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
+
+    /** @var string|null Page title */
+    protected static ?string $title = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
@@ -48,106 +53,176 @@ class Settings extends Page implements HasForms
     }
 
     /**
-     * Define the form schema for the settings page.
-     * 
-     * @return Form
+     * Defines the form schema with multiple tabs.
+     *
+     * @return array
+     */
+    protected function getFormSchema(): array
+    {
+        return [
+            Tabs::make('Settings Tabs')
+                ->tabs([
+                    $this->generalTab(),
+                    $this->invoiceTab(),
+                    $this->memberTab(),
+                ])
+        ];
+    }
+    /**
+     * Business Info Tab Schema.
+     *
+     * @return Forms\Components\Tabs\Tab
+     */
+    private function generalTab()
+    {
+        return Tab::make('Gym Info')
+            ->icon('heroicon-m-briefcase')
+            ->schema([
+                Section::make('General Information')
+                    ->aside()
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('general.gym_name')
+                                    ->label('Gym Name'),
+                                FileUpload::make('general.gym_logo')
+                                    ->label('Gym Logo')
+                                    ->disk('public')
+                                    ->directory('images')
+                                    ->preserveFilenames()
+                                    ->imageEditor()
+                                    ->deletable()
+                                    ->visibility('public')
+                                    ->image()
+                                    ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'logo', $set)),
+                            ]),
+                    ])
+                    ->columnSpan(3),
+
+                Section::make('Address')
+                    ->aside()
+                    ->schema([
+                        Grid::make(1)
+                            ->schema([
+                                Textarea::make('general.address')
+                                    ->label('Address'),
+                            ]),
+                        Grid::make(4)
+                            ->schema([
+                                Select::make('general.country')
+                                    ->label('Country')
+                                    ->options(Helpers::getCountries())
+                                    ->searchable()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn($state, callable $set) => [
+                                        $set('general.state', null),
+                                        $set('general.city', null),
+                                    ]),
+                                Select::make('general.state')
+                                    ->label('State')
+                                    ->options(fn($get) => Helpers::getStates($get('general.country')))
+                                    ->searchable()
+                                    ->reactive(),
+                                Select::make('general.city')
+                                    ->label('City')
+                                    ->options(fn($get) => Helpers::getCities($get('general.state')))
+                                    ->searchable()
+                                    ->reactive(),
+                                TextInput::make('general.zip')
+                                    ->label('Zip Code')
+                                    ->numeric()
+                                    ->maxLength(10),
+                            ]),
+                    ])
+                    ->columnSpan(3),
+
+                Section::make('Contact Information')
+                    ->aside()
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('general.gym_email')
+                                    ->label('Email Address')
+                                    ->email()
+                                    ->prefixIcon('heroicon-o-envelope'),
+                                TextInput::make('general.gym_contact')
+                                    ->numeric()
+                                    ->prefixIcon('heroicon-o-phone')
+                                    ->label('Contact No.'),
+                            ]),
+                    ])
+                    ->columnSpan(3),
+
+                
+            ]);
+    }
+
+    /**
+     * Invoice Tab Schema.
+     *
+     * @return Forms\Components\Tabs\Tab
+     */
+    private function invoiceTab()
+    {
+        return (
+            Tab::make('Invoice')->icon('heroicon-m-document-text')
+                ->schema([
+                    Grid::make(3)
+                        ->schema([
+                            TextInput::make('invoice.invoice_prefix')
+                                ->label('Prefix')
+                                ->placeholder('GY'),
+                            TextInput::make('invoice.invoice_number')
+                                ->label('Number')
+                                ->numeric()
+                                ->maxLength(10),
+                            Select::make('invoice.name_type')
+                                ->label('Name Type')
+                                ->native(false)
+                                ->options([
+                                    'gym_name' => 'Gym Name',
+                                    'gym_logo' => 'Gym Logo'
+                                ]),
+                        ]),
+                ])
+        );
+    }
+
+     /**
+     * Invoice Tab Schema.
+     *
+     * @return Forms\Components\Tabs\Tab
+     */
+    private function memberTab()
+    {
+        return (
+            Tab::make('Member')->icon('heroicon-m-user-group')
+                ->schema([
+                    Grid::make(3)
+                        ->schema([
+                            TextInput::make('member.invoice_prefix')
+                                ->label('Prefix')
+                                ->placeholder('GY'),
+                            TextInput::make('member.invoice_number')
+                                ->label('Number')
+                                ->numeric()
+                                ->maxLength(10),
+                        ]),
+                ])
+        );
+    }
+
+    /**
+     * Configures a form instance by setting its schema and state path.
+     *
+     * @param Form $form The form instance to configure.
+     * @return Form The configured form instance.
      */
     public function form(Form $form): Form
     {
         return $form
-            ->statePath('data')
-            ->schema([
-                Section::make('General')
-                    ->icon('heroicon-m-cog')
-                    ->schema([
-                        FileUpload::make('general.gym_logo')
-                            ->label('Gym Logo')
-                            ->placeholder('Upload a logo (max 10MB)')
-                            ->avatar()
-                            ->imageEditor()
-                            ->preserveFilenames()
-                            ->maxSize(1024 * 1024 * 10)
-                            ->disk('public')
-                            ->directory('images')
-                            ->image()
-                            ->extraAttributes(['class' => 'cursor-pointer'])
-                            ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
-                        TextInput::make('general.gym_name')
-                            ->label('Gym Name'),
-                        TextInput::make('general.gym_email')
-                            ->label('Gym Email')
-                            ->email()
-                            ->prefixIcon('heroicon-o-envelope'),
-                        TextInput::make('general.gym_contact')
-                            ->numeric()
-                            ->maxLength(10)
-                            ->prefixIcon('heroicon-o-phone')
-                            ->label('Contact No.'),
-                        Grid::make(2)
-                            ->schema([
-                                Grid::make(1)
-                                    ->schema([
-                                        Textarea::make('general.address')
-                                            ->label('Address'),
-                                    ]),
-                                Grid::make(4)
-                                    ->schema([
-                                        Select::make('general.country')
-                                            ->label('Country')
-                                            ->options(Helpers::getCountries())
-                                            ->searchable()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn($state, callable $set) => [
-                                                $set('general.state', null),
-                                                $set('general.city', null),
-                                            ]),
-                                        Select::make('general.state')
-                                            ->label('State')
-                                            ->options(fn($get) => Helpers::getStates($get('general.country')))
-                                            ->searchable()
-                                            ->reactive(),
-                                        Select::make('general.city')
-                                            ->label('City')
-                                            ->options(fn($get) => Helpers::getCities($get('general.state')))
-                                            ->searchable()
-                                            ->reactive(),
-                                        TextInput::make('general.zip')
-                                            ->label('Zip Code')
-                                            ->numeric()
-                                            ->maxLength(10),
-                                    ]),
-                            ])
-                    ])->columns(4),
-                Section::make('Invoice')
-                    ->icon('heroicon-m-document-text')
-                    ->schema([
-                        TextInput::make('invoice.invoice_prefix')
-                            ->label('Prefix')
-                            ->placeholder('GY'),
-                        TextInput::make('invoice.invoice_number')
-                            ->label('Number')
-                            ->numeric()
-                            ->maxLength(10),
-                        Select::make('invoice.name_type')
-                            ->label('Name Type')
-                            ->native(false)
-                            ->options([
-                                'gym_name' => 'Gym Name',
-                                'gym_logo' => 'Gym Logo'
-                            ]),
-                    ])->columns(3),
-                Section::make('Member')
-                    ->icon('heroicon-m-user-group')
-                    ->schema([
-                        TextInput::make('member.member_prefix')
-                            ->label('Prefix')
-                            ->placeholder('GY'),
-                        TextInput::make('member.member_number')
-                            ->label('Number')
-                            ->numeric()
-                            ->maxLength(10),
-                    ])->columns(2)
-            ]);
+            ->schema($this->getFormSchema())
+            ->statePath('data');
     }
 
     /**
