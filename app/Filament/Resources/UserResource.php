@@ -132,9 +132,10 @@ class UserResource extends Resource
                                     ->numeric(),
                             ])->columns(4),
                     ]),
-
-
-
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->searchable(),
             ]);
     }
 
