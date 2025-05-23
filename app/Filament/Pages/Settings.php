@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Helpers\Helpers;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -68,12 +69,13 @@ class Settings extends Page implements HasForms
                     $this->generalTab(),
                     $this->invoiceTab(),
                     $this->memberTab(),
+                    $this->chargesTab(),
                 ])
         ];
     }
 
     /**
-     * Business Info Tab Schema.
+     * General Tab Schema.
      *
      * @return Forms\Components\Tabs\Tab
      */
@@ -98,7 +100,15 @@ class Settings extends Page implements HasForms
                                     ->deletable()
                                     ->visibility('public')
                                     ->image()
-                                    ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'logo', $set)),
+                                    ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
+                                DatePicker::make('general.start_date')
+                                    ->native(false)
+                                    ->suffixIcon('heroicon-o-calendar-days')
+                                    ->displayFormat('d/m/Y'),
+                                DatePicker::make('general.end_date')
+                                    ->native(false)
+                                    ->suffixIcon('heroicon-o-calendar-days')
+                                    ->displayFormat('d/m/Y')
                             ]),
                     ])
                     ->columnSpan(3),
@@ -193,7 +203,7 @@ class Settings extends Page implements HasForms
     }
 
     /**
-     * Invoice Tab Schema.
+     * Member Tab Schema.
      *
      * @return Forms\Components\Tabs\Tab
      */
@@ -204,13 +214,35 @@ class Settings extends Page implements HasForms
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        TextInput::make('member.invoice_prefix')
+                        TextInput::make('member.member_prefix')
                             ->label('Prefix')
                             ->placeholder('GY'),
-                        TextInput::make('member.invoice_number')
+                        TextInput::make('member.member_number')
                             ->label('Number')
                             ->numeric()
                             ->maxLength(10),
+                    ]),
+            ])
+        );
+    }
+
+    /**
+     * Charges Tab Schema.
+     *
+     * @return Forms\Components\Tabs\Tab
+     */
+    private function chargesTab()
+    {
+        return (
+            Tab::make('Charges')->icon('heroicon-m-currency-rupee')
+            ->schema([
+                Grid::make(2)
+                    ->schema([
+                        TextInput::make('charges.admission_fees')
+                            ->numeric(),
+                        TextInput::make('charges.taxes')
+                            ->numeric()
+                            ->suffix('%'),
                     ]),
             ])
         );

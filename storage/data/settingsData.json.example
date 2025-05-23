@@ -2,6 +2,8 @@
     "general": {
         "gym_logo": [],
         "gym_name": "",
+        "start_date": "",
+        "end_date": "",
         "gym_email": "",
         "gym_contact": "",
         "address": "",
@@ -18,5 +20,9 @@
     "member": {
         "member_prefix": "",
         "member_number": ""
+    }
+    "charges": {
+        "admission_fees": "",
+        "taxes": ""
     }
 }
