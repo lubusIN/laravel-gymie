@@ -103,11 +103,11 @@ class Settings extends Page implements HasForms
                                     ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
                                 DatePicker::make('general.start_date')
                                     ->native(false)
-                                    ->suffixIcon('heroicon-o-calendar-days')
+                                    ->suffixIcon('heroicon-o-calendar')
                                     ->displayFormat('d/m/Y'),
                                 DatePicker::make('general.end_date')
                                     ->native(false)
-                                    ->suffixIcon('heroicon-o-calendar-days')
+                                    ->suffixIcon('heroicon-o-calendar')
                                     ->displayFormat('d/m/Y')
                             ]),
                     ])
@@ -149,7 +149,6 @@ class Settings extends Page implements HasForms
                             ]),
                     ])
                     ->columnSpan(3),
-
                 Section::make('Contact Information')
                     ->aside()
                     ->schema([
@@ -166,8 +165,6 @@ class Settings extends Page implements HasForms
                             ]),
                     ])
                     ->columnSpan(3),
-
-
             ]);
     }
 

@@ -30,6 +30,7 @@ class Helpers
                     "general" => [],
                     "invoice" => [],
                     "member" => [],
+                    "charges" => [],
                 ], JSON_PRETTY_PRINT));
             }
         }
