@@ -60,37 +60,47 @@ This will:
   APP_URL=https://gymie.test
   ```
 
-### 6. Run database migrations:
+### 6. Database Setup
+You can set up the database in one of two ways, depending on your requirements:
+
+**Option 1: Blank Setup (Recommended for Production)**
+
+Run the following command:
 
 ```bash
-php artisan migrate
+composer run setup
 ```
+> [!NOTE]
+> This command will prompt you to create an admin user via the terminal.
 
-> For development or testing purposes, you can run all seeders at once (use with caution):
+This will:
+- Set up the environment (.env, app key, storage link)
+- Run a fresh migration to create database tables
+- Seed the world data (countries, states, cities)
+- Create a default Filament admin user
+
+**Option 2: Demo Setup**
+
+If you want to explore the system with all demo data preloaded, use:
 
 ```bash
-php artisan db:seed
+composer run setup-demo
 ```
+This command will:
+- Reset the database
+- Seed all available demo data
+- Prepare the environment automatically
 
-> _(Optional)_ Refresh and reseed the database (useful in development):
+> [!CAUTION]
+> This process will erase all existing data. Use it only in a local or demo environment.
 
+Login credentials:
 ```bash
-php artisan migrate:refresh --seed
+Email: test@example.com
+Password: test
 ```
 
-### 7. Create a symbolic link for storage:
-
-```bash
-php artisan storage:link
-```
-
-### 8. Create a user to access the application:
-
-```bash
-php artisan make:filament-user
-```
-
-### 9. Assigning Super Admin Role
+### 7. Assigning Super Admin Role
 
 To grant full access to the admin panel, run the following command with the email of an existing user:
 
