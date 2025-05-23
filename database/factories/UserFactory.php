@@ -16,6 +16,9 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    public $status;
+    public $gender;
+
     /**
      * Define the model's default state.
      *
@@ -23,9 +26,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $this->status = $this->faker->randomElement(['active', 'inactive']);
+        $this->gender = $this->faker->randomElement(['male', 'female']);
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->company,
+            'contact' => $this->faker->numerify('+##-##########'),
+            'address' => $this->faker->address,
+            'country' => $this->faker->country,
+            'state' => $this->faker->state,
+            'city' => $this->faker->city,
+            'pincode' => $this->faker->randomNumber(6, 0),
+            'gender' => $this->gender,
+            'status' => $this->status,
+            'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

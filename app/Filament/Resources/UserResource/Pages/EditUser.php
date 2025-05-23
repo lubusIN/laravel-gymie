@@ -3,22 +3,24 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use Filament\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
 
-class ViewUser extends ViewRecord
+class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
     public function getTitle(): string
     {
-        return 'View ' . $this->record->name;
+        return 'Edit ' . $this->record->name;
     }
 
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            Actions\DeleteAction::make(),
+            Actions\ForceDeleteAction::make(),
+            Actions\RestoreAction::make(),
         ];
     }
 }

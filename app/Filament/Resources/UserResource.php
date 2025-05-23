@@ -42,7 +42,6 @@ class UserResource extends Resource
                                     ->disk('public')
                                     ->directory('images')
                                     ->image()
-                                    ->required()
                                     ->extraAttributes(['class' => 'cursor-pointer'])
                                     ->columnSpan(1),
                                 Forms\Components\Grid::make()
@@ -164,13 +163,9 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->hidden(),
-                Tables\Actions\EditAction::make()
-                    ->hiddenLabel()
-                    ->modalHeading('Edit User'),
-                Tables\Actions\DeleteAction::make()
-                    ->hiddenLabel(),
+                Tables\Actions\EditAction::make()->hiddenLabel(),
+                Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                Tables\Actions\RestoreAction::make()
             ])->recordUrl(fn($record): string => route('filament.admin.resources.users.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -183,6 +178,8 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
             'view' => Pages\ViewUser::route('/{record}'),
         ];
     }

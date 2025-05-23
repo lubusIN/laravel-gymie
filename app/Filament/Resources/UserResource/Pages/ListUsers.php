@@ -14,8 +14,7 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->icon('heroicon-m-plus')
-                ->modalHeading('Create User'),
+                ->icon('heroicon-m-plus'),
         ];
     }
 }
