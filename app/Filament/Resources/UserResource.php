@@ -7,9 +7,6 @@ use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -167,44 +164,14 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->actions([
-                Tables\Actions\Action::make('view')
-                    ->label(fn(User $record): string => 'View ' . $record->name)
-                    ->hiddenLabel()
-                    ->infolist([
-                        Grid::make(2)
-                            ->schema([
-                                ImageEntry::make('photo')
-                                    ->hiddenLabel()
-                                    ->height(100)
-                                    ->circular()
-                                    ->columnSpanFull(1)
-                                    ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
-                                Grid::make()
-                                    ->columns(3)
-                                    ->schema([
-                                        TextEntry::make('name'),
-                                        TextEntry::make('email'),
-                                        TextEntry::make('status'),
-                                        TextEntry::make('contact'),
-                                        TextEntry::make('gender'),
-                                        TextEntry::make('address'),
-                                        TextEntry::make('country')->hidden(fn($record) => empty($record->country)),
-                                        TextEntry::make('state')->hidden(fn($record) => empty($record->state)),
-                                        TextEntry::make('city')->hidden(fn($record) => empty($record->city)),
-                                        TextEntry::make('pincode')->hidden(fn($record) => empty($record->pincode)),
-                                    ])->columnSpan(2)
-
-                            ])
-
-
-                    ])->modalSubmitAction(false)
-                    ->modalCancelAction(false),
+                Tables\Actions\ViewAction::make()
+                    ->hidden(),
                 Tables\Actions\EditAction::make()
                     ->hiddenLabel()
                     ->modalHeading('Edit User'),
                 Tables\Actions\DeleteAction::make()
                     ->hiddenLabel(),
-            ])
+            ])->recordUrl(fn($record): string => route('filament.admin.resources.users.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -216,6 +183,7 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
     }
 }
