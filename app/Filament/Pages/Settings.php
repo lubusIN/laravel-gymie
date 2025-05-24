@@ -10,6 +10,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -233,13 +234,18 @@ class Settings extends Page implements HasForms
         return (
             Tab::make('Charges')->icon('heroicon-m-currency-rupee')
             ->schema([
-                Grid::make(2)
+                Grid::make(3)
                     ->schema([
                         TextInput::make('charges.admission_fees')
                             ->numeric(),
                         TextInput::make('charges.taxes')
                             ->numeric()
                             ->suffix('%'),
+                        TagsInput::make('charges.discount')
+                            ->label('Discount percent available')
+                            ->hint('Press Enter to add')
+                            ->placeholder('Type discount %')
+                            ->separator(','),
                     ]),
             ])
         );

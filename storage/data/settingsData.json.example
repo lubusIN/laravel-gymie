@@ -24,5 +24,7 @@
     "charges": {
         "admission_fees": "",
         "taxes": ""
+        "discount": []
+
     }
 }
