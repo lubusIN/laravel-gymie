@@ -178,7 +178,7 @@ class UserResource extends Resource
                             Notification::make()
                                 ->title('Inactive')
                                 ->danger()
-                                ->body("{$record->name} has been inactived.")
+                                ->body("{$record->name} has been inactivated.")
                                 ->send();
                         }))
                         ->visible(fn($record) => $record->status === 'active'),
