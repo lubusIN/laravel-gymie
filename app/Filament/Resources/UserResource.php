@@ -48,10 +48,11 @@ class UserResource extends Resource
                                 Forms\Components\Grid::make()
                                     ->columns(2)
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('name')->required()->placeholder('e.g. John Doe'),
                                         Forms\Components\TextInput::make('email')
                                             ->email()
                                             ->required()
+                                            ->placeholder('user@example.com')
                                             ->unique(ignorable: fn($record) => $record)
                                             ->prefixIcon('heroicon-m-envelope'),
                                         Forms\Components\TextInput::make('contact')
@@ -69,8 +70,7 @@ class UserResource extends Resource
                                                 'female' => 'Female',
                                             ])
                                             ->default('none')
-                                            ->selectablePlaceholder(false)
-                                            ->required(),
+                                            ->selectablePlaceholder(false),
                                         Forms\Components\TextInput::make('password')
                                             ->password()
                                             ->hiddenOn('view')
@@ -90,7 +90,8 @@ class UserResource extends Resource
                 Forms\Components\Section::make('Address')
                     ->schema([
                         Forms\Components\Textarea::make('address')
-                            ->required(),
+                            ->required()
+                            ->placeholder('100/B, Oak Ave Apt. 10, Rass Street'),
                         Forms\Components\Group::make()
                             ->schema([
                                 Forms\Components\Select::make('country')
@@ -118,7 +119,8 @@ class UserResource extends Resource
                                     ->searchable()
                                     ->reactive(),
                                 Forms\Components\TextInput::make('pincode')
-                                    ->numeric(),
+                                    ->numeric()
+                                    ->placeholder('PIN Code'),
                             ])->columns(4),
                     ]),
 
@@ -169,16 +171,31 @@ class UserResource extends Resource
                     Tables\Actions\Action::make('inactive')
                         ->label('Inactive')
                         ->color('danger')
+                        ->requiresConfirmation()
                         ->icon('heroicon-s-check-circle')
                         ->action(fn(User $record) => tap($record, function ($record) {
                             $record->update(['status' => 'inactive']);
                             Notification::make()
                                 ->title('Inactive')
-                                ->success()
+                                ->danger()
                                 ->body("{$record->name} has been inactived.")
                                 ->send();
                         }))
                         ->visible(fn($record) => $record->status === 'active'),
+                    Tables\Actions\Action::make('active')
+                        ->label('Active')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-check-circle')
+                        ->action(fn(User $record) => tap($record, function ($record) {
+                            $record->update(['status' => 'active']);
+                            Notification::make()
+                                ->title('Active')
+                                ->success()
+                                ->body("{$record->name} has been activated.")
+                                ->send();
+                        }))
+                        ->visible(fn($record) => $record->status === 'inactive'),
                     Tables\Actions\EditAction::make()->hiddenLabel(),
                     Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     Tables\Actions\RestoreAction::make()
