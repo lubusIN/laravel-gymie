@@ -105,7 +105,7 @@ Password: test
 To grant full access to the admin panel, run the following command with the email of an existing user:
 
 ```bash
-php artisan shield:super-admin user@example.com
+php artisan shield:super-admin
 ```
 
 ## Troubleshooting
