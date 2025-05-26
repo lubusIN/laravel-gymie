@@ -7,6 +7,7 @@ use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -53,6 +54,23 @@ class UserResource extends Resource
                                             ->required()
                                             ->unique(ignorable: fn($record) => $record)
                                             ->prefixIcon('heroicon-m-envelope'),
+                                        Forms\Components\TextInput::make('contact')
+                                            ->label('Contact')
+                                            ->prefixIcon('heroicon-m-phone')
+                                            ->tel()
+                                            ->placeholder('+91 555-123-4567')
+                                            ->maxLength(20)
+                                            ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                            ->required(),
+                                        Forms\Components\Select::make('gender')
+                                            ->options([
+                                                'none' => 'None',
+                                                'male' => 'Male',
+                                                'female' => 'Female',
+                                            ])
+                                            ->default('none')
+                                            ->selectablePlaceholder(false)
+                                            ->required(),
                                         Forms\Components\TextInput::make('password')
                                             ->password()
                                             ->hiddenOn('view')
@@ -67,31 +85,6 @@ class UserResource extends Resource
                                             ->same('password'),
                                     ])
                                     ->columnSpan(2),
-                                Forms\Components\TextInput::make('contact')
-                                    ->label('Contact')
-                                    ->prefixIcon('heroicon-m-phone')
-                                    ->tel()
-                                    ->placeholder('+91 555-123-4567')
-                                    ->maxLength(20)
-                                    ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
-                                    ->required(),
-                                Forms\Components\Select::make('gender')
-                                    ->options([
-                                        'none' => 'None',
-                                        'male' => 'Male',
-                                        'female' => 'Female',
-                                    ])
-                                    ->default('none')
-                                    ->selectablePlaceholder(false)
-                                    ->required(),
-                                Forms\Components\Select::make('status')
-                                    ->options([
-                                        '' => 'No Status',
-                                        'active' => 'Active',
-                                        'inactive' => 'Inactive',
-                                    ])
-                                    ->required()
-                                    ->selectablePlaceholder(false)
                             ]),
                     ]),
                 Forms\Components\Section::make('Address')
@@ -108,7 +101,7 @@ class UserResource extends Resource
                                     ->preload()
                                     ->required()
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, callable $set) => [
+                                    ->afterStateUpdated(fn(callable $set) => [
                                         $set('state', null),
                                         $set('city', null),
                                     ]),
@@ -160,12 +153,36 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('pincode')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->color(fn(string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                    })
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    })
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->hiddenLabel(),
-                Tables\Actions\DeleteAction::make()->hiddenLabel(),
-                Tables\Actions\RestoreAction::make()
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('inactive')
+                        ->label('Inactive')
+                        ->color('danger')
+                        ->icon('heroicon-s-check-circle')
+                        ->action(fn(User $record) => tap($record, function ($record) {
+                            $record->update(['status' => 'inactive']);
+                            Notification::make()
+                                ->title('Inactive')
+                                ->success()
+                                ->body("{$record->name} has been inactived.")
+                                ->send();
+                        }))
+                        ->visible(fn($record) => $record->status === 'active'),
+                    Tables\Actions\EditAction::make()->hiddenLabel(),
+                    Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                    Tables\Actions\RestoreAction::make()
+                ])
             ])->recordUrl(fn($record): string => route('filament.admin.resources.users.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
