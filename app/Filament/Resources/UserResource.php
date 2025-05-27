@@ -87,7 +87,7 @@ class UserResource extends Resource
                                     ->columnSpan(2),
                             ]),
                     ]),
-                Forms\Components\Section::make('')
+                Forms\Components\Section::make('Address')
                     ->schema([
                         Forms\Components\Textarea::make('address')
                             ->required()
