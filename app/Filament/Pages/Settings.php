@@ -102,13 +102,13 @@ class Settings extends Page implements HasForms
                                     ->visibility('public')
                                     ->image()
                                     ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
-                                DatePicker::make('general.start_date')
+                                DatePicker::make('general.financial_year_start')
                                     ->native(false)
-                                    ->suffixIcon('heroicon-o-calendar')
+                                    ->suffixIcon('heroicon-o-calendar-days')
                                     ->displayFormat('d/m/Y'),
-                                DatePicker::make('general.end_date')
+                                DatePicker::make('general.financial_year_end')
                                     ->native(false)
-                                    ->suffixIcon('heroicon-o-calendar')
+                                    ->suffixIcon('heroicon-o-calendar-days')
                                     ->displayFormat('d/m/Y')
                             ]),
                     ])
@@ -182,14 +182,13 @@ class Settings extends Page implements HasForms
                 Grid::make(3)
                     ->schema([
                         TextInput::make('invoice.invoice_prefix')
-                            ->label('Prefix')
+                            ->label('Invoice Prefix')
                             ->placeholder('GY'),
-                        TextInput::make('invoice.invoice_number')
-                            ->label('Number')
+                        TextInput::make('invoice.invoice_last_number')
                             ->numeric()
+                            ->label('Invoice Last Number')
                             ->maxLength(10),
-                        Select::make('invoice.name_type')
-                            ->label('Name Type')
+                        Select::make('invoice.invoice_name_type')
                             ->native(false)
                             ->options([
                                 'gym_name' => 'Gym Name',
@@ -213,11 +212,11 @@ class Settings extends Page implements HasForms
                 Grid::make(2)
                     ->schema([
                         TextInput::make('member.member_prefix')
-                            ->label('Prefix')
+                            ->label('Member Prefix')
                             ->placeholder('GY'),
-                        TextInput::make('member.member_number')
-                            ->label('Number')
+                        TextInput::make('member.member_last_number')
                             ->numeric()
+                            ->label('Member Last Number')
                             ->maxLength(10),
                     ]),
             ])
@@ -236,7 +235,7 @@ class Settings extends Page implements HasForms
             ->schema([
                 Grid::make(3)
                     ->schema([
-                        TextInput::make('charges.admission_fees')
+                        TextInput::make('charges.admission_fee')
                             ->numeric(),
                         TextInput::make('charges.taxes')
                             ->numeric()

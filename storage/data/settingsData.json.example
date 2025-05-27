@@ -2,8 +2,8 @@
     "general": {
         "gym_logo": [],
         "gym_name": "",
-        "start_date": "",
-        "end_date": "",
+        "financial_year_start": "",
+        "financial_year_end": "",
         "gym_email": "",
         "gym_contact": "",
         "address": "",
@@ -14,15 +14,15 @@
     },
     "invoice": {
         "invoice_prefix": "",
-        "invoice_number": "",
-        "name_type": ""
+        "invoice_last_number": "",
+        "invoice_name_type": ""
     },
     "member": {
         "member_prefix": "",
-        "member_number": ""
+        "member_last_number": ""
     }
     "charges": {
-        "admission_fees": "",
+        "admission_fee": "",
         "taxes": ""
         "discount": []
 
