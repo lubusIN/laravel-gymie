@@ -10,6 +10,11 @@ class EditEnquiry extends EditRecord
 {
     protected static string $resource = EnquiryResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Edit ' . $this->record->name;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

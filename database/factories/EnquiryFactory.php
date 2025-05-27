@@ -30,8 +30,8 @@ class EnquiryFactory extends Factory
             'state' => $this->faker->state,
             'pincode' => $this->faker->randomNumber(6, 0),
             'interested_in' => $this->faker->randomElement(['Yoga', 'Gym', 'Fat loss', 'Cardio']),
-            'source' => $this->faker->randomElement(['Google', 'Instagram', 'Friend', 'Walk-in']),
-            'why_do_you_plan_to_join' => $this->faker->sentence,
+            'source' => $this->faker->randomElement(['Promotions', 'Word of mouth', 'Others']),
+            'why_do_you_plan_to_join' => $this->faker->randomElement(['Fitness, Networking', 'Body Building', 'Fatloss', 'Weightgain', 'Others']),
             'start_by' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
         ];
     }
