@@ -51,6 +51,16 @@ class Enquiry extends Model
     protected $dates = ['deleted_at'];
 
     /**
+     * Get the enquiry for the follow-up.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function follow_up()
+    {
+        return $this->hasMany(FollowUp::class);
+    }
+
+    /**
      * Get the Filament form schema for the estimate.
      *
      * @return array
