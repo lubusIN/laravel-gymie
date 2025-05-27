@@ -16,7 +16,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     /**
      * Define the form schema for the resource.
@@ -28,7 +28,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('User Information')
+                Forms\Components\Section::make('')
                     ->schema([
                         Forms\Components\Grid::make()
                             ->columns(3)
@@ -73,13 +73,13 @@ class UserResource extends Resource
                                             ->selectablePlaceholder(false),
                                         Forms\Components\TextInput::make('password')
                                             ->password()
-                                            ->hiddenOn('view')
+                                            ->hiddenOn(['view', 'edit'])
                                             ->dehydrated(fn($state) => filled($state))
                                             ->required(fn(string $operation): bool => $operation === 'create')
                                             ->revealable(),
                                         Forms\Components\TextInput::make('password_confirmation')
                                             ->password()
-                                            ->hiddenOn('view')
+                                            ->hiddenOn(['view', 'edit'])
                                             ->revealable()
                                             ->required(fn(callable $get): bool => filled($get('password')))
                                             ->same('password'),
@@ -87,7 +87,7 @@ class UserResource extends Resource
                                     ->columnSpan(2),
                             ]),
                     ]),
-                Forms\Components\Section::make('Address')
+                Forms\Components\Section::make('')
                     ->schema([
                         Forms\Components\Textarea::make('address')
                             ->required()
@@ -169,10 +169,10 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('inactive')
-                        ->label('Inactive')
+                        ->label('Mark as Inactive')
                         ->color('danger')
                         ->requiresConfirmation()
-                        ->icon('heroicon-s-check-circle')
+                        ->icon('heroicon-s-x-circle')
                         ->action(fn(User $record) => tap($record, function ($record) {
                             $record->update(['status' => 'inactive']);
                             Notification::make()
@@ -183,7 +183,7 @@ class UserResource extends Resource
                         }))
                         ->visible(fn($record) => $record->status === 'active'),
                     Tables\Actions\Action::make('active')
-                        ->label('Active')
+                        ->label('Mark as Active')
                         ->color('success')
                         ->requiresConfirmation()
                         ->icon('heroicon-s-check-circle')
