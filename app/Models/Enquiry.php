@@ -12,11 +12,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class Enquiry extends Model
 {
-    /** @use HasFactory<\Database\Factories\EnquiryFactory> */
-    use HasFactory;
+    use SoftDeletes, HasFactory, HasRoles;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,8 +41,14 @@ class Enquiry extends Model
         'source',
         'why_do_you_plan_to_join',
         'start_by'
-
     ];
+
+    protected $casts = [
+        'dob' => 'date',
+        'start_by' => 'date',
+    ];
+
+    protected $dates = ['deleted_at'];
 
     /**
      * Get the Filament form schema for the estimate.

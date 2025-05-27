@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('source')->nullable();
             $table->string('why_do_you_plan_to_join')->nullable();
             $table->date('start_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

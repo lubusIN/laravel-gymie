@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EnquiryResource\Pages;
 use App\Models\Enquiry;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -39,7 +41,23 @@ class EnquiryResource extends Resource
             ->columns(Enquiry::getTableColumns())
             ->defaultSort('id', 'desc')
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\Filter::make('date')
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
