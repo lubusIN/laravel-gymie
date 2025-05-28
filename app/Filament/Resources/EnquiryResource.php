@@ -63,6 +63,7 @@ class EnquiryResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('mark_as_member')
                         ->icon('heroicon-m-check-circle')
+                        ->color('success')
                         ->action(fn(Enquiry $record) => tap($record, function ($record) {
                             $record->update(['status' => 'member']);
                             Notification::make()

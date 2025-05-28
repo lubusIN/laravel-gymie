@@ -58,8 +58,7 @@ class Enquiry extends Model
     public static function getForm(): array
     {
         return[
-            Section::make('details')
-            ->heading('Enter details of the enquiry')
+            Section::make('')
             ->schema([
                 TextInput::make('name')->required()->maxLength(255)->placeholder('Name'),
                 TextInput::make('email')->email()->required()->placeholder('user@example.com'),
@@ -154,10 +153,11 @@ class Enquiry extends Model
             TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('contact')->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')->colors([
-                'primary' => 'lead',
+                'info' => 'lead',
                 'success' => 'member',
                 'danger' => 'lost',
-            ])->toggleable(isToggledHiddenByDefault: false),
+            ])->badge()
+            ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('gender')->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('address')->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('country')->toggleable(isToggledHiddenByDefault: true),
