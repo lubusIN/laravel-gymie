@@ -35,11 +35,12 @@ class FollowUpResource extends Resource
                 DatePicker::make('follow_up_date')
                     ->native(false)
                     ->label('Date')
-                    ->displayFormat('d/m/Y')
+                    ->displayFormat('d-m-Y')
                     ->closeOnDateSelection()
-                    ->placeholder('dd/mm/yyyy')
+                    ->placeholder('dd-mm-yyyy')
                     ->suffixIcon('heroicon-m-calendar-days')
                     ->minDate(now()),
+                
                 Select::make('follow_up_method')
                     ->options([
                         'call' => 'Call',
