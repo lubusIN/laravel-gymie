@@ -27,7 +27,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $this->status = $this->faker->randomElement(['active', 'inactive']);
-        $this->gender = $this->faker->randomElement(['male', 'female', 'others']);
+        $this->gender = $this->faker->randomElement(['male', 'female', 'other']);
 
         return [
             'name' => $this->faker->company,
