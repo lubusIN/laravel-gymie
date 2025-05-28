@@ -57,7 +57,7 @@ This will:
 - Set your application URL:
     
   ```env
-  APP_URL=https://gymie.test
+  APP_URL=https://laravel-gymie.test
   ```
 
 ### 6. Database Setup
