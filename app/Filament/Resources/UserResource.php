@@ -67,6 +67,7 @@ class UserResource extends Resource
                                             ->options([
                                                 'male' => 'Male',
                                                 'female' => 'Female',
+                                                'others' => 'Others'
                                             ])
                                             ->required()
                                             ->default('male')
