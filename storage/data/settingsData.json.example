@@ -13,13 +13,13 @@
         "zip": ""
     },
     "invoice": {
-        "invoice_prefix": "",
-        "invoice_last_number": "",
-        "invoice_name_type": ""
+        "prefix": "",
+        "last_number": "",
+        "name_type": ""
     },
     "member": {
-        "member_prefix": "",
-        "member_last_number": ""
+        "prefix": "",
+        "last_number": ""
     }
     "charges": {
         "admission_fee": "",

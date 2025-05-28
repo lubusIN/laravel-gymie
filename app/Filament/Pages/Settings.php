@@ -181,14 +181,12 @@ class Settings extends Page implements HasForms
             ->schema([
                 Grid::make(3)
                     ->schema([
-                        TextInput::make('invoice.invoice_prefix')
-                            ->label('Invoice Prefix')
+                        TextInput::make('invoice.prefix')
                             ->placeholder('GY'),
-                        TextInput::make('invoice.invoice_last_number')
+                        TextInput::make('invoice.last_number')
                             ->numeric()
-                            ->label('Invoice Last Number')
                             ->maxLength(10),
-                        Select::make('invoice.invoice_name_type')
+                        Select::make('invoice.name_type')
                             ->native(false)
                             ->options([
                                 'gym_name' => 'Gym Name',
@@ -211,12 +209,10 @@ class Settings extends Page implements HasForms
             ->schema([
                 Grid::make(2)
                     ->schema([
-                        TextInput::make('member.member_prefix')
-                            ->label('Member Prefix')
+                        TextInput::make('member.prefix')
                             ->placeholder('GY'),
-                        TextInput::make('member.member_last_number')
+                        TextInput::make('member.last_number')
                             ->numeric()
-                            ->label('Member Last Number')
                             ->maxLength(10),
                     ]),
             ])
