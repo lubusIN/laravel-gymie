@@ -70,15 +70,11 @@ class Enquiry extends Model
                         'female' => 'Female',
                         'other' => 'Other',
                     ])->default('male')
-                        ->searchable()
+                        ->selectablePlaceholder(false)
                         ->required(),
-                    DatePicker::make('date')
-                        ->default(now())
-                        ->suffixIcon('heroicon-m-calendar-days')
-                        ->displayFormat('d-m-Y')
-                        ->native(false),
                     DatePicker::make('dob')
                         ->native(false)
+                        ->required()
                         ->label('Date of Birth')
                         ->placeholder('01-01-2001')
                         ->displayFormat('d-m-Y')
@@ -95,6 +91,14 @@ class Enquiry extends Model
                         ->default('student')
                         ->selectablePlaceholder(false)
                         ->required(),
+                    DatePicker::make('date')
+                        ->default(now())
+                        ->suffixIcon('heroicon-m-calendar-days')
+                        ->displayFormat('d-m-Y')
+                        ->native(false),
+                ])->columns(3)->columnSpanFull(),
+            Section::make('Address')
+                ->schema([
                     Group::make()
                         ->schema([
                             Textarea::make('address')
@@ -128,9 +132,13 @@ class Enquiry extends Model
                                         ->reactive(),
                                     TextInput::make('pincode')
                                         ->numeric()
+                                        ->required()
                                         ->placeholder('PIN code'),
                                 ])->columns(4),
                         ])->columnSpanFull(),
+                ]),
+            Section::make('Choose your Preferences')
+                ->schema([
                     Select::make('interested_in')
                         ->options([
                             'beginner_pkg' => 'Beginner PKG',
@@ -169,7 +177,7 @@ class Enquiry extends Model
                         ->displayFormat('d-m-Y')
                         ->placeholder(now()->format('d-m-Y'))
                         ->suffixIcon('heroicon-m-calendar-days'),
-                ])->columns(3)
+                ])->columns(2)
 
         ];
     }
@@ -186,7 +194,8 @@ class Enquiry extends Model
             TextColumn::make('name')->searchable()->sortable()->label('Name'),
             TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: false)->label('Email'),
             TextColumn::make('contact')->toggleable(isToggledHiddenByDefault: true)->label('Contact'),
-            TextColumn::make('date')->sortable()->date()->toggleable(isToggledHiddenByDefault: true)->label('Date'),
+            TextColumn::make('date')->sortable()->date('d-m-Y')->toggleable(isToggledHiddenByDefault: true)->label('Date'),
+            TextColumn::make('start_by')->date('d-m-Y')->toggleable(isToggledHiddenByDefault: true)->label('Start by'),
             TextColumn::make('status')
                 ->color(fn(string $state): string => match ($state) {
                     'lead' => 'info',
@@ -201,56 +210,6 @@ class Enquiry extends Model
                     'lost' => 'Lost',
                     default => ucfirst($state), // Fallback for any unexpected status
                 }),
-            TextColumn::make('gender')->toggleable(isToggledHiddenByDefault: true)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'male' => 'Male',
-                    'female' => 'Female',
-                    'other' => 'Other',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                })->label('Gender'),
-            TextColumn::make('address')->toggleable(isToggledHiddenByDefault: true)->label('Address'),
-            TextColumn::make('country')->toggleable(isToggledHiddenByDefault: true)->label('Country'),
-            TextColumn::make('state')->toggleable(isToggledHiddenByDefault: true)->label('State'),
-            TextColumn::make('city')->toggleable(isToggledHiddenByDefault: true)->label('City'),
-            TextColumn::make('pincode')->toggleable(isToggledHiddenByDefault: true)->label('Pincode'),
-            TextColumn::make('interested_in')->toggleable(isToggledHiddenByDefault: true)->label('Interest In'),
-            TextColumn::make('occupation')->toggleable(isToggledHiddenByDefault: true)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'student' => 'Student',
-                    'housewife' => 'Housewife',
-                    'self_employed' => 'Self Employed',
-                    'professional' => 'Professional',
-                    'freelancer' => 'Freelancer',
-                    'others' => 'Others',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                })->label('Occupation'),
-            TextColumn::make('source')
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'promotions' => 'Promotions',
-                    'word_of_mouth' => 'Word of mouth',
-                    'others' => 'Others',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                })->label('Source'),
-            TextColumn::make('why_do_you_plan_to_join')
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'fitness' => 'Fitness',
-                    'body_building' => 'Body Building',
-                    'fatloss' => 'Fatloss',
-                    'weightgain' => 'Weightgain',
-                    'others' => 'Others',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                })->label('Why do you plan to join'),
-            TextColumn::make('start_by')->date()->toggleable(isToggledHiddenByDefault: true)->label('Start by'),
-            TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('updated_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
         ];
     }
 }
