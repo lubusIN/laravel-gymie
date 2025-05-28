@@ -35,8 +35,9 @@ class FollowUpResource extends Resource
                 DatePicker::make('follow_up_date')
                     ->native(false)
                     ->label('Date')
-                    ->placeholder(now()->format('Y-m-d'))
-                    ->required()
+                    ->displayFormat('d/m/Y')
+                    ->closeOnDateSelection()
+                    ->placeholder('dd/mm/yyyy')
                     ->suffixIcon('heroicon-m-calendar-days')
                     ->minDate(now()),
                 Select::make('follow_up_method')
@@ -48,8 +49,7 @@ class FollowUpResource extends Resource
                         'others' => 'Others'
                     ])->default('call')
                     ->label('Follow-up method')
-                    ->searchable()
-                    ->required(),
+                    ->searchable(),
                 Textarea::make('outcome')
                     ->placeholder('Not interested, etc.')
                     ->required(),
@@ -60,16 +60,33 @@ class FollowUpResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('enquiry_id')->searchable()->sortable(),
-                TextColumn::make('follow_up_date')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('follow_up_method')->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('status')->colors([
-                    'primary' => 'lead',
-                    'success' => 'member',
-                    'danger' => 'lost',
-                    'warning' => 'unresponsive'
-                ])->toggleable(isToggledHiddenByDefault: false),
-                TextColumn::make('outcome')->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('enquiry.name')
+                    ->searchable()
+                    ->label('Enquiry')
+                    ->sortable(),
+                TextColumn::make('follow_up_date')
+                    ->searchable()
+                    ->label('Date')
+                    ->date()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('follow_up_method')
+                    ->label('Method')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('status')
+                    ->icon(fn(string $state): string => match ($state) {
+                        'done' => 'heroicon-o-check-circle',
+                        'pending' => 'heroicon-o-x-circle',
+                    })
+                    ->iconColor(fn(string $state): string => match ($state) {
+                        'done' => 'success',
+                        'pending' => 'warning',
+                    })
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('outcome')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -91,7 +108,10 @@ class FollowUpResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()->hiddenLabel(),
+                    Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
