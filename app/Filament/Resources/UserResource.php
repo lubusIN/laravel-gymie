@@ -69,7 +69,6 @@ class UserResource extends Resource
                                                 'female' => 'Female',
                                             ])
                                             ->required()
-                                            ->default('none')
                                             ->selectablePlaceholder(false),
                                         Forms\Components\TextInput::make('password')
                                             ->password()
