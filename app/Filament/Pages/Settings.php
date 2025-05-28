@@ -47,7 +47,7 @@ class Settings extends Page implements HasForms
         $settings = Helpers::getSettings();
         $this->data = $settings;
 
-        // Ensure logo is always set correctly
+        // Ensure gym_logo is always set correctly
         foreach (['gym_logo'] as $logoType) {
             if (!empty($this->data['general'][$logoType]) && is_array($this->data['general'][$logoType])) {
                 $this->data['general'][$logoType] = $this->data['general'][$logoType];
@@ -305,7 +305,7 @@ class Settings extends Page implements HasForms
         $jsonPath = storage_path('data/settingsData.json');
         $jsonData = Helpers::getSettings();
 
-        // Ensure 'business_info' and its key exist as an array
+        // Ensure 'general' and its key exist as an array
         $jsonData['general'] = $jsonData['general'] ?? [];
         $jsonData['general'][$key] = $path;
 
