@@ -104,10 +104,12 @@ class Settings extends Page implements HasForms
                                     ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
                                 DatePicker::make('general.financial_year_start')
                                     ->native(false)
+                                    ->label('Financial year start')
                                     ->suffixIcon('heroicon-o-calendar-days')
                                     ->displayFormat('d/m/Y'),
                                 DatePicker::make('general.financial_year_end')
                                     ->native(false)
+                                    ->label('Financial year end')
                                     ->suffixIcon('heroicon-o-calendar-days')
                                     ->displayFormat('d/m/Y')
                             ]),
@@ -182,12 +184,15 @@ class Settings extends Page implements HasForms
                 Grid::make(3)
                     ->schema([
                         TextInput::make('invoice.prefix')
-                            ->placeholder('GY'),
+                            ->placeholder('GY')
+                            ->label('Prefix'),
                         TextInput::make('invoice.last_number')
                             ->numeric()
+                            ->label('Last Number')
                             ->maxLength(10),
                         Select::make('invoice.name_type')
                             ->native(false)
+                            ->label('Name Type')
                             ->options([
                                 'gym_name' => 'Gym Name',
                                 'gym_logo' => 'Gym Logo'
@@ -210,9 +215,11 @@ class Settings extends Page implements HasForms
                 Grid::make(2)
                     ->schema([
                         TextInput::make('member.prefix')
-                            ->placeholder('GY'),
+                            ->placeholder('GY')
+                            ->label('Prefix'),
                         TextInput::make('member.last_number')
                             ->numeric()
+                            ->label('Last Number')
                             ->maxLength(10),
                     ]),
             ])
@@ -232,9 +239,11 @@ class Settings extends Page implements HasForms
                 Grid::make(3)
                     ->schema([
                         TextInput::make('charges.admission_fee')
-                            ->numeric(),
+                            ->numeric()
+                            ->label('Admission Fee'),
                         TextInput::make('charges.taxes')
                             ->numeric()
+                            ->label('Taxes')
                             ->suffix('%'),
                         TagsInput::make('charges.discount')
                             ->label('Discount percent available')
