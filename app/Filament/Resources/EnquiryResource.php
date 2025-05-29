@@ -31,7 +31,7 @@ class EnquiryResource extends Resource
     }
 
     /**
-     * Get the Filament table columns for the estimate list view.
+     * Get the Filament table columns for the enquiry list view.
      *
      * @return array
      */
