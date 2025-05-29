@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('follow_ups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('enquiry_id')->constrained()->onDelete('cascade');
-            $table->date('follow_up_date')->nullable();
+            $table->date('date')->default(now())->nullable();
+            $table->date('due_date')->nullable();
             $table->enum('follow_up_method', ['call', 'email', 'in_person', 'whatsapp', 'other'])->default('call')->nullable();
             $table->string('outcome')->nullable();
             $table->enum('status', ['pending', 'done'])->default('pending')->nullable();
