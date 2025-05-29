@@ -53,7 +53,7 @@ class Enquiry extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the Filament form schema for the estimate.
+     * Get the Filament form schema for the enquiry.
      *
      * @return array
      */
@@ -183,7 +183,7 @@ class Enquiry extends Model
     }
 
     /**
-     * Get the Filament table columns for the estimate list view.
+     * Get the Filament table columns for the enquiry list view.
      *
      * @return array
      */
