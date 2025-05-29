@@ -68,15 +68,9 @@ class FollowUp extends Model
                 ->closeOnDateSelection()
                 ->placeholder('dd-mm-yyyy')
                 ->suffixIcon('heroicon-m-calendar-days')
-                ->default(now()),
-            DatePicker::make('due_date')
-                ->native(false)
-                ->label('Due Date')
-                ->displayFormat('d-m-Y')
-                ->closeOnDateSelection()
-                ->placeholder('dd-mm-yyyy')
-                ->suffixIcon('heroicon-m-calendar-days')
-                ->minDate(now()),
+                ->default(now())
+                ->disabledOn('edit')
+                ->hiddenOn('create'),
             Select::make('follow_up_method')
                 ->options([
                     'call' => 'Call',
@@ -87,6 +81,15 @@ class FollowUp extends Model
                 ])->default('call')
                 ->label('Follow-up method')
                 ->searchable(),
+            DatePicker::make('due_date')
+                ->native(false)
+                ->label('Due Date')
+                ->displayFormat('d-m-Y')
+                ->closeOnDateSelection()
+                ->placeholder('dd-mm-yyyy')
+                ->suffixIcon('heroicon-m-calendar-days')
+                ->disabledOn('edit')
+                ->minDate(now()),
             Textarea::make('outcome')
                 ->placeholder('Not interested, etc.')
                 ->label('Outcome')
@@ -111,8 +114,8 @@ class FollowUp extends Model
                 ->sortable(),
             TextColumn::make('due_date')
                 ->searchable()
+                ->date('d-m-Y')
                 ->label('Due Date')
-                ->date()
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('follow_up_method')
                 ->label('Method')
@@ -125,6 +128,11 @@ class FollowUp extends Model
                 ->iconColor(fn(string $state): string => match ($state) {
                     'done' => 'success',
                     'pending' => 'warning',
+                })
+                ->formatStateUsing(fn(string $state): string => match ($state) {
+                    'done' => 'Done',
+                    'pending' => 'Pending',
+                    default => ucfirst($state), // Fallback for any unexpected status
                 })
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('outcome')

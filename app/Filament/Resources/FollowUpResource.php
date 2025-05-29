@@ -40,6 +40,7 @@ class FollowUpResource extends Resource
     {
         return $table
             ->columns(FollowUp::getTableColumns())
+            ->defaultSort('id', 'desc')            
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
