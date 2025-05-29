@@ -63,7 +63,7 @@ class Enquiry extends Model
     }
 
     /**
-     * Get the Filament form schema for the estimate.
+     * Get the Filament form schema for the enquiry.
      *
      * @return array
      */
