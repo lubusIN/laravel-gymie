@@ -40,7 +40,7 @@ class FollowUpResource extends Resource
     {
         return $table
             ->columns(FollowUp::getTableColumns())
-            ->defaultSort('id', 'desc')            
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
@@ -77,7 +77,7 @@ class FollowUpResource extends Resource
                     Tables\Actions\EditAction::make()->hiddenLabel(),
                     Tables\Actions\DeleteAction::make()->hiddenLabel(),
                 ])
-            ])
+            ])->recordUrl(fn($record): string => route('filament.admin.resources.follow-ups.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -98,6 +98,7 @@ class FollowUpResource extends Resource
             'index' => Pages\ListFollowUps::route('/'),
             'create' => Pages\CreateFollowUp::route('/create'),
             'edit' => Pages\EditFollowUp::route('/{record}/edit'),
+            'view' => Pages\ViewFollowUp::route('/{record}')
         ];
     }
 }
