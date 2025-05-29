@@ -193,7 +193,7 @@ class Enquiry extends Model
     }
 
     /**
-     * Get the Filament table columns for the enuqiry list view.
+     * Get the Filament table columns for the enquiry list view.
      *
      * @return array
      */
