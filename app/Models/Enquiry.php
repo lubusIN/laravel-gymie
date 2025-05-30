@@ -13,11 +13,10 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Permission\Traits\HasRoles;
 
 class Enquiry extends Model
 {
-    use SoftDeletes, HasFactory, HasRoles;
+    use SoftDeletes, HasFactory;
 
     /**
      * The attributes that are mass assignable.
