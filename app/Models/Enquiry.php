@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Enquiry extends Model
 {
-    use SoftDeletes, HasFactory, HasRoles;
+    use SoftDeletes, HasFactory;
 
     /**
      * The attributes that are mass assignable.
