@@ -53,7 +53,7 @@ class Enquiry extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the enquiry for the follow-up.
+     * Get the follow-up for the enquiry.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
