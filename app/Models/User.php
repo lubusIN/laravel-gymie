@@ -3,11 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar, FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -54,5 +58,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the URL for the user's Filament avatar.
+     *
+     * @return string|null The URL of the user's avatar or null if not set.
+     */
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->photo ? asset($this->photo) : null;
+    }
+
+    /**
+     * Determine if the user can access the Filament panel.
+     *
+     * @param Panel $panel The Filament panel instance.
+     * @return bool True if the user can access the panel, false otherwise.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }

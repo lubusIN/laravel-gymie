@@ -7,9 +7,7 @@ use App\Helpers\Helpers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +16,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     /**
      * Define the form schema for the resource.
@@ -30,7 +28,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('User Information')
+                Forms\Components\Section::make('')
                     ->schema([
                         Forms\Components\Grid::make()
                             ->columns(3)
@@ -45,63 +43,56 @@ class UserResource extends Resource
                                     ->disk('public')
                                     ->directory('images')
                                     ->image()
-                                    ->required()
                                     ->extraAttributes(['class' => 'cursor-pointer'])
                                     ->columnSpan(1),
                                 Forms\Components\Grid::make()
                                     ->columns(2)
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('name')->required()->placeholder('e.g. John Doe'),
                                         Forms\Components\TextInput::make('email')
                                             ->email()
                                             ->required()
+                                            ->placeholder('user@example.com')
                                             ->unique(ignorable: fn($record) => $record)
                                             ->prefixIcon('heroicon-m-envelope'),
+                                        Forms\Components\TextInput::make('contact')
+                                            ->label('Contact')
+                                            ->prefixIcon('heroicon-m-phone')
+                                            ->tel()
+                                            ->placeholder('+91 555-123-4567')
+                                            ->maxLength(20)
+                                            ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                            ->required(),
+                                        Forms\Components\Select::make('gender')
+                                            ->options([
+                                                'male' => 'Male',
+                                                'female' => 'Female',
+                                                'other' => 'Other'
+                                            ])
+                                            ->required()
+                                            ->default('male')
+                                            ->selectablePlaceholder(false),
                                         Forms\Components\TextInput::make('password')
                                             ->password()
-                                            ->hiddenOn('view')
+                                            ->hiddenOn(['view', 'edit'])
                                             ->dehydrated(fn($state) => filled($state))
                                             ->required(fn(string $operation): bool => $operation === 'create')
                                             ->revealable(),
                                         Forms\Components\TextInput::make('password_confirmation')
                                             ->password()
-                                            ->hiddenOn('view')
+                                            ->hiddenOn(['view', 'edit'])
                                             ->revealable()
                                             ->required(fn(callable $get): bool => filled($get('password')))
                                             ->same('password'),
                                     ])
                                     ->columnSpan(2),
-                                Forms\Components\TextInput::make('contact')
-                                    ->label('Contact')
-                                    ->prefixIcon('heroicon-m-phone')
-                                    ->tel()
-                                    ->placeholder('+91 555-123-4567')
-                                    ->maxLength(20)
-                                    ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
-                                    ->required(),
-                                Forms\Components\Select::make('gender')
-                                    ->options([
-                                        'none' => 'None',
-                                        'male' => 'Male',
-                                        'female' => 'Female',
-                                    ])
-                                    ->default('none')
-                                    ->selectablePlaceholder(false)
-                                    ->required(),
-                                Forms\Components\Select::make('status')
-                                    ->options([
-                                        '' => 'No Status',
-                                        'active' => 'Active',
-                                        'inactive' => 'Inactive',
-                                    ])
-                                    ->required()
-                                    ->selectablePlaceholder(false)
                             ]),
                     ]),
                 Forms\Components\Section::make('Address')
                     ->schema([
                         Forms\Components\Textarea::make('address')
-                            ->required(),
+                            ->required()
+                            ->placeholder('100/B, Oak Ave Apt. 10, Rass Street'),
                         Forms\Components\Group::make()
                             ->schema([
                                 Forms\Components\Select::make('country')
@@ -112,7 +103,7 @@ class UserResource extends Resource
                                     ->preload()
                                     ->required()
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, callable $set) => [
+                                    ->afterStateUpdated(fn(callable $set) => [
                                         $set('state', null),
                                         $set('city', null),
                                     ]),
@@ -129,7 +120,8 @@ class UserResource extends Resource
                                     ->searchable()
                                     ->reactive(),
                                 Forms\Components\TextInput::make('pincode')
-                                    ->numeric(),
+                                    ->numeric()
+                                    ->placeholder('PIN Code'),
                             ])->columns(4),
                     ]),
             ]);
@@ -152,56 +144,61 @@ class UserResource extends Resource
                     ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('contact')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('gender')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('address')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('country')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('state')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('city')->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('pincode')->searchable()->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('contact')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('gender')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('address')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('country')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('state')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('city')->searchable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('pincode')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->color(fn(string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'danger',
+                    })
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    })
             ])
             ->actions([
-                Tables\Actions\Action::make('view')
-                    ->label(fn(User $record): string => 'View ' . $record->name)
-                    ->hiddenLabel()
-                    ->infolist([
-                        Grid::make(2)
-                            ->schema([
-                                ImageEntry::make('photo')
-                                    ->hiddenLabel()
-                                    ->height(100)
-                                    ->circular()
-                                    ->columnSpanFull(1)
-                                    ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
-                                Grid::make()
-                                    ->columns(3)
-                                    ->schema([
-                                        TextEntry::make('name'),
-                                        TextEntry::make('email'),
-                                        TextEntry::make('status'),
-                                        TextEntry::make('contact'),
-                                        TextEntry::make('gender'),
-                                        TextEntry::make('address'),
-                                        TextEntry::make('country')->hidden(fn($record) => empty($record->country)),
-                                        TextEntry::make('state')->hidden(fn($record) => empty($record->state)),
-                                        TextEntry::make('city')->hidden(fn($record) => empty($record->city)),
-                                        TextEntry::make('pincode')->hidden(fn($record) => empty($record->pincode)),
-                                    ])->columnSpan(2)
-
-                            ])
-
-
-                    ])->modalSubmitAction(false)
-                    ->modalCancelAction(false),
-                Tables\Actions\EditAction::make()
-                    ->hiddenLabel()
-                    ->modalHeading('Edit User'),
-                Tables\Actions\DeleteAction::make()
-                    ->hiddenLabel(),
-            ])
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('inactive')
+                        ->label('Mark as Inactive')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-x-circle')
+                        ->action(fn(User $record) => tap($record, function ($record) {
+                            $record->update(['status' => 'inactive']);
+                            Notification::make()
+                                ->title('Inactive')
+                                ->danger()
+                                ->body("{$record->name} has been inactivated.")
+                                ->send();
+                        }))
+                        ->visible(fn($record) => $record->status === 'active'),
+                    Tables\Actions\Action::make('active')
+                        ->label('Mark as Active')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-s-check-circle')
+                        ->action(fn(User $record) => tap($record, function ($record) {
+                            $record->update(['status' => 'active']);
+                            Notification::make()
+                                ->title('Active')
+                                ->success()
+                                ->body("{$record->name} has been activated.")
+                                ->send();
+                        }))
+                        ->visible(fn($record) => $record->status === 'inactive'),
+                    Tables\Actions\EditAction::make()->hiddenLabel(),
+                    Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                    Tables\Actions\RestoreAction::make()
+                ])
+            ])->recordUrl(fn($record): string => route('filament.admin.resources.users.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -213,6 +210,9 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('/{record}'),
         ];
     }
 }
