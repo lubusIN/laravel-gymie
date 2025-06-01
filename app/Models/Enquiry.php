@@ -62,7 +62,12 @@ class Enquiry extends Model
             Section::make('')
                 ->schema([
                     TextInput::make('name')->required()->maxLength(255)->placeholder('Name'),
-                    TextInput::make('email')->email()->required()->placeholder('user@example.com'),
+                    TextInput::make('email')
+                        ->email()
+                        ->live()
+                        ->maxLength(255)
+                        ->required()
+                        ->unique('enquiries', 'email', ignoreRecord: true),
                     TextInput::make('contact')->tel()->required()->placeholder('+91 555-123-4567'),
                     Select::make('gender')->options([
                         'male' => 'Male',
@@ -148,16 +153,14 @@ class Enquiry extends Model
                             'others' => 'Others'
                         ])
                         ->default('beginner_pkg')
-                        ->selectablePlaceholder(false)
-                        ->required(),
+                        ->selectablePlaceholder(false),
                     Select::make('source')
                         ->options([
                             'promotions' => 'Promotions',
                             'word_of_mouth' => 'Word of mouth',
                             'others' => 'Others'
                         ])->default('promotions')
-                        ->selectablePlaceholder(false)
-                        ->required(),
+                        ->selectablePlaceholder(false),
                     Select::make('why_do_you_plan_to_join')
                         ->options([
                             'fitness' => 'Fitness',
@@ -167,11 +170,9 @@ class Enquiry extends Model
                             'others' => 'Others'
                         ])->default('fitness')
                         ->label('Why do you plan to join?')
-                        ->selectablePlaceholder(false)
-                        ->required(),
+                        ->selectablePlaceholder(false),
                     DatePicker::make('start_by')
                         ->native(false)
-                        ->required()
                         ->minDate(now())
                         ->displayFormat('d-m-Y')
                         ->placeholder(now()->format('d-m-Y'))
