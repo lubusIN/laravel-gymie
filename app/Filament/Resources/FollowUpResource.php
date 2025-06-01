@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FollowUpResource\Pages;
+use App\Models\Enquiry;
 use App\Models\FollowUp;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -39,7 +40,20 @@ class FollowUpResource extends Resource
     {
         return $table
             ->columns(FollowUp::getTableColumns())
-            ->defaultSort('id', 'desc')            
+            ->defaultSort('id', 'desc')
+            ->emptyStateIcon(!Enquiry::exists() ? 'heroicon-o-phone' : 'heroicon-o-arrow-path-rounded-square')
+            ->emptyStateHeading(!Enquiry::exists() ? 'No Enquiries Found' : 'No Follow-Ups Found')
+            ->emptyStateDescription(!Enquiry::exists() ? 'Create an enquiry to get started' : 'Create a follow-ups to get started.')
+            ->emptyStateActions([
+                Tables\Actions\Action::make('create')
+                    ->label('New Enquiry')
+                    ->url(fn() => route('filament.admin.resources.enquiries.create'))
+                    ->icon('heroicon-o-plus')
+                    ->hidden(fn() => Enquiry::exists()),
+                Tables\Actions\CreateAction::make()
+                    ->icon('heroicon-o-plus')
+                    ->visible(fn() => Enquiry::exists()),
+            ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
