@@ -124,9 +124,6 @@ class UserResource extends Resource
                                     ->placeholder('PIN Code'),
                             ])->columns(4),
                     ]),
-
-
-
             ]);
     }
 
