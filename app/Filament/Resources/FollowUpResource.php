@@ -6,6 +6,9 @@ use App\Filament\Resources\FollowUpResource\Pages;
 use App\Models\FollowUp;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -39,7 +42,7 @@ class FollowUpResource extends Resource
     {
         return $table
             ->columns(FollowUp::getTableColumns())
-            ->defaultSort('id', 'desc')            
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
@@ -89,11 +92,36 @@ class FollowUpResource extends Resource
                         Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     ])->dropdown(false),
                 ])
-            ])
+            ])->recordUrl(fn($record): string => route('filament.admin.resources.follow-ups.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    /**
+     * Add infolist to the resource.
+     */
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Details')
+                    ->schema([
+                        TextEntry::make('enquiry.name')
+                            ->label('Enquirer'),
+                        TextEntry::make('date')
+                            ->label('Date')
+                            ->date('d-m-Y'),
+                        TextEntry::make('outcome')
+                            ->label('Outcome'),
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->icon(fn($state) => $state === 'done' ? 'heroicon-m-check-circle' : 'heroicon-m-x-circle')
+                            ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
+                    ])->columns(2),
             ]);
     }
 
@@ -103,6 +131,7 @@ class FollowUpResource extends Resource
             'index' => Pages\ListFollowUps::route('/'),
             'create' => Pages\CreateFollowUp::route('/create'),
             'edit' => Pages\EditFollowUp::route('/{record}/edit'),
+            'view' => Pages\ViewFollowUp::route('/{record}')
         ];
     }
 }
