@@ -43,7 +43,7 @@ class FollowUpResource extends Resource
             ->defaultSort('id', 'desc')
             ->emptyStateIcon(!Enquiry::exists() ? 'heroicon-o-phone' : 'heroicon-o-arrow-path-rounded-square')
             ->emptyStateHeading(!Enquiry::exists() ? 'No Enquiries Found' : 'No Follow-Ups Found')
-            ->emptyStateDescription(!Enquiry::exists() ? 'Create an enquiry to get started' : 'Create a follow-ups to get started.')
+            ->emptyStateDescription(!Enquiry::exists() ? 'Create an Enquiry to get started' : 'Create Follow-Ups to get started.')
             ->emptyStateActions([
                 Tables\Actions\Action::make('create')
                     ->label('New Enquiry')
@@ -52,6 +52,7 @@ class FollowUpResource extends Resource
                     ->hidden(fn() => Enquiry::exists()),
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
+                    ->label('New Follow-Up')
                     ->visible(fn() => Enquiry::exists()),
             ])
             ->filters([
