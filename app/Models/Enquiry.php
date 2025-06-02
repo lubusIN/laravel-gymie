@@ -13,11 +13,18 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Permission\Traits\HasRoles;
 
 class Enquiry extends Model
 {
-    use SoftDeletes, HasFactory, HasRoles;
+    use SoftDeletes, HasFactory;
+
+    /**
+     * Holds the methods' names of Eloquent Relations
+     * to fall on delete cascade or on restoring
+     *
+     * @var string[]
+     */
+    protected static $relations_to_cascade = ['follow_up'];
 
     /**
      * The attributes that are mass assignable.
@@ -53,13 +60,37 @@ class Enquiry extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the enquiry for the follow-up.
+     * Get the follow-up for the enquiry.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
     public function follow_up()
     {
         return $this->hasMany(FollowUp::class);
+    }
+
+    /**
+     * Boot the model and add cascade delete and restore behavior.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                foreach ($resource->{$relation}()->get() as $item) {
+                    $item->delete();
+                }
+            }
+        });
+
+        static::restoring(function ($resource) {
+            foreach (static::$relations_to_cascade as $relation) {
+                foreach ($resource->{$relation}()->withTrashed()->get() as $item) {
+                    $item->restore();
+                }
+            }
+        });
     }
 
     /**

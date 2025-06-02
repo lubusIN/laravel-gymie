@@ -77,7 +77,7 @@ class FollowUp extends Model
                     'email' => 'Email',
                     'in_person' => 'In person',
                     'whatsapp' => 'WhatsApp',
-                    'others' => 'Others'
+                    'other' => 'Others'
                 ])->default('call')
                 ->required()
                 ->label('Follow-up method')

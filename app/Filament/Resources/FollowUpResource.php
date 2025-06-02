@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FollowUpResource\Pages;
-use App\Filament\Resources\FollowUpResource\RelationManagers;
 use App\Models\FollowUp;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -17,7 +16,7 @@ class FollowUpResource extends Resource
 {
     protected static ?string $model = FollowUp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
 
     /**
      * Define the form schema for the resource.
@@ -83,13 +82,6 @@ class FollowUpResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
