@@ -14,7 +14,7 @@ class ListEnquiries extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->icon('heroicon-m-plus'),
-        ];
+                ->icon('heroicon-m-plus'),        
+            ];
     }
 }
