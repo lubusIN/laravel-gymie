@@ -9,6 +9,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
+use Filament\Tables\Actions\Action;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -128,8 +131,33 @@ class FollowUpsRelationManager extends RelationManager
                             ->label('Record Actions')
                             ->disabled()
                             ->color('gray'),
+                        Tables\Actions\Action::make('view')
+                            ->hiddenLabel()
+                            ->icon('heroicon-s-eye')
+                            ->infolist([
+                                Section::make([
+                                    TextEntry::make('enquiry.name')
+                                        ->label('Enquiry Name'),
+                                    TextEntry::make('date')
+                                        ->label('Date')
+                                        ->date('d-m-Y'),
+                                    TextEntry::make('follow_up_method')
+                                        ->label('Follow-Up method'),
+                                    TextEntry::make('due_date')
+                                        ->label('Due Date')
+                                        ->date('d-m-Y'),
+                                    TextEntry::make('outcome')
+                                        ->label('Outcome')
+                                        ->hidden(fn(FollowUp $record): bool => empty($record->outcome)),
+                                    TextEntry::make('status')
+                                        ->label('Status')
+                                        ->badge()
+                                        ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
+                                ])->columns(2)
+                            ])
+                            ->modalSubmitAction(false)
+                            ->modalCancelAction(false),
                         Tables\Actions\EditAction::make()->hiddenLabel(),
-                        Tables\Actions\ViewAction::make()->hiddenLabel(),
                         Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     ])->dropdown(false),
                 ])
