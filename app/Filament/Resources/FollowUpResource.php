@@ -6,6 +6,9 @@ use App\Filament\Resources\FollowUpResource\Pages;
 use App\Models\FollowUp;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -81,6 +84,31 @@ class FollowUpResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    /**
+     * Add infolist to the resource.
+     */
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Details')
+                    ->schema([
+                        TextEntry::make('enquiry.name')
+                            ->label('Enquirer'),
+                        TextEntry::make('date')
+                            ->label('Date')
+                            ->date('d-m-Y'),
+                        TextEntry::make('outcome')
+                            ->label('Outcome'),
+                        TextEntry::make('status')
+                            ->label('Status')
+                            ->badge()
+                            ->icon(fn($state) => $state === 'done' ? 'heroicon-m-check-circle' : 'heroicon-m-x-circle')
+                            ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
+                    ])->columns(2),
             ]);
     }
 
