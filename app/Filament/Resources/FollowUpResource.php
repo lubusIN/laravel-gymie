@@ -61,20 +61,33 @@ class FollowUpResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('mark_as_done')
-                        ->color('success')
-                        ->icon('heroicon-m-check-circle')
-                        ->requiresConfirmation()
-                        ->action(fn(FollowUp $record) => tap($record, function ($record) {
-                            $record->update(['status' => 'done']);
-                            Notification::make()
-                                ->title('Mark as done')
-                                ->success()
-                                ->send();
-                        }))
-                        ->visible(fn($record) => $record->status === 'pending'),
-                    Tables\Actions\EditAction::make()->hiddenLabel(),
-                    Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                    Tables\Actions\ActionGroup::make([
+                        Tables\Actions\Action::make('heading_actions')
+                            ->label('Status')
+                            ->visible(fn($record) => in_array($record->status, ['pending']))
+                            ->disabled()
+                            ->color('gray'),
+                        Tables\Actions\Action::make('mark_as_done')
+                            ->color('success')
+                            ->label('Mark as Done')
+                            ->requiresConfirmation()
+                            ->action(fn(FollowUp $record) => tap($record, function ($record) {
+                                $record->update(['status' => 'done']);
+                                Notification::make()
+                                    ->title('Marked as done')
+                                    ->success()
+                                    ->send();
+                            }))
+                            ->visible(fn($record) => $record->status === 'pending'),
+                    ])->dropdown(false),
+                    Tables\Actions\ActionGroup::make([
+                        Tables\Actions\Action::make('heading_actions')
+                            ->label('Record Actions')
+                            ->disabled()
+                            ->color('gray'),
+                        Tables\Actions\EditAction::make()->hiddenLabel(),
+                        Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                    ])->dropdown(false),
                 ])
             ])
             ->bulkActions([

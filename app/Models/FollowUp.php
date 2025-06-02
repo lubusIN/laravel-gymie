@@ -121,14 +121,11 @@ class FollowUp extends Model
                 ->label('Method')
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')
-                ->icon(fn(string $state): string => match ($state) {
-                    'done' => 'heroicon-o-check-circle',
-                    'pending' => 'heroicon-o-x-circle',
-                })
-                ->iconColor(fn(string $state): string => match ($state) {
+                ->color(fn(string $state): string => match ($state) {
                     'done' => 'success',
                     'pending' => 'warning',
                 })
+                ->badge()
                 ->formatStateUsing(fn(string $state): string => match ($state) {
                     'done' => 'Done',
                     'pending' => 'Pending',
