@@ -99,7 +99,7 @@ class FollowUpsRelationManager extends RelationManager
             ])
             ->emptyStateIcon('heroicon-o-arrow-path-rounded-square')
             ->emptyStateHeading('No Follow-Ups')
-            ->emptyStateDescription('Create follow-ups to begin tracking.')
+            ->emptyStateDescription('Create follow-ups to get started.')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make('create-followUps')
                     ->icon('heroicon-o-plus')
