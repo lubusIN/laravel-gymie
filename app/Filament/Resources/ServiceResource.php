@@ -3,16 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
-use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Service;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServiceResource extends Resource
 {
@@ -62,11 +62,28 @@ class ServiceResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->hiddenLabel(),
                 Tables\Actions\DeleteAction::make()->hiddenLabel(),
-                ])
+            ])->recordUrl(fn($record): string => route('filament.admin.resources.services.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    /**
+     * Add infolist to the resource.
+     */
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('')
+                    ->schema([
+                        TextEntry::make('name')
+                            ->label('Name'),
+                        TextEntry::make('description')
+                            ->label('Description')
+                    ])->columns(2)
             ]);
     }
 
@@ -76,6 +93,7 @@ class ServiceResource extends Resource
             'index' => Pages\ListServices::route('/'),
             'create' => Pages\CreateService::route('/create'),
             'edit' => Pages\EditService::route('/{record}/edit'),
+            'view' => Pages\ViewService::route('/{record}')
         ];
     }
 }
