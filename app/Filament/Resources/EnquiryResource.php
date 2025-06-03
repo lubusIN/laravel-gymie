@@ -41,12 +41,12 @@ class EnquiryResource extends Resource
             ->columns(Enquiry::getTableColumns())
             ->defaultSort('id', 'desc')
             ->emptyStateIcon('heroicon-o-phone')
-            ->emptyStateHeading('No Enquiries Found')
+            ->emptyStateHeading('No Enquiries')
             ->emptyStateDescription('Create an enquiry to get started')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
-                    ->label('New Enquiry')
+                    ->label('New enquiry')
                     ->hidden(fn() => Enquiry::exists()),
             ])
             ->filters([

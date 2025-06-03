@@ -42,17 +42,17 @@ class FollowUpResource extends Resource
             ->columns(FollowUp::getTableColumns())
             ->defaultSort('id', 'desc')
             ->emptyStateIcon(!Enquiry::exists() ? 'heroicon-o-phone' : 'heroicon-o-arrow-path-rounded-square')
-            ->emptyStateHeading(!Enquiry::exists() ? 'No Enquiries' : 'No Follow-Ups')
+            ->emptyStateHeading(!Enquiry::exists() ? 'No Enquiries' : 'No Follow Ups')
             ->emptyStateDescription(!Enquiry::exists() ? 'Create an enquiry to get started' : 'Create follow-ups to get started.')
             ->emptyStateActions([
                 Tables\Actions\Action::make('create')
-                    ->label('New Enquiry')
+                    ->label('New enquiry')
                     ->url(fn() => route('filament.admin.resources.enquiries.create'))
                     ->icon('heroicon-o-plus')
                     ->hidden(fn() => Enquiry::exists()),
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
-                    ->label('New Follow-Up')
+                    ->label('New follow up')
                     ->visible(fn() => Enquiry::exists()),
             ])
             ->filters([
