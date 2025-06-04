@@ -145,12 +145,6 @@ class EnquiryResource extends Resource
                             ->schema([
                                 TextEntry::make('interested_in')
                                     ->label('Interested In')
-                                    ->formatStateUsing(function ($state) {
-                                        $service = is_string($state)
-                                            ? array_filter(array_map('trim', explode(',', $state)))
-                                            : (is_array($state) ? $state : []);
-                                        return implode(', ', Service::whereIn('id', $service)->pluck('name')->toArray());
-                                    })
                                     ->hidden(fn($record) => empty($record->interested_in)),
                                 TextEntry::make('source')
                                     ->label('Source'),

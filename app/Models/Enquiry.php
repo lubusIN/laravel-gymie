@@ -149,12 +149,7 @@ class Enquiry extends Model
                         ->multiple()
                         ->searchable()
                         ->preload()
-                        ->options(fn() => Service::pluck('name', 'id')->toArray())
-                        ->afterStateHydrated(fn ($state, $set) => $set('interested_in', 
-                            collect($state)
-                                ->intersect(Service::pluck('id'))
-                                ->values()
-                                ->toArray())),
+                        ->options(fn() => Service::pluck('name', 'name')->toArray()),
                     Select::make('source')
                         ->options([
                             'promotions' => 'Promotions',
