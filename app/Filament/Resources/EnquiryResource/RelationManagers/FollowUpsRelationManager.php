@@ -51,8 +51,11 @@ class FollowUpsRelationManager extends RelationManager
                 DatePicker::make('date')
                     ->label('Date')
                     ->default(now())
+                    ->native(false)
+                    ->displayFormat('d-m-Y')
                     ->disabledOn('edit')
-                    ->hiddenOn('create'),
+                    ->suffixIcon('heroicon-m-calendar-days')
+                    ->hiddenOn(['create', 'create-followUps']),
                 Select::make('follow_up_method')
                     ->options([
                         'call' => 'Call',
@@ -76,7 +79,7 @@ class FollowUpsRelationManager extends RelationManager
                     ->placeholder('Not interested, etc.')
                     ->label('Outcome')
                     ->required()
-                    ->hiddenOn('create'),
+                    ->hiddenOn(['create', 'create-followUps']),
             ]);
     }
 
@@ -93,12 +96,12 @@ class FollowUpsRelationManager extends RelationManager
             ->defaultSort('id', 'desc')
             ->columns(FollowUp::getTableColumns())
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Tables\Actions\CreateAction::make('create')
                     ->icon('heroicon-m-plus')
                     ->visible(fn() => $this->getOwnerRecord()->follow_up()->exists()),
             ])
             ->emptyStateIcon('heroicon-o-arrow-path-rounded-square')
-            ->emptyStateHeading('No Follow-Ups')
+            ->emptyStateHeading('No Follow Ups')
             ->emptyStateDescription('Create follow-ups to get started.')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make('create-followUps')
