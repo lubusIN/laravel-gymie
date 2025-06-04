@@ -5,12 +5,13 @@ namespace App\Models;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -20,11 +21,6 @@ class Service extends Model
     protected $fillable = [
         'name',
         'description',
-        'date'
-    ];
-
-    protected $casts = [
-        'date' => 'date',
     ];
 
     protected $dates = ['deleted_at'];
@@ -45,8 +41,6 @@ class Service extends Model
                 ->placeholder('Brief description of the service')
                 ->label('Description')
                 ->required(),
-            Hidden::make('date')
-                ->default(now()),
         ];
     }
 
@@ -70,10 +64,9 @@ class Service extends Model
                 ->searchable()
                 ->label('Description')
                 ->toggleable(isToggledHiddenByDefault: false),
-            TextColumn::make('date')
+            TextColumn::make('created_at')
                 ->searchable()
                 ->date('d-m-Y')
-                ->label('Date')
                 ->toggleable(isToggledHiddenByDefault: true),
         ];
     }

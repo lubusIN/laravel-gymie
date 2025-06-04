@@ -40,25 +40,6 @@ class ServiceResource extends Resource
                     ->hidden(fn() => Service::exists()),
             ])
             ->columns(Service::getTableColumns())
-            ->filters([
-                Tables\Filters\TrashedFilter::make(),
-                Tables\Filters\Filter::make('date')
-                    ->form([
-                        DatePicker::make('created_from'),
-                        DatePicker::make('created_until'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
-                            );
-                    })
-            ])
             ->actions([
                 Tables\Actions\EditAction::make()->hiddenLabel(),
                 Tables\Actions\DeleteAction::make()->hiddenLabel(),
