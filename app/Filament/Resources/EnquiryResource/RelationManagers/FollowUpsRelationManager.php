@@ -158,9 +158,11 @@ class FollowUpsRelationManager extends RelationManager
                                         ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
                                 ])->columns(2)
                             ])
+                            ->modalHeading(fn(FollowUp $record) => 'View Follow-Up: ' . $record->enquiry->name)
                             ->modalSubmitAction(false)
                             ->modalCancelAction(false),
-                        Tables\Actions\EditAction::make()->hiddenLabel(),
+                        Tables\Actions\EditAction::make()->hiddenLabel()
+                            ->modalHeading(fn(FollowUp $record) => 'Edit Follow-Up: ' . $record->enquiry->name),
                         Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     ])->dropdown(false),
                 ])
