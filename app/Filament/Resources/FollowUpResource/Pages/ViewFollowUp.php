@@ -13,7 +13,7 @@ class ViewFollowUp extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View Follow-Up: ' . $this->record->enquiry->name;
+        return 'View Follow Up: ' . $this->record->enquiry->name;
     }
 
     protected function getHeaderActions(): array
