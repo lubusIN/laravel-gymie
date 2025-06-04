@@ -98,7 +98,9 @@ class FollowUpsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make('create')
                     ->icon('heroicon-m-plus')
-                    ->visible(fn() => $this->getOwnerRecord()->follow_up()->exists()),
+                    ->visible(fn() => $this->getOwnerRecord()->follow_up()->exists())
+                    ->modalHeading('Create Follow Up')
+
             ])
             ->emptyStateIcon('heroicon-o-arrow-path-rounded-square')
             ->emptyStateHeading('No Follow Ups')
@@ -106,7 +108,8 @@ class FollowUpsRelationManager extends RelationManager
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make('create-followUps')
                     ->icon('heroicon-o-plus')
-                    ->visible(fn() => !$this->getOwnerRecord()->follow_up()->exists()),
+                    ->visible(fn() => !$this->getOwnerRecord()->follow_up()->exists())
+                    ->modalHeading('Create Follow Up')
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -158,11 +161,11 @@ class FollowUpsRelationManager extends RelationManager
                                         ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
                                 ])->columns(2)
                             ])
-                            ->modalHeading(fn(FollowUp $record) => 'View Follow-Up: ' . $record->enquiry->name)
+                            ->modalHeading(fn(FollowUp $record) => 'View Follow Up: ' . $record->enquiry->name)
                             ->modalSubmitAction(false)
                             ->modalCancelAction(false),
                         Tables\Actions\EditAction::make()->hiddenLabel()
-                            ->modalHeading(fn(FollowUp $record) => 'Edit Follow-Up: ' . $record->enquiry->name),
+                            ->modalHeading(fn(FollowUp $record) => 'Edit Follow Up: ' . $record->enquiry->name),
                         Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     ])->dropdown(false),
                 ])
