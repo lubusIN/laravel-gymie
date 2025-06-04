@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EnquiryResource\Pages;
 use App\Models\Enquiry;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -143,7 +144,14 @@ class EnquiryResource extends Resource
                         Section::make('Preferences')
                             ->schema([
                                 TextEntry::make('interested_in')
-                                    ->label('Interested In'),
+                                    ->label('Interested In')
+                                    ->formatStateUsing(function ($state) {
+                                        $service = is_string($state)
+                                            ? array_filter(array_map('trim', explode(',', $state)))
+                                            : (is_array($state) ? $state : []);
+                                        return implode(', ', Service::whereIn('id', $service)->pluck('name')->toArray());
+                                    })
+                                    ->hidden(fn($record) => empty($record->interested_in)),
                                 TextEntry::make('source')
                                     ->label('Source'),
                                 TextEntry::make('why_do_you_plan_to_join')

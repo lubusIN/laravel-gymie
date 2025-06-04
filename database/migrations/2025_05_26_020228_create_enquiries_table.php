@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->text('pincode')->nullable();
-            $table->string('interested_in')->nullable();
+            $table->json('interested_in')->nullable();
             $table->enum('source', ['promotions', 'word_of_mouth', 'others'])->default('promotions')->nullable();
             $table->enum('why_do_you_plan_to_join', ['fitness', 'body_building', 'fatloss', 'weightgain', 'others'])->default('fitness')->nullable();
             $table->date('start_by')->nullable();
