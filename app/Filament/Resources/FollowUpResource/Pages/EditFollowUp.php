@@ -12,7 +12,7 @@ class EditFollowUp extends EditRecord
 
     public function getTitle(): string
     {
-        return 'Edit Follow-Up: '. $this->record->enquiry->name ;
+        return 'Edit Follow Up: '. $this->record->enquiry->name ;
     }
 
     protected function getHeaderActions(): array
