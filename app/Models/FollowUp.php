@@ -87,6 +87,7 @@ class FollowUp extends Model
                 ->label('Due Date')
                 ->displayFormat('d-m-Y')
                 ->closeOnDateSelection()
+                ->required()
                 ->placeholder('dd-mm-yyyy')
                 ->suffixIcon('heroicon-m-calendar-days')
                 ->required()

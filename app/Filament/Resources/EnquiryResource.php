@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EnquiryResource\Pages;
+use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use App\Models\Enquiry;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
@@ -187,7 +188,7 @@ class EnquiryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FollowUpsRelationManager::class
         ];
     }
 
