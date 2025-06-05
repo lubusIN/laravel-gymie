@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlanResource\Pages;
 use App\Models\Plan;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -13,7 +12,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class PlanResource extends Resource
 {
@@ -108,7 +106,7 @@ class PlanResource extends Resource
     {
         return $infolist
             ->schema([
-                Section::make('Details')
+                Section::make('')
                     ->schema([
                         TextEntry::make('code')
                             ->label('Code'),

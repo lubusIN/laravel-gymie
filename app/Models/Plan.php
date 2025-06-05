@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -49,16 +47,12 @@ class Plan extends Model
                     TextInput::make('code')
                         ->placeholder('Code for the plan')
                         ->label('Code')
-                        ->unique(ignoreRecord:true)
+                        ->unique(ignoreRecord: true)
                         ->required(),
                     TextInput::make('name')
                         ->label('Name')
                         ->placeholder('Name of the plan')
-                        ->unique(ignoreRecord:true)
-                        ->required(),
-                    TextInput::make('description')
-                        ->placeholder('Brief description of the plan')
-                        ->label('Description')
+                        ->unique(ignoreRecord: true)
                         ->required(),
                     Select::make('service')
                         ->label('Service')
@@ -66,6 +60,9 @@ class Plan extends Model
                         ->searchable()
                         ->preload()
                         ->options(fn() => Service::pluck('name', 'name')),
+                    TextInput::make('description')
+                        ->placeholder('Brief description of the plan')
+                        ->label('Description'),
                     TextInput::make('days')
                         ->required()
                         ->placeholder('Number of days for the plan')
@@ -74,7 +71,6 @@ class Plan extends Model
                     TextInput::make('amount')
                         ->placeholder('Enter amount of the plan')
                         ->numeric()
-                        ->prefixIcon('heroicon-o-currency-rupee')
                         ->label('Amount')
                         ->required(),
                 ])->columns(2)
@@ -94,7 +90,7 @@ class Plan extends Model
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('code')
                 ->searchable()
-                ->label('code')
+                ->label('Code')
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('name')
                 ->searchable()
