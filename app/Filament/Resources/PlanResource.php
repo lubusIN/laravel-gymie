@@ -94,25 +94,6 @@ class PlanResource extends Resource
                     ])->dropdown(false),
                 ])
             ])->recordUrl(fn($record): string => route('filament.admin.resources.plans.view', $record->id))
-            ->filters([
-                Tables\Filters\TrashedFilter::make(),
-                Tables\Filters\Filter::make('date')
-                    ->form([
-                        DatePicker::make('created_from'),
-                        DatePicker::make('created_until'),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
-                            );
-                    })
-            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

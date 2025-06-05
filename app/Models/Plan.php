@@ -24,7 +24,6 @@ class Plan extends Model
         'name',
         'code',
         'description',
-        'date',
         'service',
         'amount',
         'days',
@@ -32,7 +31,6 @@ class Plan extends Model
     ];
 
     protected $casts = [
-        'date' => 'date',
         'service' => 'array',
     ];
 
@@ -73,14 +71,6 @@ class Plan extends Model
                         ->placeholder('Number of days for the plan')
                         ->numeric()
                         ->label('Days'),
-                    DatePicker::make('date')
-                        ->native(false)
-                        ->label('Date')
-                        ->displayFormat('d-m-Y')
-                        ->suffixIcon('heroicon-m-calendar-days')
-                        ->default(now())
-                        ->disabledOn('edit')
-                        ->hiddenOn('create'),
                     TextInput::make('amount')
                         ->placeholder('Enter amount of the plan')
                         ->numeric()

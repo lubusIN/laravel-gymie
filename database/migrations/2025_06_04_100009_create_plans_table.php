@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name')->nullable()->unique();
             $table->string('code')->nullable()->unique();
             $table->string('description')->nullable();
-            $table->date('date')->default(now())->nullable();
             $table->json('service')->nullable();
             $table->integer('days')->nullable();
             $table->float('amount')->nullable();
