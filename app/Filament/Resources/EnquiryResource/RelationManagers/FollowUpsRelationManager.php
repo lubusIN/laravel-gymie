@@ -72,6 +72,7 @@ class FollowUpsRelationManager extends RelationManager
                     ->label('Due Date')
                     ->displayFormat('d-m-Y')
                     ->closeOnDateSelection()
+                    ->required()
                     ->suffixIcon('heroicon-m-calendar-days')
                     ->minDate(now())
                     ->disabledOn('edit'),

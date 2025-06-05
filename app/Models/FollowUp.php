@@ -79,6 +79,7 @@ class FollowUp extends Model
                     'whatsapp' => 'WhatsApp',
                     'other' => 'Others'
                 ])->default('call')
+                ->required()
                 ->label('Follow-up method')
                 ->searchable(),
             DatePicker::make('due_date')
@@ -86,6 +87,7 @@ class FollowUp extends Model
                 ->label('Due Date')
                 ->displayFormat('d-m-Y')
                 ->closeOnDateSelection()
+                ->required()
                 ->placeholder('dd-mm-yyyy')
                 ->suffixIcon('heroicon-m-calendar-days')
                 ->disabledOn('edit')
