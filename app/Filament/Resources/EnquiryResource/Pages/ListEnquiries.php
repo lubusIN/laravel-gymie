@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\EnquiryResource\Pages;
 
 use App\Filament\Resources\EnquiryResource;
+use App\Models\Enquiry;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,7 +15,8 @@ class ListEnquiries extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->icon('heroicon-m-plus'),
-        ];
+                ->icon('heroicon-m-plus')
+                ->hidden(!Enquiry::exists()),        
+            ];
     }
 }

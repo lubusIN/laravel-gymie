@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EnquiryResource\Pages;
+use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use App\Models\Enquiry;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,6 +47,15 @@ class EnquiryResource extends Resource
         return $table
             ->columns(Enquiry::getTableColumns())
             ->defaultSort('id', 'desc')
+            ->emptyStateIcon('heroicon-o-phone')
+            ->emptyStateHeading('No Enquiries')
+            ->emptyStateDescription('Create an enquiry to get started')
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->icon('heroicon-o-plus')
+                    ->label('New enquiry')
+                    ->hidden(fn() => Enquiry::exists()),
+            ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
@@ -180,7 +190,7 @@ class EnquiryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FollowUpsRelationManager::class
         ];
     }
 
