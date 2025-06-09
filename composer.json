@@ -54,13 +54,22 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        "dev": "npx concurrently -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names='server,queue,vite'",
+        "prepare-env": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan config:clear",
+            "@php artisan key:generate --ansi",
+            "@php artisan storage:link"
         ],
-        "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
+        "setup-demo": [
+            "@prepare-env",
+            "@php artisan migrate:fresh --seed --ansi"
+        ],
+        "setup": [
+            "@prepare-env",
+            "@php artisan migrate:fresh --ansi",
+            "@php artisan db:seed --class=WorldSeeder --ansi",
+            "@php artisan make:filament-user --ansi"
         ]
     },
     "extra": {

@@ -1,61 +1,153 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gymie - Gym Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+Gymie is a web application specifically designed for gyms to efficiently manage their members, staff, payments, and attendance tracking. It enables fitness centers to streamline internal operations, handle member data effectively, and gain real-time access to information. By improving administrative workflows and enhancing the member experience, Gymie supports the automation and digital transformation of gym management.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP >= 8.1
+- Laravel Framework ^10.0
+- Filament Admin Panel 3.x
+- Livewire ^3.0
+- nnjeim/world ^1.1
+- barryvdh/laravel-dompdf ^3.1
+- Laravel Herd *(optional for local development)*
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation
 
-## Learning Laravel
+To set up Gymie, follow these steps:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Clone the Repository
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Clone the repository to your local system:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone git@github.com:lubusIN/laravel-gymie.git
+```
 
-## Laravel Sponsors
+### 2. Go to folder
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+cd laravel-gymie
+```
 
-### Premium Partners
+### 3. Install dependencies
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+composer install
+```
 
-## Contributing
+### 4. Prepare the environment
+Run the following script to prepare your environment:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer run prepare-env
+```
+This will:
+- Copy `.env.example` to `.env` (if missing)
+- Clear config cache
+- Generate application key
+- Create a symbolic link to the storage folder
 
-## Code of Conduct
+### 5. Configure the `.env` file
+- Set your database credentials.  
+- Update other relevant configuration values.  
+- Set your application URL:
+    
+  ```env
+  APP_URL=https://laravel-gymie.test
+  ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Database Setup
+You can set up the database in one of two ways, depending on your requirements:
 
-## Security Vulnerabilities
+**Option 1: Blank Setup (Recommended for Production)**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Run the following command:
 
-## License
+```bash
+composer run setup
+```
+> [!NOTE]
+> This command will prompt you to create an admin user via the terminal.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This will:
+- Set up the environment (.env, app key, storage link)
+- Run a fresh migration to create database tables
+- Seed the world data (countries, states, cities)
+- Create a default Filament admin user
+
+**Option 2: Demo Setup**
+
+If you want to explore the system with all demo data preloaded, use:
+
+```bash
+composer run setup-demo
+```
+This command will:
+- Reset the database
+- Seed all available demo data
+- Prepare the environment automatically
+
+> [!CAUTION]
+> This process will erase all existing data. Use it only in a local or demo environment.
+
+Login credentials:
+```bash
+Email: test@example.com
+Password: test
+```
+
+## Troubleshooting
+
+**Memory Errors**
+
+Ensure PHP has enough memory allocated. Edit your php.ini:
+
+```ini
+memory_limit = 512M
+```
+**Seeder Performance**
+
+Seeders (like WorldSeeder) can add significant data and slow down performance. For production, avoid full seeding and run only necessary seeders:
+
+```bash
+php artisan db:seed --class=WorldSeeder
+```
+
+## Development
+
+### 1. Start the development server:
+
+```bash
+php artisan serve
+```
+Or with Laravel Herd:
+```bash
+herd
+```
+
+### 2. Start the queue worker
+
+To process background jobs:
+
+```bash
+php artisan queue:work
+```
+
+### 3. Start the Laravel scheduler 
+
+```bash
+php artisan schedule:work
+```
+> [!NOTE]
+> The scheduler must be running continuously to trigger time-based tasks (e.g., status updates).
+>
+> If those tasks dispatch queued jobs (like import/export or notifications), then the queue worker must also be running to process them.
+
+## Meet Your Artisans
+
+[LUBUS](http://lubus.in) is a web design agency based in Mumbai.
+
+<img src="https://user-images.githubusercontent.com/1039236/40877801-3fa8ccf6-66a4-11e8-8f42-19ed4e883ce9.png" />
