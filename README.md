@@ -12,7 +12,6 @@ Gymie is a web application specifically designed for gyms to efficiently manage 
 - Livewire ^3.0
 - nnjeim/world ^1.1
 - barryvdh/laravel-dompdf ^3.1
-- bezhansalleh/filament-shield ^3.3.6
 - Laravel Herd *(optional for local development)*
 
 ## Installation
@@ -98,14 +97,6 @@ Login credentials:
 ```bash
 Email: test@example.com
 Password: test
-```
-
-### 7. Assigning Super Admin Role
-
-To grant full access to the admin panel, run the following command with the email of an existing user:
-
-```bash
-php artisan shield:super-admin
 ```
 
 ## Troubleshooting
