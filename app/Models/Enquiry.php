@@ -52,6 +52,7 @@ class Enquiry extends Model
     ];
 
     protected $casts = [
+        'interested_in' => 'array',
         'date' => 'date',
         'dob' => 'date',
         'start_by' => 'date',
@@ -186,16 +187,11 @@ class Enquiry extends Model
             Section::make('Choose your Preferences')
                 ->schema([
                     Select::make('interested_in')
-                        ->options([
-                            'beginner_pkg' => 'Beginner PKG',
-                            'personal_trainer' => 'Personal Trainer',
-                            'gym' => 'Gym',
-                            'yoga' => 'Yoga',
-                            'fatloss' => 'Fatloss',
-                            'others' => 'Others'
-                        ])
-                        ->default('beginner_pkg')
-                        ->selectablePlaceholder(false),
+                        ->label('Interested In')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->options(fn() => Service::pluck('name', 'name')->toArray()),
                     Select::make('source')
                         ->options([
                             'promotions' => 'Promotions',

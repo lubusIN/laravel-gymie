@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -30,7 +31,7 @@ class EnquiryFactory extends Factory
             'city' => $this->faker->city,
             'state' => $this->faker->state,
             'pincode' => $this->faker->randomNumber(6, 0),
-            'interested_in' => $this->faker->randomElement(['Beginner Pkg', 'Personal trainer', 'Gym', 'Yoga','Fatloss','Others']),
+            'interested_in' => Service::inRandomOrder()->limit(rand(1, 5))->pluck('name')->toArray(),
             'source' => $this->faker->randomElement(['promotions', 'word_of_mouth', 'others']),
             'why_do_you_plan_to_join' => $this->faker->randomElement(['fitness', 'body_building', 'fatloss', 'weightgain', 'others']),
             'start_by' => $this->faker->dateTimeBetween('now', '+1 month')->format('d-m-Y'),

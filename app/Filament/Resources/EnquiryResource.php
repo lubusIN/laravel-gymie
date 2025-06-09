@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EnquiryResource\Pages;
 use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use App\Models\Enquiry;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -153,7 +154,8 @@ class EnquiryResource extends Resource
                         Section::make('Preferences')
                             ->schema([
                                 TextEntry::make('interested_in')
-                                    ->label('Interested In'),
+                                    ->label('Interested In')
+                                    ->hidden(fn($record) => empty($record->interested_in)),
                                 TextEntry::make('source')
                                     ->label('Source'),
                                 TextEntry::make('why_do_you_plan_to_join')

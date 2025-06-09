@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             SeedAction::class,
             ServiceSeeder::class,
             EnquirySeeder::class,
+            ServiceSeeder::class,
             FollowUpSeeder::class,
             UserSeeder::class,
         ]);
