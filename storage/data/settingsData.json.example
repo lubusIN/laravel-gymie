@@ -1,6 +1,7 @@
 {
     "general": {
         "gym_logo": [],
+        "currency": "",
         "gym_name": "",
         "financial_year_start": "",
         "financial_year_end": "",

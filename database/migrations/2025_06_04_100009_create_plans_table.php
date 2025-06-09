@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->string('name')->nullable()->unique();
             $table->string('code')->nullable()->unique();
             $table->string('description')->nullable();
-            $table->json('service')->nullable();
             $table->integer('days')->nullable();
             $table->float('amount')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();

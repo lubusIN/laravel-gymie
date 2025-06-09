@@ -3,13 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlanResource\Pages;
+use App\Helpers\Helpers;
 use App\Models\Plan;
+use App\Models\Service;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -40,14 +43,19 @@ class PlanResource extends Resource
     {
         return $table
             ->defaultSort('id', 'desc')
-            ->emptyStateIcon('heroicon-o-pencil-square')
-            ->emptyStateHeading('No Plans')
-            ->emptyStateDescription('Create a plan to get started.')
+            ->emptyStateIcon(!Service::exists() ? 'heroicon-o-cog-8-tooth' : 'heroicon-o-pencil-square')
+            ->emptyStateHeading(!Service::exists() ? 'No Services' : 'No Plans')
+            ->emptyStateDescription(!Service::exists() ? 'Create a service to get started.' : 'Create a plan to get started.')
             ->emptyStateActions([
+                Tables\Actions\Action::make('create')
+                    ->label('New service')
+                    ->url(fn() => route('filament.admin.resources.services.create'))
+                    ->icon('heroicon-o-plus')
+                    ->hidden(fn() => Service::exists()),
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
                     ->label('New plan')
-                    ->hidden(fn() => Plan::exists()),
+                    ->visible(fn() => Service::exists()),
             ])
             ->columns(Plan::getTableColumns())
             ->actions([
@@ -114,12 +122,16 @@ class PlanResource extends Resource
                             ->label('Name'),
                         TextEntry::make('description')
                             ->label('Description'),
-                        TextEntry::make('service')
-                            ->label('Service'),
+                        TextEntry::make('service.name')
+                            ->label('Service')
+                            ->weight(FontWeight::Bold)
+                            ->color('success')
+                            ->url(fn($record): string => route('filament.admin.resources.services.view', $record->service_id)),
                         TextEntry::make('days')
                             ->label('Days'),
                         TextEntry::make('amount')
-                            ->label('Amount'),
+                            ->label('Amount')
+                            ->money(Helpers::getCurrencyCode()),
                         TextEntry::make('status')
                             ->label('Status')
                             ->badge()

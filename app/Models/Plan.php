@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Helpers\Helpers;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,17 +24,23 @@ class Plan extends Model
         'name',
         'code',
         'description',
-        'service',
+        'service_id',
         'amount',
         'days',
         'status',
     ];
 
-    protected $casts = [
-        'service' => 'array',
-    ];
-
     protected $dates = ['deleted_at'];
+
+    /**
+     * Get the sevice for the plan.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 
     /**
      * Get the Filament form schema for the plans.
@@ -52,14 +60,15 @@ class Plan extends Model
                     TextInput::make('name')
                         ->label('Name')
                         ->placeholder('Name of the plan')
-                        ->unique(ignoreRecord: true)
+                        ->unique(ignoreRecord: true,)
                         ->required(),
-                    Select::make('service')
+                    Select::make('service_id')
                         ->label('Service')
+                        ->relationship(name: 'service', titleAttribute: 'name')
+                        ->placeholder('Select service')
                         ->required()
                         ->searchable()
-                        ->preload()
-                        ->options(fn() => Service::pluck('name', 'name')),
+                        ->preload(),
                     TextInput::make('description')
                         ->placeholder('Brief description of the plan')
                         ->label('Description'),
@@ -71,6 +80,7 @@ class Plan extends Model
                     TextInput::make('amount')
                         ->placeholder('Enter amount of the plan')
                         ->numeric()
+                        ->prefix(Helpers::getCurrencySymbol())
                         ->label('Amount')
                         ->required(),
                 ])->columns(2)
@@ -95,24 +105,27 @@ class Plan extends Model
             TextColumn::make('name')
                 ->searchable()
                 ->label('Name')
-                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('description')
                 ->searchable()
                 ->label('Description')
-                ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('service')
+                ->toggleable(isToggledHiddenByDefault: false),
+            TextColumn::make('service.name')
                 ->searchable()
                 ->label('Service')
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->weight(FontWeight::Bold)
+                ->color('success')
+                ->url(fn($record): string => route('filament.admin.resources.services.view', $record->service_id))
+                ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('days')
                 ->searchable()
                 ->label('Days')
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('amount')
                 ->searchable()
                 ->label('Amount')
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->money(Helpers::getCurrencyCode())
+                ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('status')
                 ->color(fn(string $state): string => match ($state) {
                     'active' => 'success',
