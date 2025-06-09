@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             EnquirySeeder::class,
             ServiceSeeder::class,
             FollowUpSeeder::class,
+            PlanSeeder::class,
             UserSeeder::class,
         ]);
     }
