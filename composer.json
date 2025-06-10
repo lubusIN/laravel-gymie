@@ -59,7 +59,8 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan config:clear",
             "@php artisan key:generate --ansi",
-            "@php artisan storage:link"
+            "@php artisan storage:link",
+            "@php artisan shield:generate --all --ansi"
         ],
         "setup-demo": [
             "@prepare-env",
