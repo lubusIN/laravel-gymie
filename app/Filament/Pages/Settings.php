@@ -92,6 +92,10 @@ class Settings extends Page implements HasForms
                             ->schema([
                                 TextInput::make('general.gym_name')
                                     ->label('Gym Name'),
+                                Select::make('general.currency')
+                                    ->label('Currency')
+                                    ->options(Helpers::getCurrencies())
+                                    ->searchable(),
                                 FileUpload::make('general.gym_logo')
                                     ->label('Gym Logo')
                                     ->disk('public')
@@ -101,7 +105,8 @@ class Settings extends Page implements HasForms
                                     ->deletable()
                                     ->visibility('public')
                                     ->image()
-                                    ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set)),
+                                    ->afterStateUpdated(fn($state, callable $set) => $this->handleFileUpload($state, 'gym_logo', $set))
+                                    ->columnSpanFull(),
                                 DatePicker::make('general.financial_year_start')
                                     ->native(false)
                                     ->label('Financial year start')

@@ -2,10 +2,12 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Number;
 use Nnjeim\World\World;
 
 class Helpers
 {
+    private const DEFAULT_CURRENCY = 'INR';
     private const SETTINGS_PATH    = 'data/settingsData.json';
 
     /**
@@ -136,5 +138,62 @@ class Helpers
             ->pluck('name', 'name')
             ->toArray();
     }
-}
 
+    /**
+     * Get a list of currencies.
+     *
+     * @return array
+     */
+    public static function getCurrencies(): array
+    {
+        $currencyResponse = World::currencies([
+            'fields' => 'name,code',
+        ]);
+
+        if (!$currencyResponse->success) {
+            return [];
+        }
+
+        return collect($currencyResponse->data)
+            ->pluck('name', 'code')
+            ->toArray();
+    }
+
+    /**
+     * Get the currency code
+     * 
+     * @return string
+     */
+    public static function getCurrencyCode()
+    {
+        $settings = self::getSettings();
+        $currency = $settings['general']['currency'] ?? null;
+        return filled($currency) ? $currency : self::DEFAULT_CURRENCY;
+    }
+
+    /**
+     * Format the currency value.
+     *
+     * @param float|null $value
+     * @param string|null $currency
+     * @return string
+     */
+    public static function formatCurrency(?float $value, ?string $currency = null): string
+    {
+        $currency = $currency ?? self::getCurrencyCode();
+        return Number::currency($value ?? 0, $currency, null, 0);
+    }
+
+
+    /**
+     * Get the currency symbol.
+     *
+     * @return string The currency symbol.
+     */
+    public static function getCurrencySymbol(): string
+    {
+        $currencyCode = self::getCurrencyCode();
+        $formatter = new \NumberFormatter('en' . "@currency=$currencyCode", \NumberFormatter::CURRENCY);
+        return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL) ?: '';
+    }
+}
