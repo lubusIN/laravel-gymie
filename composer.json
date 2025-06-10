@@ -63,13 +63,15 @@
         ],
         "setup-demo": [
             "@prepare-env",
-            "@php artisan migrate:fresh --seed --ansi"
+            "@php artisan migrate:fresh --seed --ansi",
+            "@php artisan shield:generate --all --panel=admin --ansi"
         ],
         "setup": [
             "@prepare-env",
             "@php artisan migrate:fresh --ansi",
             "@php artisan db:seed --class=WorldSeeder --ansi",
-            "@php artisan make:filament-user --ansi"
+            "@php artisan make:filament-user --ansi",
+            "@php artisan shield:generate --all --panel=admin --ansi"
         ]
     },
     "extra": {
