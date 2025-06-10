@@ -3,9 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Settings;
+use App\Filament\Resources\RoleResource as ResourcesRoleResource;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use BezhanSalleh\FilamentShield\Resources\RoleResource;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -59,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 Settings::class,
             ])
             ->resources([
-                RoleResource::class,
+                ResourcesRoleResource::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
