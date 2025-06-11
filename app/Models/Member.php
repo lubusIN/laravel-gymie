@@ -99,7 +99,7 @@ class Member extends Model
                                     Grid::make()
                                         ->schema([
                                             TextInput::make('code')
-                                                ->placeholder('Code for the plan')
+                                                ->placeholder('Code for the member')
                                                 ->label('Member Code')
                                                 ->required(),
                                             TextInput::make('name')
