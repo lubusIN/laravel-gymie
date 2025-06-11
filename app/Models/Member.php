@@ -43,7 +43,7 @@ class Member extends Model
         'city',
         'pincode',
         'source',
-        'why_do_you_plan_to_join',
+        'joining_for',
         'status',
     ];
 
@@ -215,7 +215,7 @@ class Member extends Model
                             'others' => 'Others'
                         ])->default('promotions')
                         ->selectablePlaceholder(false),
-                    Select::make('why_do_you_plan_to_join')
+                    Select::make('joining_for')
                         ->options([
                             'fitness' => 'Fitness',
                             'body_building' => 'Body Building',

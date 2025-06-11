@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->text('pincode')->nullable();
             $table->string('source')->default('promotions')->nullable();
-            $table->string('why_do_you_plan_to_join')->default('fitness')->nullable();
+            $table->string('joining_for')->default('fitness')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
             $table->softDeletes();
             $table->timestamps();

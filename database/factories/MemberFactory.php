@@ -33,7 +33,7 @@ class MemberFactory extends Factory
             'state' => $this->faker->state(),
             'pincode' => $this->faker->postcode(),
             'source' => $this->faker->randomElement(['promotions', 'referral', 'online']),
-            'why_do_you_plan_to_join' => $this->faker->randomElement(['fitness', 'weight loss', 'muscle gain']),
+            'joining_for' => $this->faker->randomElement(['fitness', 'weight loss', 'muscle gain']),
             'status' => $this->faker->randomElement(['active', 'inactive']),
         ];
     }
