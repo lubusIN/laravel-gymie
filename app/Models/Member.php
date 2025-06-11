@@ -78,6 +78,13 @@ class Member extends Model
                     Section::make('')
                         ->schema([
                             FileUpload::make('photo')
+                                ->imageEditor()
+                                ->preserveFilenames()
+                                ->maxSize(1024 * 1024 * 10)
+                                ->disk('public')
+                                ->directory('images')
+                                ->image()
+                                ->placeholder('Upload a logo (max 10MB)')
                                 ->loadingIndicatorPosition('left')
                                 ->panelAspectRatio('6:4')
                                 ->panelLayout('integrated')

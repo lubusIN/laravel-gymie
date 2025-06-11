@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
 class MemberResource extends Resource
@@ -182,25 +183,17 @@ class MemberResource extends Resource
             ->schema([
                 Section::make()
                     ->heading(function (Member $record): HtmlString {
-                        $variant = $record->status === 'active' ? 'primary' : 'danger';
-
-                        $badge = '<span '
-                            . 'style=" margin-left: 0.5rem; '
-                            . '--c-50:var(--' . $variant . '-50);'
-                            . '--c-400:var(--' . $variant . '-400);'
-                            . '--c-600:var(--' . $variant . '-600);" '
-                            . 'class="inline-flex fi-badge items-center justify-center gap-x-1 '
-                            . 'rounded-md text-xs font-medium ring-1 ring-inset px-2 py-1 '
-                            . 'fi-color-custom bg-custom-50 text-custom-600 ring-custom-600/10 '
-                            . 'dark:bg-custom-400/10 dark:text-custom-400 dark:ring-custom-400/30 '
-                            . 'fi-color-' . $variant . '">'
-                            . ucfirst($record->status)
-                            . '</span>';
-
-                        return new HtmlString('Personal Information ' . $badge);
+                        $variant = $record->status === 'active' ? 'success' : 'danger';
+                        $html = Blade::render(
+                            '<x-filament::badge class="inline-flex" :color="$variant">
+                                {{ ucfirst($status) }}
+                            </x-filament::badge>',
+                            ['status' => $record->status, 'variant' => $variant]
+                        );
+                        return new HtmlString('Personal Information ' . $html);
                     })
                     ->schema([
-                        ImageEntry::make('logo')
+                        ImageEntry::make('photo')
                             ->hiddenLabel()
                             ->defaultImageUrl(fn(Member $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name)
                             ->size(180)
