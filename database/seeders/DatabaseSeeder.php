@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,
             EnquirySeeder::class,
             FollowUpSeeder::class,
+            MemberSeeder::class,
+            SubscriptionSeeder::class,
         ]);
     }
 }
