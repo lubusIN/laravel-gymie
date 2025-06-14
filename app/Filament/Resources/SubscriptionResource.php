@@ -121,7 +121,7 @@ class SubscriptionResource extends Resource
                     return $defaultDescriptions[$tab] ?? 'Create a subscription to get started.';
                 }
 
-                return "We found no {$tab} members between {$from} and {$to}.";
+                return "We found no {$tab} subscriptions between {$from} and {$to}.";
             })
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
