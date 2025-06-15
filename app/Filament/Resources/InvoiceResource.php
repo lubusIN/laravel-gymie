@@ -28,7 +28,6 @@ use Illuminate\Support\HtmlString;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     /**
      * Define the form schema for the resource.
