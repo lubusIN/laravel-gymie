@@ -21,11 +21,10 @@
     "member": {
         "prefix": "",
         "last_number": ""
-    }
+    },
     "charges": {
         "admission_fee": "",
-        "taxes": ""
-        "discount": []
-
+        "taxes": "",
+        "discounts": []
     }
 }

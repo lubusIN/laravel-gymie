@@ -250,7 +250,7 @@ class Settings extends Page implements HasForms
                             ->numeric()
                             ->label('Taxes')
                             ->suffix('%'),
-                        TagsInput::make('charges.discount')
+                        TagsInput::make('charges.discounts')
                             ->label('Discount percent available')
                             ->hint('Press Enter to add')
                             ->placeholder('Type discount %')

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             FollowUpSeeder::class,
             MemberSeeder::class,
             SubscriptionSeeder::class,
+            InvoiceSeeder::class
         ]);
     }
 }

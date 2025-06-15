@@ -172,6 +172,54 @@ class Helpers
     }
 
     /**
+     * Get the discounts from settings.
+     *
+     * @return array
+     */
+    public static function getDiscounts(): array
+    {
+        $settings = self::getSettings();
+        $discounts = $settings['charges']['discounts'] ?? [];
+        if (! is_array($discounts)) {
+            return [];
+        }
+
+        $options = [];
+        foreach ($discounts as $value) {
+            $value              = (string) $value;
+            $options[$value]  = Number::percentage($value);
+        }
+
+        return $options;
+    }
+
+    /**
+     * Get the discount amount.
+     *
+     * @return float
+     */
+    public static function getDiscountAmount(?float $discount, ?float $fee): float
+    {
+        $discountAmount = 0.0;
+        if (is_numeric($discount) && $discount > 0) {
+            $discountAmount = ($fee * $discount) / 100;
+        }
+        return round($discountAmount, 2);
+    }
+
+    /**
+     * Get the tax rate from settings.
+     *
+     * @return float
+     */
+    public static function getTaxRate(): float
+    {
+        $settings = self::getSettings();
+        $taxRate = $settings['charges']['taxes'] ?? 0.0;
+        return is_numeric($taxRate) ? (float)$taxRate : 0.0;
+    }
+
+    /**
      * Format the currency value.
      *
      * @param float|null $value
