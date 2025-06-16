@@ -35,6 +35,16 @@ class Subscription extends Model
     protected $dates = ['deleted_at', 'start_date', 'end_date'];
 
     /**
+     * Get the invoice for the subscription.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function invoice()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
      * The member who owns this subscription.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
