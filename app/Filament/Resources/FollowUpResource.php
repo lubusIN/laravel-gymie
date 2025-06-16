@@ -20,8 +20,6 @@ class FollowUpResource extends Resource
 {
     protected static ?string $model = FollowUp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
-
     /**
      * Define the form schema for the resource.
      *

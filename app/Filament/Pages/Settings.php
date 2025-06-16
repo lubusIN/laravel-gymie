@@ -27,9 +27,6 @@ class Settings extends Page implements HasForms
     /** @var string|null Page title */
     protected static ?string $title = 'Settings';
 
-    /** @var string|null Navigation Icon for the settings page */
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-
     /** @var string View file for the settings page */
     protected static string $view = 'filament.pages.settings';
 

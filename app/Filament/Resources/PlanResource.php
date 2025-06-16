@@ -20,8 +20,6 @@ class PlanResource extends Resource
 {
     protected static ?string $model = Plan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
-
     /**
      * Define the form schema for the resource.
      *

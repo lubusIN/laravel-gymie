@@ -23,8 +23,6 @@ class EnquiryResource extends Resource
 {
     protected static ?string $model = Enquiry::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-phone';
-
     /**
      * Define the form schema for the resource.
      *

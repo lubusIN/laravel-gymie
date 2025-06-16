@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
-    protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
     /**
      * Define the form schema for the resource.
