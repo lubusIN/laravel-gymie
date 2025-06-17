@@ -15,6 +15,17 @@ class Helpers
     private const DEFAULT_CURRENCY = 'INR';
     private const SETTINGS_PATH    = 'data/settingsData.json';
 
+    /** 
+     * If non-null, generateLastNumber() and updateLastNumber() will use
+     * this array instead of reading the disk JSON.
+     */
+    protected static ?array $testSettingsOverride = null;
+
+    public static function setTestSettingsOverride(?array $override): void
+    {
+        self::$testSettingsOverride = $override;
+    }
+
     /**
      * Get the settings data from the JSON file.
      *
@@ -22,6 +33,10 @@ class Helpers
      */
     public static function getSettings(): array
     {
+        if (static::$testSettingsOverride !== null) {
+            return static::$testSettingsOverride;
+        }
+
         $filePath = storage_path(self::SETTINGS_PATH);
 
         if (!file_exists($filePath)) {
