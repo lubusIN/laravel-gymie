@@ -2,11 +2,16 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Support\Number;
 use Nnjeim\World\World;
 
 class Helpers
 {
+    private const DEFAULT_FY_START = '04-01';
+    private const DEFAULT_FY_END   = '03-31';
     private const DEFAULT_CURRENCY = 'INR';
     private const SETTINGS_PATH    = 'data/settingsData.json';
 
@@ -232,7 +237,6 @@ class Helpers
         return Number::currency($value ?? 0, $currency, null, 0);
     }
 
-
     /**
      * Get the currency symbol.
      *
@@ -243,5 +247,167 @@ class Helpers
         $currencyCode = self::getCurrencyCode();
         $formatter = new \NumberFormatter('en' . "@currency=$currencyCode", \NumberFormatter::CURRENCY);
         return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL) ?: '';
+    }
+
+    /**
+     * Safely parse financial year start and end template dates.
+     * 
+     * @param array $general General settings array containing 'financial_year_start' and 'financial_year_end'.
+     * @return array{start: Carbon, end: Carbon} Array with parsed 'start' and 'end' Carbon instances.
+     */
+    private static function parseTemplates(array $general): array
+    {
+        try {
+            $start = isset($general['financial_year_start'])
+                ? Carbon::parse($general['financial_year_start'])
+                : Carbon::createFromFormat('m-d', self::DEFAULT_FY_START);
+        } catch (Exception $e) {
+            $start = Carbon::createFromFormat('m-d', self::DEFAULT_FY_START);
+        }
+
+        try {
+            $end = isset($general['financial_year_end'])
+                ? Carbon::parse($general['financial_year_end'])
+                : Carbon::createFromFormat('m-d', self::DEFAULT_FY_END);
+        } catch (Exception $e) {
+            $end = Carbon::createFromFormat('m-d', self::DEFAULT_FY_END);
+        }
+
+        return ['start' => $start, 'end' => $end];
+    }
+
+    /**
+     * Parse a date string or return now().
+     * 
+     * @param string|null $dateString The date string to parse.
+     * @return Carbon Parsed Carbon instance, or now() if input is null or empty.
+     */
+    private static function parseDate(?string $dateString): Carbon
+    {
+        return $dateString ? Carbon::parse($dateString) : Carbon::now();
+    }
+
+    /**
+     * Determine fiscal year start and end dates for the given date.
+     * 
+     * @param Carbon $date The date to calculate the fiscal period for.
+     * @return array{0: Carbon, 1: Carbon} Array with [start, end] Carbon instances of the fiscal year.
+     */
+    private static function getFiscalSpan(Carbon $date): array
+    {
+        $gen     = self::getSettings()['general'] ?? [];
+        $tpl     = self::parseTemplates($gen);
+
+        $year    = $date->year;
+        $start   = Carbon::create($year, $tpl['start']->month, $tpl['start']->day);
+        $endYear = $tpl['end']->lessThan($tpl['start']) ? $year + 1 : $year;
+        $end     = Carbon::create($endYear, $tpl['end']->month, $tpl['end']->day);
+
+        // If the date is before this year's start, shift back a year
+        if ($date->lt($start)) {
+            $start = $start->subYear();
+            $end   = $end->subYear();
+        }
+
+        return [$start, $end];
+    }
+
+    /**
+     * Generate the next sequential number for a given type and model.
+     * 
+     * @param string $type The type identifier used to fetch the corresponding settings.
+     * @param string $model The fully qualified class name of the model to retrieve the latest number from the database.
+     * @param Carbon|string|null $date The date to check against the financial year.
+     * @return string The newly generated number.
+     */
+    public static function generateLastNumber(string $type, string $modelClass, ?string $dateString = null): string
+    {
+        $date          = self::parseDate($dateString);
+        [$start, $end] = self::getFiscalSpan($date);
+        $settings      = self::getSettings();
+
+        $rawPrefix      = data_get($settings, "{$type}.prefix", '');
+        $rawSaved      = data_get($settings, "{$type}.last_number", '');
+
+        $prefix         = trim($rawPrefix, '-');
+        $prefix         = filled($prefix) ? $prefix : 'GY';
+        $sep           = $prefix !== '' ? '-' : '';
+        $match         = $prefix . $sep;
+
+        $lastFromDb    = collect(
+            app($modelClass)
+                ::whereBetween('date', [$start->toDateString(), $end->toDateString()])
+                ->pluck('number')
+        )
+            ->map(
+                fn($raw) => Str::of($raw)
+                    ->whenStartsWith($match, fn($s) => $s->after($match))
+                    ->__toString()
+            )
+            ->map(fn($v) => is_numeric($v) ? (int)$v : 0)
+            ->max() ?: 0;
+
+        $lastFromSettings = Str::of($rawSaved)
+            ->whenStartsWith($match, fn($s) => $s->after($match))
+            ->__toString();
+        $lastFromSettings = is_numeric($lastFromSettings)
+            ? (int) $lastFromSettings
+            : 0;
+
+        $next = max($lastFromDb, $lastFromSettings) + 1;
+
+        return str($prefix)
+            ->when($sep !== '', fn($s) => $s->append($sep))
+            ->append($next)
+            ->__toString();
+    }
+
+    /**
+     * Persist the last number for a given type if within the current fiscal year.
+     * 
+     * @param string $type The type of setting to update.
+     * @param string $newNumber The new number to set as the last number.
+     * @param Carbon|string|null $date The date to check against the financial year.
+     * @return void
+     */
+    public static function updateLastNumber(string $type, string $newNumber, ?string $date = null): void
+    {
+        $date          = self::parseDate($date);
+        [$start, $end] = self::getFiscalSpan($date);
+
+        if (! $date->between($start, $end)) {
+            return;
+        }
+
+        $settings  = self::getSettings();
+        $rawPrefix  = data_get($settings, "{$type}.prefix", 'GY');
+        $prefix     = trim($rawPrefix, '-');
+
+        $numericPart = Str::of($newNumber)
+            ->match('/(\d+)$/')
+            ->__toString();
+
+        if ($numericPart === '' || ! ctype_digit($numericPart)) {
+            return;
+        }
+
+        $incoming      = (int) $numericPart;
+        $rawStored     = data_get($settings, "{$type}.last_number", '');
+        $storedNumeric = Str::of($rawStored)
+            ->match('/(\d+)$/')
+            ->__toString();
+        $current       = ctype_digit($storedNumeric) ? (int) $storedNumeric : 0;
+
+        if ($incoming <= $current) {
+            return;
+        }
+
+        $settings[$type]['last_number'] = $incoming;
+        $settings[$type]['prefix']       = $prefix;
+
+        file_put_contents(
+            storage_path(self::SETTINGS_PATH),
+            json_encode($settings, JSON_PRETTY_PRINT)
+        );
     }
 }

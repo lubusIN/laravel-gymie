@@ -80,6 +80,11 @@ class Invoice extends Model
         parent::boot();
 
         static::saving(function ($invoice) {
+            if (!$invoice->number) {
+                $invoice->number = Helpers::generateLastNumber('invoice', Invoice::class, $invoice->date);
+            }
+            Helpers::updateLastNumber('invoice', $invoice->number, $invoice->date);
+
             $fee = $invoice->subscription_fee ?? 0;
             $taxRate = Helpers::getTaxRate() ?: 0;
             $discountAmount = $invoice->discount_amount ?? 0;
@@ -138,7 +143,14 @@ class Invoice extends Model
                 ->schema([
                     TextInput::make('number')
                         ->label('Invoice No.')
-                        ->required(),
+                        ->required()
+                        ->readOnly()
+                        ->unique('invoices', 'number')
+                        ->default(fn(Get $get) => Helpers::generateLastNumber(
+                            'invoice',
+                            Invoice::class,
+                            $get('date')
+                        )),
                     Select::make('subscription_id')
                         ->label('Subscription')
                         ->reactive()
