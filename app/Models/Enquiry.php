@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Helpers\Helpers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -32,13 +34,13 @@ class Enquiry extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'contact',
         'date',
         'gender',
         'dob',
-        'occupation',
         'status',
         'address',
         'country',
@@ -47,15 +49,15 @@ class Enquiry extends Model
         'pincode',
         'interested_in',
         'source',
-        'why_do_you_plan_to_join',
+        'fitness_goal',
         'start_by'
     ];
 
     protected $casts = [
         'interested_in' => 'array',
-        'date' => 'date',
-        'dob' => 'date',
-        'start_by' => 'date',
+        'date'          => 'date',
+        'dob'           => 'date',
+        'start_by'      => 'date',
     ];
 
     protected $dates = ['deleted_at'];
@@ -68,6 +70,16 @@ class Enquiry extends Model
     public function follow_up()
     {
         return $this->hasMany(FollowUp::class);
+    }
+
+    /**
+     * Get the user for the enquiry.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -102,95 +114,84 @@ class Enquiry extends Model
     public static function getForm(): array
     {
         return [
-            Section::make('')
+            Section::make('Details')
                 ->schema([
-                    TextInput::make('name')->required()->maxLength(255)->placeholder('Name'),
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255)
+                        ->placeholder('John Doe'),
                     TextInput::make('email')
                         ->email()
-                        ->live()
-                        ->maxLength(255)
                         ->required()
+                        ->live()
+                        ->placeholder('user@example.com')
                         ->unique('enquiries', 'email', ignoreRecord: true),
                     TextInput::make('contact')->tel()->required()->placeholder('+91 555-123-4567'),
-                    Select::make('gender')->options([
-                        'male' => 'Male',
-                        'female' => 'Female',
-                        'other' => 'Other',
-                    ])->default('male')
-                        ->selectablePlaceholder(false)
-                        ->required(),
                     DatePicker::make('dob')
-                        ->native(false)
                         ->required()
-                        ->label('Date of Birth')
-                        ->placeholder('01-01-2001')
-                        ->displayFormat('d-m-Y')
-                        ->suffixIcon('heroicon-m-calendar-days'),
-                    Select::make('occupation')
-                        ->options([
-                            'student' => 'Student',
-                            'housewife' => 'Housewife',
-                            'self_employed' => 'Self Employed',
-                            'professional' => 'Professional',
-                            'freelancer' => 'Freelancer',
-                            'others' => 'Others'
-                        ])
-                        ->default('student')
-                        ->selectablePlaceholder(false)
-                        ->required(),
+                        ->label('Date of Birth'),
                     DatePicker::make('date')
-                        ->default(now())
-                        ->suffixIcon('heroicon-m-calendar-days')
-                        ->displayFormat('d-m-Y')
-                        ->native(false),
+                        ->default(now()),
+                    Radio::make('gender')
+                        ->options([
+                            'male' => 'Male',
+                            'female' => 'Female',
+                            'other' => 'Other',
+                        ])
+                        ->default('male')
+                        ->inline()
+                        ->inlineLabel(false)
+                        ->required(),
+                    Select::make('user_id')
+                        ->label('Lead Owner')
+                        ->placeholder('Select lead owner')
+                        ->relationship('user', 'name')
+                        ->required(),
+                    DatePicker::make('start_by')
+                        ->minDate(now())
+                        ->placeholder(now()->format('d-m-Y')),
                 ])->columns(3)->columnSpanFull(),
-            Section::make('Address')
+            Section::make('Location')
                 ->schema([
+                    Textarea::make('address')
+                        ->required()
+                        ->placeholder('Room No./Wing, Building/Apt. name, street name'),
                     Group::make()
                         ->schema([
-                            Textarea::make('address')
+                            Select::make('country')
+                                ->label('Country')
+                                ->placeholder('Select country')
+                                ->options(Helpers::getCountries())
                                 ->required()
-                                ->placeholder('Room No./Wing, Building/Apt. name, street name'),
-                            Group::make()
-                                ->schema([
-                                    Select::make('country')
-                                        ->label('Country')
-                                        ->placeholder('Select an country')
-                                        ->options(Helpers::getCountries())
-                                        ->searchable()
-                                        ->preload()
-                                        ->required()
-                                        ->reactive()
-                                        ->afterStateUpdated(fn($state, callable $set) => [
-                                            $set('state', null),
-                                            $set('city', null),
-                                        ]),
-                                    Select::make('state')
-                                        ->label('State')
-                                        ->placeholder('Select an state')
-                                        ->options(fn($get) => Helpers::getStates($get('country')))
-                                        ->searchable()
-                                        ->reactive(),
-                                    Select::make('city')
-                                        ->label('City')
-                                        ->placeholder('Select an city')
-                                        ->options(fn($get) => Helpers::getCities($get('state')))
-                                        ->searchable()
-                                        ->reactive(),
-                                    TextInput::make('pincode')
-                                        ->numeric()
-                                        ->required()
-                                        ->placeholder('PIN code'),
-                                ])->columns(4),
-                        ])->columnSpanFull(),
+                                ->reactive()
+                                ->afterStateUpdated(fn($state, callable $set) => [
+                                    $set('state', null),
+                                    $set('city', null),
+                                ]),
+                            Select::make('state')
+                                ->label('State')
+                                ->placeholder('Select state')
+                                ->options(fn($get) => Helpers::getStates($get('country')))
+                                ->searchable()
+                                ->reactive(),
+                            Select::make('city')
+                                ->label('City')
+                                ->placeholder('Select city')
+                                ->options(fn($get) => Helpers::getCities($get('state')))
+                                ->searchable()
+                                ->reactive(),
+                            TextInput::make('pincode')
+                                ->numeric()
+                                ->required()
+                                ->placeholder('Enter PIN code'),
+                        ])->columns(4),
                 ]),
             Section::make('Choose your Preferences')
                 ->schema([
                     Select::make('interested_in')
                         ->label('Interested In')
                         ->multiple()
-                        ->searchable()
-                        ->preload()
+                        ->placeholder('Select services')
                         ->options(fn() => Service::pluck('name', 'name')->toArray()),
                     Select::make('source')
                         ->options([
@@ -199,7 +200,7 @@ class Enquiry extends Model
                             'others' => 'Others'
                         ])->default('promotions')
                         ->selectablePlaceholder(false),
-                    Select::make('why_do_you_plan_to_join')
+                    Select::make('fitness_goal')
                         ->options([
                             'fitness' => 'Fitness',
                             'body_building' => 'Body Building',
@@ -207,16 +208,38 @@ class Enquiry extends Model
                             'weightgain' => 'Weightgain',
                             'others' => 'Others'
                         ])->default('fitness')
-                        ->label('Why do you plan to join?')
+                        ->label('Fitness goal ?')
                         ->selectablePlaceholder(false),
-                    DatePicker::make('start_by')
-                        ->native(false)
-                        ->minDate(now())
-                        ->displayFormat('d-m-Y')
-                        ->placeholder(now()->format('d-m-Y'))
-                        ->suffixIcon('heroicon-m-calendar-days'),
-                ])->columns(2)
-
+                ])->columns(3),
+            Section::make('Follow Details')
+                ->schema([
+                    Repeater::make('follow_up')
+                        ->relationship('follow_up')
+                        ->itemLabel('')
+                        ->hiddenLabel()
+                        ->columnSpanFull()
+                        ->extraAttributes(['class' => 'new_enquiry_follow_up'])
+                        ->schema([
+                            Select::make('follow_up_method')
+                                ->options([
+                                    'call' => 'Call',
+                                    'email' => 'Email',
+                                    'in_person' => 'In person',
+                                    'whatsapp' => 'WhatsApp',
+                                    'other' => 'Others'
+                                ])->default('call')
+                                ->required()
+                                ->label('Follow-up method')
+                                ->placeholder('Select follow up method'),
+                            DatePicker::make('due_date')
+                                ->label('Due Date')
+                                ->required(),
+                        ])
+                        ->columns(2)
+                        ->maxItems(1)
+                        ->deletable(false)
+                        ->hiddenOn('edit')
+                ]),
         ];
     }
 

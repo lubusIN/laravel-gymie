@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,13 +19,13 @@ class EnquiryFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'contact' => $this->faker->numerify('+##-##########'),
-            'date' =>$this->faker->date(now()),
+            'date' => $this->faker->date(now()),
             'gender' => $this->faker->randomElement(['male', 'female', 'other']),
             'dob' => $this->faker->date('d-m-Y', '-15 years'),
-            'occupation' => $this->faker->randomElement(['student', 'housewife', 'self_employed', 'professional', 'freelancer', 'others']),
             'status' => $this->faker->randomElement(['lead', 'member', 'lost']),
             'address' => $this->faker->address,
             'country' => $this->faker->country,
@@ -33,7 +34,7 @@ class EnquiryFactory extends Factory
             'pincode' => $this->faker->randomNumber(6, 0),
             'interested_in' => Service::inRandomOrder()->limit(rand(1, 5))->pluck('name')->toArray(),
             'source' => $this->faker->randomElement(['promotions', 'word_of_mouth', 'others']),
-            'why_do_you_plan_to_join' => $this->faker->randomElement(['fitness', 'body_building', 'fatloss', 'weightgain', 'others']),
+            'fitness_goal' => $this->faker->randomElement(['fitness', 'body_building', 'fatloss', 'weightgain', 'others']),
             'start_by' => $this->faker->dateTimeBetween('now', '+1 month')->format('d-m-Y'),
         ];
     }
