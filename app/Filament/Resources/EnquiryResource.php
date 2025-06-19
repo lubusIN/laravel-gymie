@@ -169,7 +169,7 @@ class EnquiryResource extends Resource
                         TextEntry::make('start_by')
                             ->label('Preferred Start Date')
                             ->date()
-                            ->hidden(fn($record) => empty($record->start_by)),
+                            ->placeholder('N/A'),
                     ])
                     ->columns(3)
                     ->columnSpan(4),
@@ -194,10 +194,10 @@ class EnquiryResource extends Resource
                                         TextEntry::make('country')->label('Country'),
                                         TextEntry::make('state')
                                             ->label('State')
-                                            ->hidden(fn($record) => empty($record->state)),
+                                            ->placeholder('N/A'),
                                         TextEntry::make('city')
                                             ->label('City')
-                                            ->hidden(fn($record) => empty($record->city)),
+                                            ->placeholder('N/A'),
                                         TextEntry::make('pincode')->label('PIN Code'),
                                     ])
                                     ->columns(4),
@@ -216,7 +216,7 @@ class EnquiryResource extends Resource
                                 TextEntry::make('interested_in')
                                     ->label('Interested In')
                                     ->columnSpanFull()
-                                    ->hidden(fn($record) => empty($record->interested_in)),
+                                    ->placeholder('N/A'),
                                 TextEntry::make('source')
                                     ->label('Source'),
                                 TextEntry::make('fitness_goal')
