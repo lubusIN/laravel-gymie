@@ -238,8 +238,8 @@ class Enquiry extends Model
                         ->columns(2)
                         ->maxItems(1)
                         ->deletable(false)
-                        ->hiddenOn('edit')
-                ]),
+                ])
+                ->hiddenOn('edit'),
         ];
     }
 
