@@ -219,8 +219,8 @@ class EnquiryResource extends Resource
                                     ->placeholder('N/A'),
                                 TextEntry::make('source')
                                     ->label('Source'),
-                                TextEntry::make('fitness_goal')
-                                    ->label('Fitness goal ?'),
+                                TextEntry::make('goal')
+                                    ->label('Goal ?'),
                             ]),
                     ])
             ])->columns(4);

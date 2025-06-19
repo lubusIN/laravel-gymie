@@ -34,7 +34,7 @@ class EnquiryFactory extends Factory
             'pincode' => $this->faker->randomNumber(6, 0),
             'interested_in' => Service::inRandomOrder()->limit(rand(1, 5))->pluck('name')->toArray(),
             'source' => $this->faker->randomElement(['promotions', 'word_of_mouth', 'others']),
-            'fitness_goal' => $this->faker->randomElement(['fitness', 'body_building', 'fatloss', 'weightgain', 'others']),
+            'goal' => $this->faker->randomElement(['fitness', 'body_building', 'fatloss', 'weightgain', 'others']),
             'start_by' => $this->faker->dateTimeBetween('now', '+1 month')->format('d-m-Y'),
         ];
     }

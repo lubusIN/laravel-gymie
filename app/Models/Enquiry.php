@@ -49,7 +49,7 @@ class Enquiry extends Model
         'pincode',
         'interested_in',
         'source',
-        'fitness_goal',
+        'goal',
         'start_by'
     ];
 
@@ -200,7 +200,7 @@ class Enquiry extends Model
                             'others' => 'Others'
                         ])->default('promotions')
                         ->selectablePlaceholder(false),
-                    Select::make('fitness_goal')
+                    Select::make('goal')
                         ->options([
                             'fitness' => 'Fitness',
                             'body_building' => 'Body Building',
@@ -208,7 +208,7 @@ class Enquiry extends Model
                             'weightgain' => 'Weightgain',
                             'others' => 'Others'
                         ])->default('fitness')
-                        ->label('Fitness goal ?')
+                        ->label('Goal ?')
                         ->selectablePlaceholder(false),
                 ])->columns(3),
             Section::make('Follow Details')

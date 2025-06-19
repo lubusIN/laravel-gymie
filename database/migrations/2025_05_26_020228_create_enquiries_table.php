@@ -28,7 +28,7 @@ return new class extends Migration
             $table->enum('status', ['lead', 'member', 'lost'])->default('lead')->nullable();
             $table->json('interested_in')->nullable();
             $table->string('source')->nullable();
-            $table->string('fitness_goal')->nullable();
+            $table->string('goal')->nullable();
             $table->date('start_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
