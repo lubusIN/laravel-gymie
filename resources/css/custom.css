@@ -1,0 +1,6 @@
+.new_enquiry_follow_up li {
+    box-shadow: none;
+}
+.new_enquiry_follow_up .fi-fo-repeater-item-content {
+    padding: 0px;
+}

@@ -16,7 +16,15 @@ class ListEnquiries extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->icon('heroicon-m-plus')
-                ->hidden(!Enquiry::exists()),        
-            ];
+                ->hidden(!Enquiry::exists()),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Sales',
+            'Enquiries',
+        ];
     }
 }

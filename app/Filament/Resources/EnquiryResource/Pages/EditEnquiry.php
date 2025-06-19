@@ -18,9 +18,19 @@ class EditEnquiry extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Sales',
+            EnquiryResource::getUrl('index')   => 'Enquiries',
+            $this->record->name,
         ];
     }
 }

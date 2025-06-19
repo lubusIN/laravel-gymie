@@ -15,8 +15,11 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class EnquiryResource extends Resource
 {
@@ -133,56 +136,94 @@ class EnquiryResource extends Resource
     {
         return $infolist
             ->schema([
-                Grid::make(5)
+                Section::make('Details')
+                    ->heading(function (Enquiry $record): HtmlString {
+                        $variant = match ($record->status) {
+                            'lead' => 'info',
+                            'lost' => 'danger',
+                            'member' => 'success',
+                        };
+                        $html = Blade::render(
+                            '<x-filament::badge class="inline-flex" style="margin-left:6px;" :color="$variant">
+                                        {{ ucfirst($status) }}
+                                    </x-filament::badge>',
+                            ['status' => $record->status, 'variant' => $variant]
+                        );
+                        return new HtmlString('Details ' . $html);
+                    })
                     ->schema([
-                        Section::make('Personal Information')
-                            ->schema([
-                                TextEntry::make('name'),
-                                TextEntry::make('email')->label('Email'),
-                                TextEntry::make('contact')->label('Contact'),
-                                TextEntry::make('gender')->label('Gender'),
-                                TextEntry::make('dob')
-                                    ->label('Date of Birth')
-                                    ->date('d-m-Y'),
-                                TextEntry::make('occupation')
-                                    ->label('Occupation'),
+                        TextEntry::make('name'),
+                        TextEntry::make('email')->label('Email')->copyable(),
+                        TextEntry::make('contact')->label('Contact')->copyable(),
+                        TextEntry::make('gender')->label('Gender'),
+                        TextEntry::make('dob')
+                            ->label('Date of Birth')
+                            ->date(),
+                        TextEntry::make('date')
+                            ->date(),
+                        TextEntry::make('user.name')
+                            ->label('Leade Owner')
+                            ->weight(FontWeight::Bold)
+                            ->color('success')
+                            ->url(fn($record): string => route('filament.admin.resources.users.view', $record->user_id)),
+                        TextEntry::make('start_by')
+                            ->label('Preferred Start Date')
+                            ->date()
+                            ->placeholder('N/A'),
+                    ])
+                    ->columns(3)
+                    ->columnSpan(4),
+                Grid::make()
+                    ->columnSpan(4)
+                    ->columns([
+                        'default' => 1,
+                        'sm'      => 2,
+                        'xl'      => 5,
+                    ])
+                    ->schema([
+                        Section::make('Location')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm'      => 1,
+                                'xl'      => 3,
                             ])
-                            ->columns(3)
-                            ->columnSpan(3),
+                            ->schema([
+                                TextEntry::make('address')->label('Address'),
+                                Group::make()
+                                    ->schema([
+                                        TextEntry::make('country')->label('Country'),
+                                        TextEntry::make('state')
+                                            ->label('State')
+                                            ->placeholder('N/A'),
+                                        TextEntry::make('city')
+                                            ->label('City')
+                                            ->placeholder('N/A'),
+                                        TextEntry::make('pincode')->label('PIN Code'),
+                                    ])
+                                    ->columns(4),
+                            ]),
                         Section::make('Preferences')
+                            ->columnSpan([
+                                'default' => 4,
+                                'sm'      => 1,
+                                'xl'      => 2,
+                            ])
+                            ->columns([
+                                'sm' => 1,
+                                'md' => 2,
+                            ])
                             ->schema([
                                 TextEntry::make('interested_in')
                                     ->label('Interested In')
-                                    ->hidden(fn($record) => empty($record->interested_in)),
+                                    ->columnSpanFull()
+                                    ->placeholder('N/A'),
                                 TextEntry::make('source')
                                     ->label('Source'),
-                                TextEntry::make('why_do_you_plan_to_join')
-                                    ->label('Reason for Joining'),
-                                TextEntry::make('start_by')
-                                    ->label('Preferred Start Date')
-                                    ->date('d-m-Y')
-                                    ->hidden(fn($record) => empty($record->start_by)),
-                            ])
-                            ->columns(2)
-                            ->columnSpan(2),
-                    ]),
-                Section::make('Address')
-                    ->schema([
-                        TextEntry::make('address')->label('Address'),
-                        Group::make()
-                            ->schema([
-                                TextEntry::make('country')->label('Country'),
-                                TextEntry::make('state')
-                                    ->label('State')
-                                    ->hidden(fn($record) => empty($record->state)),
-                                TextEntry::make('city')
-                                    ->label('City')
-                                    ->hidden(fn($record) => empty($record->city)),
-                                TextEntry::make('pincode')->label('PIN Code'),
-                            ])
-                            ->columns(4),
-                    ]),
-            ]);
+                                TextEntry::make('goal')
+                                    ->label('Goal ?'),
+                            ]),
+                    ])
+            ])->columns(4);
     }
 
     public static function getRelations(): array
