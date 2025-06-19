@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EnquiryResource\Pages;
 use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use App\Models\Enquiry;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -115,13 +114,14 @@ class EnquiryResource extends Resource
                             ->disabled()
                             ->color('gray'),
                         Tables\Actions\EditAction::make()->hiddenLabel(),
-                        Tables\Actions\DeleteAction::make()->hiddenLabel(),
+                        Tables\Actions\DeleteAction::make()
+                            ->hiddenLabel()
                     ])->dropdown(false)
                 ])
             ])->recordUrl(fn($record): string => route('filament.admin.resources.enquiries.view', $record->id))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
                 ]),
             ]);
     }
