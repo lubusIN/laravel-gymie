@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Helpers\Helpers;
+use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -113,7 +114,7 @@ class Settings extends Page implements HasForms
                                     ->native(false)
                                     ->label('Financial year end')
                                     ->suffixIcon('heroicon-o-calendar-days')
-                                    ->displayFormat('d/m/Y')
+                                    ->displayFormat('d/m/Y'),
                             ]),
                     ])
                     ->columnSpan(3),
@@ -281,6 +282,18 @@ class Settings extends Page implements HasForms
         if (!file_exists(dirname($path))) {
             mkdir(dirname($path), 0755, true);
         }
+
+        if (! empty($this->data['general']['financial_year_start'])) {
+            $this->data['general']['financial_year_start'] =
+                Carbon::parse($this->data['general']['financial_year_start'])
+                ->toDateString();
+        }
+        if (! empty($this->data['general']['financial_year_end'])) {
+            $this->data['general']['financial_year_end'] =
+                Carbon::parse($this->data['general']['financial_year_end'])
+                ->toDateString();
+        }
+
         file_put_contents($path, json_encode($this->data, JSON_PRETTY_PRINT));
 
         Notification::make()
