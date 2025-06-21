@@ -162,7 +162,7 @@ class EnquiryResource extends Resource
                         TextEntry::make('date')
                             ->date(),
                         TextEntry::make('user.name')
-                            ->label('Leade Owner')
+                            ->label('Lead Owner')
                             ->weight(FontWeight::Bold)
                             ->color('success')
                             ->url(fn($record): string => route('filament.admin.resources.users.view', $record->user_id)),
