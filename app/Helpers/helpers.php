@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Number;
 use Nnjeim\World\World;
@@ -328,18 +329,28 @@ class Helpers
     }
 
     /**
-     * Generate the next sequential number for a given type and model.
-     * 
-     * @param string $type The type identifier used to fetch the corresponding settings.
-     * @param string $model The fully qualified class name of the model to retrieve the latest number from the database.
-     * @param Carbon|string|null $date The date to check against the financial year.
-     * @return string The newly generated number.
+     * Generate the next sequential identifier for a given type and model.
+     *
+     * @param  string                 $type         The type identifier used to fetch the corresponding settings.
+     * @param  string                 $modelClass   The fully qualified class name of the Eloquent model to query.
+     * @param  Carbon|string|null     $dateString   A date (Carbon instance or date string) used to determine the financial year span.
+     * @param  string|null            $modalColumn  The model column to search for the last value (e.g. 'number' or 'code').
+     * @return string                                The newly generated identifier, prefixed and suffixed as configured.
      */
-    public static function generateLastNumber(string $type, string $modelClass, ?string $dateString = null): string
+    public static function generateLastNumber(string $type, string $modelClass, ?string $dateString = null, ?string $modalColumn = "number"): string
     {
         $date          = self::parseDate($dateString);
         [$start, $end] = self::getFiscalSpan($date);
         $settings      = self::getSettings();
+
+        // Resolve the model and its table
+        $model         = new $modelClass;
+        $table         = $model->getTable();
+
+        // Decide which date column to use
+        $dateColumn    = Schema::hasColumn($table, 'date')
+            ? 'date'
+            : 'created_at';
 
         $rawPrefix      = data_get($settings, "{$type}.prefix", '');
         $rawSaved      = data_get($settings, "{$type}.last_number", '');
@@ -351,8 +362,8 @@ class Helpers
 
         $lastFromDb    = collect(
             app($modelClass)
-                ::whereBetween('date', [$start->toDateString(), $end->toDateString()])
-                ->pluck('number')
+                ::whereBetween($dateColumn, [$start->toDateString(), $end->toDateString()])
+                ->pluck($modalColumn)
         )
             ->map(
                 fn($raw) => Str::of($raw)

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Helpers\Helpers;
 use App\Models\Invoice;
+use App\Models\Member;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,8 +21,9 @@ class InvoiceNumberGeneratorTest extends TestCase
 
         Carbon::setTestNow(Carbon::create(2025, 6, 17));
 
-        // Prevent the Invoice::saving listener (so updateLastNumber() never writes disk)
+        // Prevent the listener (so updateLastNumber() never writes disk)
         Invoice::flushEventListeners();
+        Member::flushEventListeners();
 
         // Override settings in-memory so we always start at "GY-1"
         Helpers::setTestSettingsOverride([
