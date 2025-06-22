@@ -11,6 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -90,6 +91,13 @@ class Member extends Model
     {
         parent::boot();
 
+        static::saving(function ($member) {
+            if (!$member->code) {
+                $member->code = Helpers::generateLastNumber('member', Member::class, null, 'code');
+            }
+            Helpers::updateLastNumber('member', $member->code);
+        });
+
         static::deleting(function ($resource) {
             foreach (static::$relations_to_cascade as $relation) {
                 foreach ($resource->{$relation}()->get() as $item) {
@@ -143,7 +151,13 @@ class Member extends Model
                                             TextInput::make('code')
                                                 ->placeholder('Code for the member')
                                                 ->label('Member Code')
-                                                ->required(),
+                                                ->required()
+                                                ->default(fn(Get $get) => Helpers::generateLastNumber(
+                                                    'member',
+                                                    Member::class,
+                                                    null,
+                                                    'code'
+                                                )),
                                             TextInput::make('name')
                                                 ->required()
                                                 ->maxLength(255)
