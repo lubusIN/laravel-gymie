@@ -22,7 +22,7 @@ class Plan extends Model
      *
      * @var string[]
      */
-    protected static $relations_to_cascade = ['subscription'];
+    protected static $relations_to_cascade = ['subscriptions'];
 
     /**
      * The attributes that are mass assignable.
@@ -52,11 +52,11 @@ class Plan extends Model
     }
 
     /**
-     * Get the subscription for the plan.
+     * Get the subscriptions for the plan.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subscription()
+    public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
     }

@@ -116,10 +116,11 @@ class AppServiceProvider extends ServiceProvider
                     $class = get_class($record);
 
                     if (isset($map[$class])) {
-                        foreach ($map[$class] as $relation => $label) {
+                        foreach ($map[$class] as $relation) {
                             if ($record->$relation()->exists()) {
                                 $count = $record->$relation()->count();
                                 $moduleName = class_basename($record);
+                                $label = Str::kebab($relation);
                                 $action
                                     ->modalIcon('heroicon-o-x-mark',)
                                     ->modalHeading("Oops! Cannot Delete {$moduleName}")
@@ -143,10 +144,11 @@ class AppServiceProvider extends ServiceProvider
                         $class = get_class($record);
 
                         if (isset($map[$class])) {
-                            foreach ($map[$class] as $relation => $label) {
+                            foreach ($map[$class] as $relation) {
                                 if ($record->$relation()->exists()) {
                                     $count      = $record->$relation()->count();
                                     $moduleName = Str::pluralStudly(class_basename($record));
+                                    $label = Str::kebab($relation);
                                     $action
                                         ->modalIcon('heroicon-o-x-mark')
                                         ->modalHeading("Oops! Cannot Delete {$moduleName}")

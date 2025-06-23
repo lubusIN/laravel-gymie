@@ -26,7 +26,7 @@ class Enquiry extends Model
      *
      * @var string[]
      */
-    protected static $relations_to_cascade = ['follow_up'];
+    protected static $relations_to_cascade = ['followUps'];
 
     /**
      * The attributes that are mass assignable.
@@ -63,11 +63,11 @@ class Enquiry extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the follow-up for the enquiry.
+     * Get the followUps for the enquiry.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-    public function follow_up()
+    public function followUps()
     {
         return $this->hasMany(FollowUp::class);
     }
@@ -213,8 +213,8 @@ class Enquiry extends Model
                 ])->columns(3),
             Section::make('Follow Details')
                 ->schema([
-                    Repeater::make('follow_up')
-                        ->relationship('follow_up')
+                    Repeater::make('followUps')
+                        ->relationship('followUps')
                         ->itemLabel('')
                         ->hiddenLabel()
                         ->columnSpanFull()

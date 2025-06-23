@@ -28,7 +28,7 @@ class Member extends Model
      *
      * @var string[]
      */
-    protected static $relations_to_cascade = ['subscription'];
+    protected static $relations_to_cascade = ['subscriptions'];
 
     /**
      * The attributes that are mass assignable.
@@ -75,11 +75,11 @@ class Member extends Model
     ];
 
     /**
-     * Get the subscription for the member.
+     * Get the subscriptions for the member.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subscription()
+    public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
     }

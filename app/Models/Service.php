@@ -18,7 +18,7 @@ class Service extends Model
      *
      * @var string[]
      */
-    protected static $relations_to_cascade = ['plan'];
+    protected static $relations_to_cascade = ['plans'];
 
     /**
      * The attributes that are mass assignable.
@@ -33,11 +33,11 @@ class Service extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the plan for the service.
+     * Get the plans for the service.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
-    public function plan()
+    public function plans()
     {
         return $this->hasMany(Plan::class);
     }
