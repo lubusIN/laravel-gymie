@@ -4,12 +4,10 @@ namespace App\Filament\Resources\EnquiryResource\RelationManagers;
 
 use App\Models\Enquiry;
 use App\Models\FollowUp;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
-use Filament\Tables\Actions\Action;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
@@ -19,7 +17,7 @@ use Filament\Tables\Table;
 
 class FollowUpsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'follow_up';
+    protected static string $relationship = 'followUps';
 
     protected static ?string $title = 'Follow Up Timeline';
 
@@ -99,7 +97,7 @@ class FollowUpsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make('create')
                     ->icon('heroicon-m-plus')
-                    ->visible(fn() => $this->getOwnerRecord()->follow_up()->exists())
+                    ->visible(fn() => $this->getOwnerRecord()->followUps()->exists())
                     ->modalHeading('Create Follow Up')
 
             ])
@@ -109,7 +107,7 @@ class FollowUpsRelationManager extends RelationManager
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make('create-followUps')
                     ->icon('heroicon-o-plus')
-                    ->visible(fn() => !$this->getOwnerRecord()->follow_up()->exists())
+                    ->visible(fn() => !$this->getOwnerRecord()->followUps()->exists())
                     ->modalHeading('Create Follow Up')
             ])
             ->actions([
