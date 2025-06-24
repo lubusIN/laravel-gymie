@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\FollowUpResource\Pages;
 
 use App\Filament\Resources\FollowUpResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -13,13 +13,14 @@ class ViewFollowUp extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View Follow Up: ' . $this->record->enquiry->name;
+        return 'Follow Up: ' . $this->record->enquiry->name;
     }
 
     protected function getHeaderActions(): array
     {
         return [
             EditAction::make(),
+            DeleteAction::make()
         ];
     }
 }

@@ -12,9 +12,12 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class FollowUpResource extends Resource
 {
@@ -120,21 +123,43 @@ class FollowUpResource extends Resource
     {
         return $infolist
             ->schema([
-                Section::make('Details')
+                Section::make()
+                    ->heading(function (FollowUp $record): HtmlString {
+                        $variant = match ($record->status) {
+                            'done' => 'success',
+                            'pending' => 'danger',
+                        };
+                        $html = Blade::render(
+                            '<x-filament::badge class="inline-flex" style="margin-left:6px;" :color="$variant">
+                                        {{ ucfirst($status) }}
+                                    </x-filament::badge>',
+                            ['status' => $record->status, 'variant' => $variant]
+                        );
+                        return new HtmlString('Details ' . $html);
+                    })
                     ->schema([
                         TextEntry::make('enquiry.name')
-                            ->label('Enquirer'),
+                            ->label('Enquiry')
+                            ->weight(FontWeight::Bold)
+                            ->color('success')
+                            ->url(fn($record): string => route('filament.admin.resources.enquiries.view', $record->enquiry_id)),
+                        TextEntry::make('user.name')
+                            ->label('Handled By')
+                            ->weight(FontWeight::Bold)
+                            ->color('success')
+                            ->url(fn($record): string => route('filament.admin.resources.users.view', $record->user_id)),
+                        TextEntry::make('follow_up_method')
+                            ->label('Method'),
                         TextEntry::make('date')
                             ->label('Date')
                             ->date('d-m-Y'),
+                        TextEntry::make('due_date')
+                            ->label('Due Date')
+                            ->date('d-m-Y'),
                         TextEntry::make('outcome')
-                            ->label('Outcome'),
-                        TextEntry::make('status')
-                            ->label('Status')
-                            ->badge()
-                            ->icon(fn($state) => $state === 'done' ? 'heroicon-m-check-circle' : 'heroicon-m-x-circle')
-                            ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
-                    ])->columns(2),
+                            ->label('Outcome')
+                            ->columnSpanFull(),
+                    ])->columns(5),
             ]);
     }
 

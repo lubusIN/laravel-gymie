@@ -5,6 +5,7 @@ namespace App\Models;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ class FollowUp extends Model
      */
     protected $fillable = [
         'enquiry_id',
+        'user_id',
         'date',
         'due_date',
         'follow_up_method',
@@ -47,6 +49,16 @@ class FollowUp extends Model
     }
 
     /**
+     * Get the user for the follow-up.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Get the Filament form schema for the follow-up.
      *
      * @return array
@@ -57,17 +69,16 @@ class FollowUp extends Model
             Select::make('enquiry_id')
                 ->label('Enquiry')
                 ->relationship(name: 'enquiry', titleAttribute: 'name')
-                ->searchable()
-                ->placeholder('Select Enquirer')
-                ->required()
-                ->preload(),
+                ->placeholder('Select Enquiry')
+                ->required(),
+            Select::make('user_id')
+                ->label('Handled By')
+                ->relationship(name: 'user', titleAttribute: 'name')
+                ->placeholder('Select Handler')
+                ->required(),
             DatePicker::make('date')
-                ->native(false)
                 ->label('Date')
-                ->displayFormat('d-m-Y')
                 ->closeOnDateSelection()
-                ->placeholder('dd-mm-yyyy')
-                ->suffixIcon('heroicon-m-calendar-days')
                 ->default(now())
                 ->disabledOn('edit')
                 ->hiddenOn('create'),
@@ -80,16 +91,11 @@ class FollowUp extends Model
                     'other' => 'Others'
                 ])->default('call')
                 ->required()
-                ->label('Follow-up method')
-                ->searchable(),
+                ->label('Follow-up method'),
             DatePicker::make('due_date')
-                ->native(false)
                 ->label('Due Date')
-                ->displayFormat('d-m-Y')
                 ->closeOnDateSelection()
                 ->required()
-                ->placeholder('dd-mm-yyyy')
-                ->suffixIcon('heroicon-m-calendar-days')
                 ->required()
                 ->minDate(now()),
             Textarea::make('outcome')
@@ -113,15 +119,25 @@ class FollowUp extends Model
             TextColumn::make('enquiry.name')
                 ->searchable()
                 ->label('Enquiry')
+                ->weight(FontWeight::Bold)
+                ->color('success')
+                ->url(fn($record): string => route('filament.admin.resources.enquiries.view', $record->enquiry_id))
                 ->sortable(),
+            TextColumn::make('user.name')
+                ->searchable()
+                ->label('Handled By')
+                ->weight(FontWeight::Bold)
+                ->color('success')
+                ->url(fn($record): string => route('filament.admin.resources.users.view', $record->user_id))
+                ->sortable(),
+            TextColumn::make('follow_up_method')
+                ->label('Method')
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('due_date')
                 ->searchable()
                 ->date('d-m-Y')
                 ->label('Due Date')
                 ->toggleable(isToggledHiddenByDefault: false),
-            TextColumn::make('follow_up_method')
-                ->label('Method')
-                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')
                 ->color(fn(string $state): string => match ($state) {
                     'done' => 'success',
@@ -135,7 +151,16 @@ class FollowUp extends Model
                 })
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('outcome')
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->limit(40)
+                ->tooltip(function (TextColumn $column): ?string {
+                    $state = $column->getState();
+                    if (strlen($state) <= $column->getCharacterLimit()) {
+                        return null;
+                    }
+                    // Only render the tooltip if the column content exceeds the length limit.
+                    return $state;
+                }),
         ];
     }
 }
