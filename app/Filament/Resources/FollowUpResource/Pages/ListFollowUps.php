@@ -20,4 +20,12 @@ class ListFollowUps extends ListRecords
                 ->hidden(!Enquiry::exists() || !FollowUp::exists()),
         ];
     }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Sales',
+            'Follow Ups',
+        ];
+    }
 }

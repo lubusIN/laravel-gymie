@@ -49,10 +49,7 @@ class FollowUpsRelationManager extends RelationManager
                 DatePicker::make('date')
                     ->label('Date')
                     ->default(now())
-                    ->native(false)
-                    ->displayFormat('d-m-Y')
                     ->disabledOn('edit')
-                    ->suffixIcon('heroicon-m-calendar-days')
                     ->hiddenOn(['create', 'create-followUps']),
                 Select::make('follow_up_method')
                     ->options([
@@ -63,15 +60,11 @@ class FollowUpsRelationManager extends RelationManager
                         'other' => 'Others'
                     ])->default('call')
                     ->required()
-                    ->label('Follow-up method')
-                    ->searchable(),
+                    ->label('Follow-up method'),
                 DatePicker::make('due_date')
-                    ->native(false)
                     ->label('Due Date')
-                    ->displayFormat('d-m-Y')
                     ->closeOnDateSelection()
                     ->required()
-                    ->suffixIcon('heroicon-m-calendar-days')
                     ->minDate(now())
                     ->disabledOn('edit'),
                 Textarea::make('outcome')
@@ -160,7 +153,7 @@ class FollowUpsRelationManager extends RelationManager
                                         ->color(fn($state) => $state === 'done' ? 'success' : 'danger'),
                                 ])->columns(2)
                             ])
-                            ->modalHeading(fn(FollowUp $record) => 'View Follow Up: ' . $record->enquiry->name)
+                            ->modalHeading(fn(FollowUp $record) => 'Follow Up: ' . $record->enquiry->name)
                             ->modalSubmitAction(false)
                             ->modalCancelAction(false),
                         Tables\Actions\EditAction::make()->hiddenLabel()

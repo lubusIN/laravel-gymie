@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Enquiry;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,8 @@ class FollowUpFactory extends Factory
     public function definition(): array
     {
         return [
-            'enquiry_id' => Enquiry::factory(), 
+            'enquiry_id' => Enquiry::factory(),
+            'user_id' => User::factory(),
             'date' => $this->faker->date(now()),
             'due_date' => $this->faker->dateTimeBetween('now', '+1 month'),
             'follow_up_method' => $this->faker->randomElement(['call', 'email', 'in_person', 'whatsapp', 'other']),
