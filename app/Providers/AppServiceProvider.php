@@ -114,7 +114,7 @@ class AppServiceProvider extends ServiceProvider
             return $action
                 ->requiresConfirmation(function (Action $action, $record) use ($map) {
                     $class = get_class($record);
-
+                    $action->modalIcon('heroicon-o-trash');
                     if (isset($map[$class])) {
                         foreach ($map[$class] as $relation) {
                             if ($record->$relation()->exists()) {
@@ -129,7 +129,6 @@ class AppServiceProvider extends ServiceProvider
                                     ->modalSubmitAction(false);
                                 break;
                             }
-                            $action->modalIcon('heroicon-o-trash');
                         }
                     }
 
@@ -142,7 +141,7 @@ class AppServiceProvider extends ServiceProvider
                 ->requiresConfirmation(function (DeleteBulkAction $action, \Illuminate\Support\Collection $records) use ($map) {
                     foreach ($records as $record) {
                         $class = get_class($record);
-
+                        $action->modalIcon('heroicon-o-trash');
                         if (isset($map[$class])) {
                             foreach ($map[$class] as $relation) {
                                 if ($record->$relation()->exists()) {
@@ -157,7 +156,6 @@ class AppServiceProvider extends ServiceProvider
                                         ->modalSubmitAction(false);
                                     break 2;
                                 }
-                                $action->modalIcon('heroicon-o-trash');
                             }
                         }
                     }

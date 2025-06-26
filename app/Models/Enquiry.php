@@ -220,7 +220,7 @@ class Enquiry extends Model
                         ->columnSpanFull()
                         ->extraAttributes(['class' => 'new_enquiry_follow_up'])
                         ->schema([
-                            Select::make('follow_up_method')
+                            Select::make('method')
                                 ->options([
                                     'call' => 'Call',
                                     'email' => 'Email',
@@ -231,7 +231,7 @@ class Enquiry extends Model
                                 ->required()
                                 ->label('Follow-up method')
                                 ->placeholder('Select follow up method'),
-                            DatePicker::make('due_date')
+                            DatePicker::make('schedule_date')
                                 ->label('Due Date')
                                 ->required(),
                         ])

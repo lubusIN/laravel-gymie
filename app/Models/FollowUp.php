@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
+use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,16 +24,15 @@ class FollowUp extends Model
     protected $fillable = [
         'enquiry_id',
         'user_id',
-        'date',
-        'due_date',
-        'follow_up_method',
+        'schedule_date',
+        'method',
         'outcome',
         'status'
     ];
 
     protected $casts = [
-        'date' => 'date',
-        'due_date' => 'date',
+        'schedule_date' => 'date',
+        'status' => Status::class
     ];
 
     protected $dates = ['deleted_at'];
@@ -70,19 +69,9 @@ class FollowUp extends Model
                 ->label('Enquiry')
                 ->relationship(name: 'enquiry', titleAttribute: 'name')
                 ->placeholder('Select Enquiry')
+                ->hiddenOn(FollowUpsRelationManager::class)
                 ->required(),
-            Select::make('user_id')
-                ->label('Handled By')
-                ->relationship(name: 'user', titleAttribute: 'name')
-                ->placeholder('Select Handler')
-                ->required(),
-            DatePicker::make('date')
-                ->label('Date')
-                ->closeOnDateSelection()
-                ->default(now())
-                ->disabledOn('edit')
-                ->hiddenOn('create'),
-            Select::make('follow_up_method')
+            Select::make('method')
                 ->options([
                     'call' => 'Call',
                     'email' => 'Email',
@@ -91,17 +80,13 @@ class FollowUp extends Model
                     'other' => 'Others'
                 ])->default('call')
                 ->required()
-                ->label('Follow-up method'),
-            DatePicker::make('due_date')
-                ->label('Due Date')
+                ->label('Method'),
+            DatePicker::make('schedule_date')
+                ->label('Schedule Date')
                 ->closeOnDateSelection()
                 ->required()
                 ->required()
                 ->minDate(now()),
-            Textarea::make('outcome')
-                ->placeholder('Not interested, etc.')
-                ->label('Outcome')
-                ->required(),
         ];
     }
 
@@ -119,39 +104,26 @@ class FollowUp extends Model
             TextColumn::make('enquiry.name')
                 ->searchable()
                 ->label('Enquiry')
-                ->weight(FontWeight::Bold)
-                ->color('success')
-                ->url(fn($record): string => route('filament.admin.resources.enquiries.view', $record->enquiry_id))
                 ->sortable(),
             TextColumn::make('user.name')
                 ->searchable()
                 ->label('Handled By')
-                ->weight(FontWeight::Bold)
-                ->color('success')
-                ->url(fn($record): string => route('filament.admin.resources.users.view', $record->user_id))
+                ->placeholder('N/A')
                 ->sortable(),
-            TextColumn::make('follow_up_method')
+            TextColumn::make('method')
                 ->label('Method')
                 ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('due_date')
+            TextColumn::make('schedule_date')
                 ->searchable()
                 ->date('d-m-Y')
-                ->label('Due Date')
+                ->label('Schedule Date')
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('status')
-                ->color(fn(string $state): string => match ($state) {
-                    'done' => 'success',
-                    'pending' => 'warning',
-                })
                 ->badge()
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'done' => 'Done',
-                    'pending' => 'Pending',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                })
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('outcome')
                 ->toggleable(isToggledHiddenByDefault: true)
+                ->placeholder('N/A')
                 ->limit(40)
                 ->tooltip(function (TextColumn $column): ?string {
                     $state = $column->getState();
