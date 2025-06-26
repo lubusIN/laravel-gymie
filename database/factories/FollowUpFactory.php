@@ -21,9 +21,8 @@ class FollowUpFactory extends Factory
         return [
             'enquiry_id' => Enquiry::factory(),
             'user_id' => User::factory(),
-            'date' => $this->faker->date(now()),
-            'due_date' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'follow_up_method' => $this->faker->randomElement(['call', 'email', 'in_person', 'whatsapp', 'other']),
+            'schedule_date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'method' => $this->faker->randomElement(['call', 'email', 'in_person', 'whatsapp', 'other']),
             'outcome' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(['pending', 'done']),
         ];
