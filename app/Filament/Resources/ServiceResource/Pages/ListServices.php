@@ -16,7 +16,18 @@ class ListServices extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->icon('heroicon-m-plus')
+                ->modalHeading('New service')
+                ->modalWidth('sm')
+                ->createAnother(false)
                 ->visible(Service::exists()),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            'Services',
         ];
     }
 }

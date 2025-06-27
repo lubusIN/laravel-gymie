@@ -121,10 +121,7 @@ class PlanResource extends Resource
                         TextEntry::make('description')
                             ->label('Description'),
                         TextEntry::make('service.name')
-                            ->label('Service')
-                            ->weight(FontWeight::Bold)
-                            ->color('success')
-                            ->url(fn($record): string => route('filament.admin.resources.services.view', $record->service_id)),
+                            ->label('Service'),
                         TextEntry::make('days')
                             ->label('Days'),
                         TextEntry::make('amount')

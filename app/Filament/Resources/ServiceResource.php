@@ -19,7 +19,8 @@ class ServiceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(Service::getForm());
+            ->schema(Service::getForm())
+            ->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -33,13 +34,19 @@ class ServiceResource extends Resource
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
                     ->label('New service')
+                    ->modalHeading('New service')
+                    ->modalWidth('sm')
+                    ->createAnother(false)
                     ->hidden(fn() => Service::exists()),
             ])
             ->columns(Service::getTableColumns())
             ->actions([
-                Tables\Actions\EditAction::make()->hiddenLabel(),
-                Tables\Actions\DeleteAction::make()->hiddenLabel(),
-            ])->recordUrl(fn($record): string => route('filament.admin.resources.services.view', $record->id))
+                Tables\Actions\ViewAction::make()
+                    ->modalCancelAction(false)
+                    ->modalWidth('sm'),
+                Tables\Actions\EditAction::make()->modalWidth('sm'),
+                Tables\Actions\DeleteAction::make(),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -60,7 +67,7 @@ class ServiceResource extends Resource
                             ->label('Name'),
                         TextEntry::make('description')
                             ->label('Description')
-                    ])->columns(2)
+                    ])->columns(1)
             ]);
     }
 
@@ -68,9 +75,6 @@ class ServiceResource extends Resource
     {
         return [
             'index' => Pages\ListServices::route('/'),
-            'create' => Pages\CreateService::route('/create'),
-            'edit' => Pages\EditService::route('/{record}/edit'),
-            'view' => Pages\ViewService::route('/{record}')
         ];
     }
 }
