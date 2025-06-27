@@ -4,6 +4,7 @@ namespace App\Filament\Resources\MemberResource\Pages;
 
 use App\Filament\Resources\MemberResource;
 use App\Models\Enquiry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Request;
 
@@ -50,5 +51,11 @@ class CreateMember extends CreateRecord
         // reload & update status
         Enquiry::where('id', $this->enquiryId)
             ->update(['status' => 'member']);
+
+        Notification::make()
+            ->title('Member Created')
+            ->body('Enquiry has been successfully converted to a member.')
+            ->success()
+            ->send();
     }
 }
