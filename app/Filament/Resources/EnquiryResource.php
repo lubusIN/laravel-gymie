@@ -83,20 +83,18 @@ class EnquiryResource extends Resource
                             ->disabled()
                             ->visible(fn($record) => in_array($record->status, ['lead']))
                             ->color('gray'),
-                        Tables\Actions\Action::make('mark_as_member')
-                            ->icon('heroicon-m-check-circle')
+                        Tables\Actions\Action::make('convert_to_member')
+                            ->label('Convert to Member')
+                            ->icon('heroicon-m-arrows-right-left')
                             ->color('success')
                             ->requiresConfirmation()
-                            ->action(fn(Enquiry $record) => tap($record, function ($record) {
-                                $record->update(['status' => 'member']);
-                                Notification::make()
-                                    ->title('Enquiry Marked as Member')
-                                    ->success()
-                                    ->body("Member has been created")
-                                    ->send();
-                            }))
-                            ->visible(fn($record) => $record->status === 'lead'),
-                        Tables\Actions\Action::make('mark_lost')
+                            ->visible(fn(Enquiry $record) => $record->status === 'lead')
+                            ->url(fn(Enquiry $record) => MemberResource::getUrl(
+                                'create',
+                                ['enquiry_id' => $record->id],
+                            )),
+                        Tables\Actions\Action::make('mark_as_lost')
+                            ->label('Mark as Lost')
                             ->icon('heroicon-m-x-circle')
                             ->color('danger')
                             ->requiresConfirmation()
