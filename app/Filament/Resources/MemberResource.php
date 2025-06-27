@@ -209,15 +209,14 @@ class MemberResource extends Resource
                                 TextEntry::make('dob')
                                     ->label('Date of Birth')
                                     ->date('d-m-Y'),
-                                TextEntry::make('occupation')->placeholder('N/A'),
-                                TextEntry::make('health_issue')
-                                    ->label('Health Issue')
-                                    ->placeholder('N/A'),
                                 TextEntry::make('source')
                                     ->label('Source')
                                     ->placeholder('N/A'),
-                                TextEntry::make('why_do_you_plan_to_join')
-                                    ->label('Reason for Joining')
+                                TextEntry::make('goal')
+                                    ->label('Goal ?')
+                                    ->placeholder('N/A'),
+                                TextEntry::make('health_issue')
+                                    ->label('Health Issue')
                                     ->placeholder('N/A'),
                             ])->columnSpan(4)->columns(3),
                     ])->columns(5),

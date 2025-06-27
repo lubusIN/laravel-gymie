@@ -45,14 +45,13 @@ class Member extends Model
         'health_issue',
         'gender',
         'dob',
-        'occupation',
         'address',
         'country',
         'state',
         'city',
         'pincode',
         'source',
-        'joining_for',
+        'goal',
         'status',
     ];
 
@@ -152,6 +151,7 @@ class Member extends Model
                                                 ->placeholder('Code for the member')
                                                 ->label('Member Code')
                                                 ->required()
+                                                ->readOnly()
                                                 ->default(fn(Get $get) => Helpers::generateLastNumber(
                                                     'member',
                                                     Member::class,
@@ -164,34 +164,20 @@ class Member extends Model
                                                 ->placeholder('Name')
                                                 ->columnSpan(2)
                                         ])->columns(3),
-                                    Grid::make()
-                                        ->schema([
-                                            Select::make('gender')->options([
-                                                'male' => 'Male',
-                                                'female' => 'Female',
-                                                'other' => 'Other',
-                                            ])->default('male')
-                                                ->selectablePlaceholder(false)
-                                                ->required(),
-                                            DatePicker::make('dob')
-                                                ->native(false)
-                                                ->required()
-                                                ->label('Date of Birth')
-                                                ->placeholder('01-01-2001')
-                                                ->displayFormat('d-m-Y')
-                                                ->suffixIcon('heroicon-m-calendar-days'),
-                                            Select::make('occupation')
-                                                ->options([
-                                                    'student' => 'Student',
-                                                    'housewife' => 'Housewife',
-                                                    'self_employed' => 'Self Employed',
-                                                    'professional' => 'Professional',
-                                                    'freelancer' => 'Freelancer',
-                                                    'others' => 'Others'
-                                                ])
-                                                ->default('student')
-                                                ->selectablePlaceholder(false),
-                                        ])->columns(3),
+                                    Select::make('gender')->options([
+                                        'male' => 'Male',
+                                        'female' => 'Female',
+                                        'other' => 'Other',
+                                    ])->default('male')
+                                        ->selectablePlaceholder(false)
+                                        ->required(),
+                                    DatePicker::make('dob')
+                                        ->native(false)
+                                        ->required()
+                                        ->label('Date of Birth')
+                                        ->placeholder('01-01-2001')
+                                        ->displayFormat('d-m-Y')
+                                        ->suffixIcon('heroicon-m-calendar-days'),
                                     TextInput::make('health_issue')
                                         ->label('Health Issues (if any)')
                                         ->maxLength(500)
@@ -271,7 +257,7 @@ class Member extends Model
                             'others' => 'Others'
                         ])->default('promotions')
                         ->selectablePlaceholder(false),
-                    Select::make('joining_for')
+                    Select::make('goal')
                         ->options([
                             'fitness' => 'Fitness',
                             'body_building' => 'Body Building',
@@ -279,7 +265,7 @@ class Member extends Model
                             'weightgain' => 'Weightgain',
                             'others' => 'Others'
                         ])->default('fitness')
-                        ->label('Why do you plan to join?')
+                        ->label('Goal ?')
                         ->selectablePlaceholder(false),
                 ])->columns(2)
 

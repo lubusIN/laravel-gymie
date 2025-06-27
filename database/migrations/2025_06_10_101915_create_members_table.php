@@ -22,14 +22,13 @@ return new class extends Migration
             $table->string('health_issue')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->default('other')->nullable();
             $table->date('dob')->nullable();
-            $table->string('occupation')->default('student')->nullable();
             $table->text('address')->nullable();
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->text('pincode')->nullable();
             $table->string('source')->default('promotions')->nullable();
-            $table->string('joining_for')->default('fitness')->nullable();
+            $table->string('goal')->default('fitness')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();
             $table->softDeletes();
             $table->timestamps();
