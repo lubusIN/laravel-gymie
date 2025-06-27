@@ -156,9 +156,6 @@ class Plan extends Model
             TextColumn::make('service.name')
                 ->searchable()
                 ->label('Service')
-                ->weight(FontWeight::Bold)
-                ->color('success')
-                ->url(fn($record): string => route('filament.admin.resources.services.view', $record->service_id))
                 ->toggleable(isToggledHiddenByDefault: false),
             TextColumn::make('days')
                 ->searchable()

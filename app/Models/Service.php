@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,7 +79,7 @@ class Service extends Model
                 ->label('Name')
                 ->placeholder('Service name')
                 ->required(),
-            TextInput::make('description')
+            Textarea::make('description')
                 ->placeholder('Brief description of the service')
                 ->label('Description')
                 ->required(),
@@ -99,12 +100,10 @@ class Service extends Model
             TextColumn::make('name')
                 ->searchable()
                 ->label('Name')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: false),
+                ->sortable(),
             TextColumn::make('description')
                 ->searchable()
-                ->label('Description')
-                ->toggleable(isToggledHiddenByDefault: false),
+                ->label('Description'),
             TextColumn::make('created_at')
                 ->searchable()
                 ->date('d-m-Y')
