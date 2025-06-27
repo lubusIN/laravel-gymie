@@ -26,14 +26,13 @@ class MemberFactory extends Factory
             'health_issue' => $this->faker->optional()->sentence(),
             'gender' => $this->faker->randomElement(['male', 'female', 'other']),
             'dob' => $this->faker->date(),
-            'occupation' => $this->faker->randomElement(['student', 'engineer', 'doctor', 'teacher']),
             'address' => $this->faker->address(),
             'country' => $this->faker->country(),
             'city' => $this->faker->city(),
             'state' => $this->faker->state(),
             'pincode' => $this->faker->postcode(),
             'source' => $this->faker->randomElement(['promotions', 'referral', 'online']),
-            'joining_for' => $this->faker->randomElement(['fitness', 'weight loss', 'muscle gain']),
+            'goal' => $this->faker->randomElement(['fitness', 'weight loss', 'muscle gain']),
             'status' => $this->faker->randomElement(['active', 'inactive']),
         ];
     }
