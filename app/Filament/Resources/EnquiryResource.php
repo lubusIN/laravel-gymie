@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EnquiryResource\Pages;
 use App\Filament\Resources\EnquiryResource\RelationManagers\FollowUpsRelationManager;
 use App\Models\Enquiry;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -48,8 +49,55 @@ class EnquiryResource extends Resource
             ->columns(Enquiry::getTableColumns())
             ->defaultSort('id', 'desc')
             ->emptyStateIcon('heroicon-o-phone')
-            ->emptyStateHeading('No Enquiries')
-            ->emptyStateDescription('Create an enquiry to get started')
+            ->emptyStateHeading(function ($livewire): string {
+                $dates       = $livewire->getTableFilterState('date') ?? [];
+                [$from, $to] = [$dates['date_from'] ?? null, $dates['date_to'] ?? null];
+                $tab         = $livewire->activeTab;
+                $heading     = [
+                    'lead'   => 'No Lead Enquiries',
+                    'lost'   => 'No Lost Enquiries',
+                    'member' => 'No Member Enquiries',
+                ][$tab] ?? 'No Enquiries';
+
+                if (!$from && !$to) {
+                    return $heading;
+                }
+
+                if ($tab === 'all') {
+                    return 'No Enquiries in Date Range';
+                }
+
+                return Enquiry::where('status', $tab)->exists()
+                    ? ($heading . ' in Date Range')
+                    : $heading;
+            })
+            ->emptyStateDescription(function ($livewire): ?string {
+                $dates               = $livewire->getTableFilterState('date') ?? [];
+                [$fromRaw, $toRaw]   = [$dates['date_from'] ?? null, $dates['date_to'] ?? null];
+                $tab                 = $livewire->activeTab;
+                $defaultDescriptions = [
+                    'lead'   => 'Looks like there are no lead enquiries right now.',
+                    'lost'   => 'No enquiries have been marked as lost yet.',
+                    'member' => 'No member enquiries to display at the moment.',
+                ];
+
+                if (!$fromRaw && !$toRaw) {
+                    return $defaultDescriptions[$tab] ?? 'Create a enquiry to get started.';
+                }
+
+                $from = $fromRaw ? Carbon::parse($fromRaw)->format('d-m-Y') : 'the beginning';
+                $to = $toRaw ? Carbon::parse($toRaw)->format('d-m-Y') : 'today';
+
+                if ($tab === 'all') {
+                    return "We found no enquiries created between {$from} and {$to}.";
+                }
+
+                if (!Enquiry::where('status', $tab)->exists()) {
+                    return $defaultDescriptions[$tab] ?? 'Create a enquiry to get started.';
+                }
+
+                return "We found no {$tab} enquiries between {$from} and {$to}.";
+            })
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
@@ -60,17 +108,17 @@ class EnquiryResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\Filter::make('date')
                     ->form([
-                        DatePicker::make('created_from'),
-                        DatePicker::make('created_until'),
+                        DatePicker::make('date_from'),
+                        DatePicker::make('date_to'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['created_from'],
+                                $data['date_from'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
                             )
                             ->when(
-                                $data['created_until'],
+                                $data['date_to'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
                             );
                     })
@@ -136,16 +184,12 @@ class EnquiryResource extends Resource
             ->schema([
                 Section::make('Details')
                     ->heading(function (Enquiry $record): HtmlString {
-                        $variant = match ($record->status) {
-                            'lead' => 'info',
-                            'lost' => 'danger',
-                            'member' => 'success',
-                        };
+                        $status = $record->status;
                         $html = Blade::render(
-                            '<x-filament::badge class="inline-flex" style="margin-left:6px;" :color="$variant">
-                                        {{ ucfirst($status) }}
+                            '<x-filament::badge class="inline-flex" style="margin-left:6px;" :color="$color">
+                                        {{ $label }}
                                     </x-filament::badge>',
-                            ['status' => $record->status, 'variant' => $variant]
+                            ['color' => $status->getColor(), 'label' => $status->getLabel(),]
                         );
                         return new HtmlString('Details ' . $html);
                     })
