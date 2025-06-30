@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use App\Helpers\Helpers;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -58,6 +59,7 @@ class Enquiry extends Model
         'date'          => 'date',
         'dob'           => 'date',
         'start_by'      => 'date',
+        'status'        => Status::class
     ];
 
     protected $dates = ['deleted_at'];
@@ -258,19 +260,9 @@ class Enquiry extends Model
             TextColumn::make('date')->sortable()->date('d-m-Y')->toggleable(isToggledHiddenByDefault: true)->label('Date'),
             TextColumn::make('start_by')->date('d-m-Y')->toggleable(isToggledHiddenByDefault: true)->label('Start by'),
             TextColumn::make('status')
-                ->color(fn(string $state): string => match ($state) {
-                    'lead' => 'info',
-                    'member' => 'success',
-                    'lost' => 'danger',
-                })->badge()
+                ->badge()
                 ->label('Status')
-                ->toggleable(isToggledHiddenByDefault: false)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'lead' => 'Lead',
-                    'member' => 'Member',
-                    'lost' => 'Lost',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                }),
+                ->toggleable(isToggledHiddenByDefault: false),
         ];
     }
 }
