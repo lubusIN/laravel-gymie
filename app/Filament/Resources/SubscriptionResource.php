@@ -231,16 +231,10 @@ class SubscriptionResource extends Resource
                         TextEntry::make('id'),
                         TextEntry::make('member')
                             ->label('Member')
-                            ->weight(FontWeight::Bold)
-                            ->color('success')
-                            ->formatStateUsing(fn($record): string => "{$record->member->code} – {$record->member->name}")
-                            ->url(fn($record): string => route('filament.admin.resources.members.view', $record->member_id)),
+                            ->formatStateUsing(fn($record): string => "{$record->member->code} – {$record->member->name}"),
                         TextEntry::make('plan')
                             ->label('Plan')
-                            ->weight(FontWeight::Bold)
-                            ->color('success')
-                            ->formatStateUsing(fn($record): string => "{$record->plan->code} – {$record->plan->name}")
-                            ->url(fn($record): string => route('filament.admin.resources.plans.view', $record->plan_id)),
+                            ->formatStateUsing(fn($record): string => "{$record->plan->code} – {$record->plan->name}"),
                         TextEntry::make('start_date')
                             ->label('Start Date')
                             ->date(),

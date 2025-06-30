@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filament\Resources\PlanResource;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Support\Enums\FontWeight;
@@ -121,16 +122,10 @@ class Subscription extends Model
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('member.name')
                 ->label('Member')
-                ->description(fn($record): string => $record->member->code)
-                ->weight(FontWeight::Bold)
-                ->color('success')
-                ->url(fn($record): string => route('filament.admin.resources.members.view', $record->member_id)),
+                ->description(fn($record): string => $record->member->code),
             TextColumn::make('plan.name')
                 ->label('Plan')
-                ->description(fn($record): string => $record->plan->code)
-                ->weight(FontWeight::Bold)
-                ->color('success')
-                ->url(fn($record): string => route('filament.admin.resources.plans.view', $record->plan_id)),
+                ->description(fn($record): string => $record->plan->code),
             TextColumn::make('start_date')
                 ->label('Start Date')
                 ->date(),
