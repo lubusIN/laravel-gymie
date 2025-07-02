@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\Status;
 use App\Helpers\Helpers;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -20,6 +21,7 @@ use Filament\Panel;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -27,7 +29,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements HasAvatar, FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, SoftDeletes, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +43,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         'status',
         'password',
         'contact',
+        'dob',
         'gender',
         'address',
         'country',
@@ -70,8 +73,31 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'dob' => 'date',
             'status' => Status::class
         ];
+    }
+
+    protected $dates = ['deleted_at'];
+
+    /**
+     * Get the followUps for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class);
+    }
+
+    /**
+     * Get the enquiries for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function enquiries()
+    {
+        return $this->hasMany(Enquiry::class);
     }
 
     /**
@@ -103,25 +129,27 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     public static function getForm(): array
     {
         return [
-            Section::make('')
+            Section::make()
+                ->columns(4)
                 ->schema([
+                    FileUpload::make('photo')
+                        ->imageEditor()
+                        ->preserveFilenames()
+                        ->maxSize(1024 * 1024 * 10)
+                        ->disk('public')
+                        ->directory('images')
+                        ->image()
+                        ->placeholder('Upload a logo (max 10MB)')
+                        ->loadingIndicatorPosition('left')
+                        ->panelAspectRatio('6:5')
+                        ->panelLayout('integrated')
+                        ->removeUploadedFileButtonPosition('right')
+                        ->uploadButtonPosition('left')
+                        ->uploadProgressIndicatorPosition('left'),
                     Grid::make()
                         ->columns(3)
                         ->schema([
-                            FileUpload::make('photo')
-                                ->hiddenLabel()
-                                ->placeholder('Upload the profile photo (max 10MB)')
-                                ->avatar()
-                                ->imageEditor()
-                                ->preserveFilenames()
-                                ->maxSize(1024 * 1024 * 10)
-                                ->disk('public')
-                                ->directory('images')
-                                ->image()
-                                ->extraAttributes(['class' => 'cursor-pointer'])
-                                ->columnSpan(1),
-                            Grid::make()
-                                ->columns(2)
+                            Group::make()
                                 ->schema([
                                     TextInput::make('name')->required()->placeholder('e.g. John Doe'),
                                     TextInput::make('email')
@@ -130,45 +158,48 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
                                         ->placeholder('user@example.com')
                                         ->unique(ignorable: fn($record) => $record)
                                         ->prefixIcon('heroicon-m-envelope'),
-                                    TextInput::make('contact')
-                                        ->label('Contact')
-                                        ->prefixIcon('heroicon-m-phone')
-                                        ->tel()
-                                        ->placeholder('+91 555-123-4567')
-                                        ->maxLength(20)
-                                        ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
-                                        ->required(),
-                                    Select::make('gender')
-                                        ->options([
-                                            'male' => 'Male',
-                                            'female' => 'Female',
-                                            'other' => 'Other'
-                                        ])
-                                        ->required()
-                                        ->default('male')
-                                        ->selectablePlaceholder(false),
-                                    TextInput::make('password')
-                                        ->password()
-                                        ->hiddenOn(['view', 'edit'])
-                                        ->dehydrated(fn($state) => filled($state))
-                                        ->required(fn(string $operation): bool => $operation === 'create')
-                                        ->revealable(),
-                                    TextInput::make('password_confirmation')
-                                        ->password()
-                                        ->hiddenOn(['view', 'edit'])
-                                        ->revealable()
-                                        ->required(fn(callable $get): bool => filled($get('password')))
-                                        ->same('password'),
-                                    Select::make('roles')
-                                        ->relationship('roles', 'name')
-                                        ->multiple()
-                                        ->getOptionLabelFromRecordUsing(
-                                            fn($record): string =>
-                                            Str::headline($record->name)
-                                        ),
+                                ])->columns(2)->columnSpanFull(),
+                            TextInput::make('contact')
+                                ->label('Contact')
+                                ->prefixIcon('heroicon-m-phone')
+                                ->tel()
+                                ->placeholder('+91 555-123-4567')
+                                ->maxLength(20)
+                                ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                ->required(),
+                            Select::make('gender')
+                                ->options([
+                                    'male' => 'Male',
+                                    'female' => 'Female',
+                                    'other' => 'Other'
                                 ])
-                                ->columnSpan(2),
-                        ]),
+                                ->required()
+                                ->default('male')
+                                ->selectablePlaceholder(false),
+                            DatePicker::make('dob')
+                                ->required()
+                                ->label('Date of Birth'),
+                            Select::make('role')
+                                ->label('Role')
+                                ->relationship('roles', 'name')
+                                ->getOptionLabelFromRecordUsing(
+                                    fn($record): string =>
+                                    Str::headline($record->name)
+                                ),
+                            TextInput::make('password')
+                                ->password()
+                                ->hiddenOn(['view'])
+                                ->dehydrated(fn($state) => filled($state))
+                                ->required(fn(string $operation): bool => $operation === 'create')
+                                ->revealable(),
+                            TextInput::make('password_confirmation')
+                                ->password()
+                                ->hiddenOn(['view'])
+                                ->revealable()
+                                ->required(fn(callable $get): bool => filled($get('password')))
+                                ->same('password'),
+                        ])
+                        ->columnSpan(3),
                 ]),
             Section::make('Location')
                 ->schema([
@@ -225,9 +256,16 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
             TextColumn::make('email')->searchable(),
             TextColumn::make('contact')->searchable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('gender')->searchable(),
+            TextColumn::make('roles.name')
+                ->placeholder('N/A')
+                ->searchable()
+                ->formatStateUsing(
+                    fn($state): string =>
+                    Str::headline($state)
+                )
+                ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('status')
                 ->badge()
-                ->toggleable(isToggledHiddenByDefault: false)
         ];
     }
 }
