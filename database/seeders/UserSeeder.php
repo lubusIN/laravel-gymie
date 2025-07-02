@@ -19,7 +19,8 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => Hash::make('test') // Ensures password is securely hashed
+            'password' => Hash::make('test'),
+            'status' => 'active'
         ])->assignRole('super_admin');
     }
 }

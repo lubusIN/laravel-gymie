@@ -10,4 +10,7 @@ return [
     \App\Models\Plan::class => ['subscriptions'],
 
     \App\Models\Subscription::class => ['invoices'],
+
+    \App\Models\User::class => ['followUps', 'enquiries'],
+
 ];

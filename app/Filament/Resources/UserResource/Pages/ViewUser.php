@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -12,13 +13,23 @@ class ViewUser extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View ' . $this->record->name;
+        return 'User ' . $this->record->name;
     }
 
     protected function getHeaderActions(): array
     {
         return [
             EditAction::make(),
+            DeleteAction::make()
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Administration',
+            UserResource::getUrl('index')   => 'Users',
+            $this->record->name,
         ];
     }
 }
