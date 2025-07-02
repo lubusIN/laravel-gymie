@@ -4,9 +4,21 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\Status;
+use App\Helpers\Helpers;
+use Illuminate\Support\Str;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,6 +70,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => Status::class
         ];
     }
 
@@ -80,5 +93,141 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
+    }
+
+    /**
+     * Get the Filament form schema for the user.
+     *
+     * @return array
+     */
+    public static function getForm(): array
+    {
+        return [
+            Section::make('')
+                ->schema([
+                    Grid::make()
+                        ->columns(3)
+                        ->schema([
+                            FileUpload::make('photo')
+                                ->hiddenLabel()
+                                ->placeholder('Upload the profile photo (max 10MB)')
+                                ->avatar()
+                                ->imageEditor()
+                                ->preserveFilenames()
+                                ->maxSize(1024 * 1024 * 10)
+                                ->disk('public')
+                                ->directory('images')
+                                ->image()
+                                ->extraAttributes(['class' => 'cursor-pointer'])
+                                ->columnSpan(1),
+                            Grid::make()
+                                ->columns(2)
+                                ->schema([
+                                    TextInput::make('name')->required()->placeholder('e.g. John Doe'),
+                                    TextInput::make('email')
+                                        ->email()
+                                        ->required()
+                                        ->placeholder('user@example.com')
+                                        ->unique(ignorable: fn($record) => $record)
+                                        ->prefixIcon('heroicon-m-envelope'),
+                                    TextInput::make('contact')
+                                        ->label('Contact')
+                                        ->prefixIcon('heroicon-m-phone')
+                                        ->tel()
+                                        ->placeholder('+91 555-123-4567')
+                                        ->maxLength(20)
+                                        ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                        ->required(),
+                                    Select::make('gender')
+                                        ->options([
+                                            'male' => 'Male',
+                                            'female' => 'Female',
+                                            'other' => 'Other'
+                                        ])
+                                        ->required()
+                                        ->default('male')
+                                        ->selectablePlaceholder(false),
+                                    TextInput::make('password')
+                                        ->password()
+                                        ->hiddenOn(['view', 'edit'])
+                                        ->dehydrated(fn($state) => filled($state))
+                                        ->required(fn(string $operation): bool => $operation === 'create')
+                                        ->revealable(),
+                                    TextInput::make('password_confirmation')
+                                        ->password()
+                                        ->hiddenOn(['view', 'edit'])
+                                        ->revealable()
+                                        ->required(fn(callable $get): bool => filled($get('password')))
+                                        ->same('password'),
+                                    Select::make('roles')
+                                        ->relationship('roles', 'name')
+                                        ->multiple()
+                                        ->getOptionLabelFromRecordUsing(
+                                            fn($record): string =>
+                                            Str::headline($record->name)
+                                        ),
+                                ])
+                                ->columnSpan(2),
+                        ]),
+                ]),
+            Section::make('Location')
+                ->schema([
+                    Textarea::make('address')
+                        ->required()
+                        ->placeholder('100/B, Oak Ave Apt. 10, Rass Street'),
+                    Group::make()
+                        ->schema([
+                            Select::make('country')
+                                ->label('Country')
+                                ->placeholder('Select an country')
+                                ->options(Helpers::getCountries())
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(fn(callable $set) => [
+                                    $set('state', null),
+                                    $set('city', null),
+                                ]),
+                            Select::make('state')
+                                ->label('State')
+                                ->placeholder('Select an state')
+                                ->options(fn($get) => Helpers::getStates($get('country')))
+                                ->searchable()
+                                ->reactive(),
+                            Select::make('city')
+                                ->label('City')
+                                ->placeholder('Select an city')
+                                ->options(fn($get) => Helpers::getCities($get('state')))
+                                ->searchable()
+                                ->reactive(),
+                            TextInput::make('pincode')
+                                ->numeric()
+                                ->placeholder('PIN Code'),
+                        ])->columns(4),
+                ]),
+        ];
+    }
+
+    /**
+     * Get the Filament table columns for the user list view.
+     *
+     * @return array
+     */
+    public static function getTableColumns(): array
+    {
+        return [
+            TextColumn::make('id')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            ImageColumn::make('photo')
+                ->circular()
+                ->defaultImageUrl(fn(User $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
+            TextColumn::make('name')->sortable()->searchable(),
+            TextColumn::make('email')->searchable(),
+            TextColumn::make('contact')->searchable()->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('gender')->searchable(),
+            TextColumn::make('status')
+                ->badge()
+                ->toggleable(isToggledHiddenByDefault: false)
+        ];
     }
 }
