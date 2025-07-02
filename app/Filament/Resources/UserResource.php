@@ -188,7 +188,7 @@ class UserResource extends Resource
                                 'label' => $status->getLabel(),
                             ]
                         );
-                        return new HtmlString("Deatils " . $html);
+                        return new HtmlString("Details " . $html);
                     })
                     ->schema([
                         ImageEntry::make('photo')
