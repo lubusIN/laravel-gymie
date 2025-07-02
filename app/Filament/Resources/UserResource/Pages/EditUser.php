@@ -18,9 +18,19 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Administration',
+            UserResource::getUrl('index')   => 'Users',
+            $this->record->name,
         ];
     }
 }
