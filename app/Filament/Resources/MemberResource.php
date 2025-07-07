@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MemberResource\Pages;
+use App\Filament\Resources\MemberResource\RelationManagers\SubscriptionsRelationManager;
 use App\Models\Member;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
@@ -35,7 +36,6 @@ class MemberResource extends Resource
     {
         return $table
             ->columns(Member::getTableColumns())
-            ->defaultSort('id', 'desc')
             ->emptyStateIcon('heroicon-o-user-group')
             ->emptyStateHeading(function ($livewire): string {
                 $dates       = $livewire->getTableFilterState('date') ?? [];
@@ -131,7 +131,7 @@ class MemberResource extends Resource
                                     ->success()
                                     ->send();
                             }))
-                            ->visible(fn($record) => $record->status === 'inactive'),
+                            ->visible(fn($record) => $record->status->value === 'inactive'),
                         Tables\Actions\Action::make('mark_as_inactive')
                             ->color('danger')
                             ->label('Mark as inactive')
@@ -143,7 +143,7 @@ class MemberResource extends Resource
                                     ->danger()
                                     ->send();
                             }))
-                            ->visible(fn($record) => $record->status === 'active'),
+                            ->visible(fn($record) => $record->status->value === 'active'),
                     ])->dropdown(false),
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\Action::make('heading_actions')
@@ -168,7 +168,7 @@ class MemberResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SubscriptionsRelationManager::class
         ];
     }
 
@@ -181,14 +181,17 @@ class MemberResource extends Resource
             ->schema([
                 Section::make()
                     ->heading(function (Member $record): HtmlString {
-                        $variant = $record->status === 'active' ? 'success' : 'danger';
+                        $status = $record->status;
                         $html = Blade::render(
-                            '<x-filament::badge class="inline-flex" :color="$variant">
-                                {{ ucfirst($status) }}
+                            '<x-filament::badge class="inline-flex ml-2" :color="$color">
+                                {{ $label }}
                             </x-filament::badge>',
-                            ['status' => $record->status, 'variant' => $variant]
+                            [
+                                'color' => $status->getColor(),
+                                'label' => $status->getLabel(),
+                            ]
                         );
-                        return new HtmlString('Personal Information ' . $html);
+                        return new HtmlString('Details ' . $html);
                     })
                     ->schema([
                         ImageEntry::make('photo')
@@ -220,7 +223,8 @@ class MemberResource extends Resource
                                     ->placeholder('N/A'),
                             ])->columnSpan(4)->columns(3),
                     ])->columns(5),
-                Section::make('Address')
+                Section::make('Location')
+                    ->columns(3)
                     ->schema([
                         TextEntry::make('address')->label('Address'),
                         Group::make()
@@ -232,6 +236,7 @@ class MemberResource extends Resource
                                     ->placeholder('N/A'),
                                 TextEntry::make('pincode')->label('PIN Code'),
                             ])
+                            ->columnSpan(2)
                             ->columns(4),
                     ]),
 

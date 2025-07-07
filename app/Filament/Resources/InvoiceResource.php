@@ -158,7 +158,7 @@ class InvoiceResource extends Resource
                             ->label('Manage Invoice')
                             ->disabled()
                             ->color('gray')
-                            ->visible(fn($record) => in_array($record->status, ['issued', 'partial', 'overdue'])),
+                            ->visible(fn($record) => in_array($record->status->value, ['issued', 'partial', 'overdue'])),
                         Tables\Actions\Action::make('mark_partially_paid')
                             ->label('Add Payment')
                             ->color('info')
@@ -191,7 +191,7 @@ class InvoiceResource extends Resource
                                     'status'      => $newStatus,
                                 ]);
 
-                                if ($record->status == 'paid') {
+                                if ($record->status->value == 'paid') {
                                     Notification::make()
                                         ->title('Invoice Paid')
                                         ->success()
@@ -199,7 +199,7 @@ class InvoiceResource extends Resource
                                         ->send();
                                 }
 
-                                if ($record->status == 'partial') {
+                                if ($record->status->value == 'partial') {
                                     Notification::make()
                                         ->title('Invoice Partially Paid')
                                         ->warning()
@@ -223,7 +223,7 @@ class InvoiceResource extends Resource
                                     ->body("Invoice #{$record->number} has been fully paid with amount ₹{$record->paid_amount}.")
                                     ->send();
                             })
-                            ->visible(fn($record) => in_array($record->status, ['issued', 'partial', 'overdue'])),
+                            ->visible(fn($record) => in_array($record->status->value, ['issued', 'partial', 'overdue'])),
                         Tables\Actions\Action::make('mark_refund')
                             ->label('Refund')
                             ->color('warning')
@@ -236,7 +236,7 @@ class InvoiceResource extends Resource
                                     ->body("Invoice #{$record->number} has been refunded.")
                                     ->send();
                             }))
-                            ->visible(fn($record) => in_array($record->status, ['paid', 'partial', 'overdue'])),
+                            ->visible(fn($record) => in_array($record->status->value, ['paid', 'partial', 'overdue'])),
                         Tables\Actions\Action::make('cancel_invoice')
                             ->label('Cancel')
                             ->color('danger')
@@ -249,7 +249,7 @@ class InvoiceResource extends Resource
                                     ->body("Invoice #{$record->number} has been cancelled.")
                                     ->send();
                             }))
-                            ->visible(fn($record) => !in_array($record->status, ['cancelled', 'paid', 'refund'])),
+                            ->visible(fn($record) => !in_array($record->status->value, ['cancelled', 'paid', 'refund'])),
                     ])
                         ->dropdown(false),
 
@@ -258,8 +258,11 @@ class InvoiceResource extends Resource
                             ->label('Record Actions')
                             ->disabled()
                             ->color('gray'),
-                        Tables\Actions\ViewAction::make(),
-                        Tables\Actions\EditAction::make()->hidden(fn($record) => $record->status !== 'issued'),
+                        Tables\Actions\ViewAction::make()
+                            ->url(fn($record) => InvoiceResource::getUrl('view', ['record' => $record])),
+                        Tables\Actions\EditAction::make()
+                            ->hidden(fn($record) => $record->status->value !== 'issued')
+                            ->url(fn($record) => InvoiceResource::getUrl('edit', ['record' => $record])),
                         Tables\Actions\DeleteAction::make(),
                     ])->dropdown(false)
                 ]),
@@ -284,24 +287,20 @@ class InvoiceResource extends Resource
                     ->schema([
                         Section::make()
                             ->heading(function (Invoice $record): HtmlString {
-                                $variant = match ($record->status) {
-                                    'issued' => 'gray',
-                                    'overdue' => 'warning',
-                                    'partial' => 'info',
-                                    'paid' => 'success',
-                                    'refund' => 'danger',
-                                    'cancelled' => 'danger',
-                                };
+                                $status = $record->status;
                                 $html = Blade::render(
-                                    '<x-filament::badge class="inline-flex" :color="$variant">
-                                        {{ ucfirst($status) }}
+                                    '<x-filament::badge class="inline-flex ml-2" :color="$color">
+                                        {{ $label }}
                                     </x-filament::badge>',
-                                    ['status' => $record->status, 'variant' => $variant]
+                                    [
+                                        'color' => $status->getColor(),
+                                        'label' => $status->getLabel(),
+                                    ]
                                 );
                                 return new HtmlString('Details ' . $html);
                             })
                             ->schema([
-                                TextEntry::make('number'),
+                                TextEntry::make('number')->label('Invoice No.'),
                                 TextEntry::make('subscription.member')
                                     ->label('Subscription')
                                     ->weight(FontWeight::Bold)

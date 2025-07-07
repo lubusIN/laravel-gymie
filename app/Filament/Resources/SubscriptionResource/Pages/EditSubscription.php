@@ -12,7 +12,7 @@ class EditSubscription extends EditRecord
 
     public function getTitle(): string
     {
-        return 'Edit ' . ' Subscription: ' . $this->record->member->name;
+        return 'Edit ' . $this->record->member->name;
     }
 
     protected function getHeaderActions(): array
@@ -22,6 +22,15 @@ class EditSubscription extends EditRecord
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            SubscriptionResource::getUrl('index')   => 'Subscriptions',
+            $this->record->member->name
         ];
     }
 }

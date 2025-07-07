@@ -1,6 +1,8 @@
-.new_enquiry_follow_up li {
+.new_enquiry_follow_up li,
+.rmv_rept-space li {
     box-shadow: none;
 }
-.new_enquiry_follow_up .fi-fo-repeater-item-content {
+.new_enquiry_follow_up .fi-fo-repeater-item-content,
+.rmv_rept-space .fi-fo-repeater-item-content {
     padding: 0px;
 }

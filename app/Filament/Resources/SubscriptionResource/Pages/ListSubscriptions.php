@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SubscriptionResource\Pages;
 
+use App\Enums\Status;
 use App\Filament\Resources\SubscriptionResource;
 use App\Models\Subscription;
 use Filament\Actions;
@@ -27,16 +28,24 @@ class ListSubscriptions extends ListRecords
             'all' => Tab::make('All'),
             'ongoing' => Tab::make('Ongoing')
                 ->badge(Subscription::query()->where('status', 'ongoing')->count())
-                ->badgeColor('success')
+                ->badgeColor(Status::Ongoing->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'ongoing')),
             'expiring' => Tab::make('Expiring')
                 ->badge(Subscription::query()->where('status', 'expiring')->count())
-                ->badgeColor('danger')
+                ->badgeColor(Status::Expiring->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'expiring')),
             'expired' => Tab::make('Expired')
                 ->badge(Subscription::query()->where('status', 'expired')->count())
-                ->badgeColor('danger')
+                ->badgeColor(Status::Expired->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'expired')),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            SubscriptionResource::getUrl('index')   => 'Subscriptions',
         ];
     }
 }

@@ -24,4 +24,13 @@ class EditInvoice extends EditRecord
             Actions\RestoreAction::make(),
         ];
     }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Billing',
+            InvoiceResource::getUrl('index')   => 'Invoices',
+            $this->record->number
+        ];
+    }
 }
