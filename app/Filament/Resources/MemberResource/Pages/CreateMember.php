@@ -12,6 +12,8 @@ class CreateMember extends CreateRecord
 {
     protected static string $resource = MemberResource::class;
 
+    protected static bool $canCreateAnother = false;
+
     public ?int $enquiryId = null;
 
     public function mount(): void
@@ -57,5 +59,18 @@ class CreateMember extends CreateRecord
             ->body('Enquiry has been successfully converted to a member.')
             ->success()
             ->send();
+    }
+
+    public function getTitle(): string
+    {
+        return 'New Member';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            MemberResource::getUrl('index')   => 'Members',
+        ];
     }
 }

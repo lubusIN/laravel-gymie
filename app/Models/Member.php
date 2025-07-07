@@ -2,21 +2,32 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
+use App\Filament\Resources\MemberResource;
 use App\Helpers\Helpers;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Wizard;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Js;
 
 class Member extends Model
 {
@@ -60,7 +71,7 @@ class Member extends Model
      *
      * @var array
      */
-    protected $casts = ['dob' => 'date'];
+    protected $casts = ['dob' => 'date', 'status' => Status::class];
 
     /**
      * The attributes that should be mutated to dates.
@@ -122,153 +133,150 @@ class Member extends Model
     public static function getForm(): array
     {
         return [
-            Grid::make()
-                ->schema([
-                    Section::make('')
-                        ->schema([
-                            FileUpload::make('photo')
-                                ->imageEditor()
-                                ->preserveFilenames()
-                                ->maxSize(1024 * 1024 * 10)
-                                ->disk('public')
-                                ->directory('images')
-                                ->image()
-                                ->placeholder('Upload a logo (max 10MB)')
-                                ->loadingIndicatorPosition('left')
-                                ->panelAspectRatio('6:4')
-                                ->panelLayout('integrated')
-                                ->removeUploadedFileButtonPosition('right')
-                                ->uploadButtonPosition('left')
-                                ->uploadProgressIndicatorPosition('left'),
-                        ])->columnSpan(1),
-                    Section::make('')
-                        ->schema([
-                            Grid::make()
-                                ->schema([
-                                    Grid::make()
-                                        ->schema([
-                                            TextInput::make('code')
-                                                ->placeholder('Code for the member')
-                                                ->label('Member Code')
-                                                ->required()
-                                                ->readOnly()
-                                                ->default(fn(Get $get) => Helpers::generateLastNumber(
-                                                    'member',
-                                                    Member::class,
-                                                    null,
-                                                    'code'
-                                                )),
-                                            TextInput::make('name')
-                                                ->required()
-                                                ->maxLength(255)
-                                                ->placeholder('Name')
-                                                ->columnSpan(2)
-                                        ])->columns(3),
-                                    Select::make('gender')->options([
-                                        'male' => 'Male',
-                                        'female' => 'Female',
-                                        'other' => 'Other',
-                                    ])->default('male')
-                                        ->selectablePlaceholder(false)
-                                        ->required(),
-                                    DatePicker::make('dob')
-                                        ->native(false)
-                                        ->required()
-                                        ->label('Date of Birth')
-                                        ->placeholder('01-01-2001')
-                                        ->displayFormat('d-m-Y')
-                                        ->suffixIcon('heroicon-m-calendar-days'),
-                                    TextInput::make('health_issue')
-                                        ->label('Health Issues (if any)')
-                                        ->maxLength(500)
-                                        ->placeholder('Any health issues?')
-                                        ->columnSpanFull(),
-                                ])->columns(2)
-                        ])->columnSpan(2),
-                ])->columns(3),
-            Section::make('Contact')
-                ->schema([
-                    TextInput::make('email')
-                        ->email()
-                        ->live()
-                        ->maxLength(255)
-                        ->required()
-                        ->unique('members', 'email', ignoreRecord: true),
-                    TextInput::make('contact')
-                        ->tel()
-                        ->placeholder('+1 555-123-4567')
-                        ->maxLength(20)
-                        ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
-                        ->required()
-                        ->helperText('Include country code. Only digits, spaces, +, -, and () allowed.'),
-                    TextInput::make('emergency_contact')
-                        ->tel()
-                        ->placeholder('+1 555-123-4567')
-                        ->maxLength(20)
-                        ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
-                        ->helperText('Include country code. Only digits, spaces, +, -, and () allowed.'),
-                ])->columns(3)->columnSpanFull(),
-            Section::make('Address')
-                ->schema([
-                    Group::make()
-                        ->schema([
-                            Textarea::make('address')
-                                ->required()
-                                ->placeholder('Room No./Wing, Building/Apt. name, street name'),
-                            Group::make()
-                                ->schema([
-                                    Select::make('country')
-                                        ->label('Country')
-                                        ->placeholder('Select an country')
-                                        ->options(Helpers::getCountries())
-                                        ->searchable()
-                                        ->preload()
-                                        ->required()
-                                        ->reactive()
-                                        ->afterStateUpdated(fn($state, callable $set) => [
-                                            $set('state', null),
-                                            $set('city', null),
-                                        ]),
-                                    Select::make('state')
-                                        ->label('State')
-                                        ->placeholder('Select an state')
-                                        ->options(fn($get) => Helpers::getStates($get('country')))
-                                        ->searchable()
-                                        ->reactive(),
-                                    Select::make('city')
-                                        ->label('City')
-                                        ->placeholder('Select an city')
-                                        ->options(fn($get) => Helpers::getCities($get('state')))
-                                        ->searchable()
-                                        ->reactive(),
-                                    TextInput::make('pincode')
-                                        ->numeric()
-                                        ->required()
-                                        ->placeholder('PIN code'),
-                                ])->columns(4),
-                        ])->columnSpanFull(),
-                ]),
-            Section::make('Membership')
-                ->schema([
-                    Select::make('source')
-                        ->options([
-                            'promotions' => 'Promotions',
-                            'word_of_mouth' => 'Word of mouth',
-                            'others' => 'Others'
-                        ])->default('promotions')
-                        ->selectablePlaceholder(false),
-                    Select::make('goal')
-                        ->options([
-                            'fitness' => 'Fitness',
-                            'body_building' => 'Body Building',
-                            'fatloss' => 'Fatloss',
-                            'weightgain' => 'Weightgain',
-                            'others' => 'Others'
-                        ])->default('fitness')
-                        ->label('Goal ?')
-                        ->selectablePlaceholder(false),
-                ])->columns(2)
 
+            Section::make()
+                ->schema([
+                    FileUpload::make('photo')
+                        ->imageEditor()
+                        ->preserveFilenames()
+                        ->maxSize(1024 * 1024 * 10)
+                        ->disk('public')
+                        ->directory('images')
+                        ->image()
+                        ->placeholder('Upload a logo (max 10MB)')
+                        ->loadingIndicatorPosition('left')
+                        ->panelAspectRatio('6:7')
+                        ->panelLayout('integrated')
+                        ->removeUploadedFileButtonPosition('right')
+                        ->uploadButtonPosition('left')
+                        ->uploadProgressIndicatorPosition('left'),
+
+                    Grid::make()
+                        ->schema([
+                            TextInput::make('code')
+                                ->placeholder('Code for the member')
+                                ->label('Member Code')
+                                ->required()
+                                ->readOnly()
+                                ->disabled()
+                                ->default(fn(Get $get) => Helpers::generateLastNumber(
+                                    'member',
+                                    Member::class,
+                                    null,
+                                    'code'
+                                )),
+                            TextInput::make('name')
+                                ->required()
+                                ->maxLength(255)
+                                ->placeholder('Name')
+                                ->columnSpan(2),
+                            TextInput::make('email')
+                                ->email()
+                                ->live()
+                                ->maxLength(255)
+                                ->required()
+                                ->placeholder('Email address')
+                                ->unique('members', 'email', ignoreRecord: true),
+                            TextInput::make('contact')
+                                ->tel()
+                                ->placeholder('+1 555-123-4567')
+                                ->maxLength(20)
+                                ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                ->required()
+                                ->hintIcon('heroicon-m-question-mark-circle')
+                                ->hintIconTooltip('Include country code. Only digits, spaces, +, -, and () allowed.'),
+                            TextInput::make('emergency_contact')
+                                ->tel()
+                                ->placeholder('+1 555-123-4567')
+                                ->maxLength(20)
+                                ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
+                                ->hintIcon('heroicon-m-question-mark-circle')
+                                ->hintIconTooltip('Include country code. Only digits, spaces, +, -, and () allowed.'),
+                            Select::make('gender')
+                                ->options([
+                                    'male' => 'Male',
+                                    'female' => 'Female',
+                                    'other' => 'Other',
+                                ])->default('male')
+                                ->selectablePlaceholder(false)
+                                ->required(),
+                            DatePicker::make('dob')
+                                ->required()
+                                ->label('Date of Birth')
+                                ->placeholder('01-01-2001'),
+                            TextInput::make('health_issue')
+                                ->label('Health Issues (if any)')
+                                ->maxLength(500)
+                                ->placeholder('Any health issues?'),
+                            Select::make('source')
+                                ->options([
+                                    'promotions' => 'Promotions',
+                                    'word_of_mouth' => 'Word of mouth',
+                                    'others' => 'Others'
+                                ])->default('promotions')
+                                ->selectablePlaceholder(false),
+                            Select::make('goal')
+                                ->options([
+                                    'fitness' => 'Fitness',
+                                    'body_building' => 'Body Building',
+                                    'fatloss' => 'Fatloss',
+                                    'weightgain' => 'Weightgain',
+                                    'others' => 'Others'
+                                ])->default('fitness')
+                                ->label('Goal ?')
+                                ->selectablePlaceholder(false),
+                        ])->columns(3)->columnSpan(3)
+                ])->columns(4),
+            Section::make('Location')
+                ->columns(2)
+                ->schema([
+                    Textarea::make('address')
+                        ->required()
+                        ->rows(5)
+                        ->placeholder('Room No./Wing, Building/Apt. name, street name'),
+                    Group::make()
+                        ->columns(2)
+                        ->schema([
+                            Select::make('country')
+                                ->label('Country')
+                                ->placeholder('Select an country')
+                                ->options(Helpers::getCountries())
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(fn($state, callable $set) => [
+                                    $set('state', null),
+                                    $set('city', null),
+                                ]),
+                            Select::make('state')
+                                ->label('State')
+                                ->placeholder('Select an state')
+                                ->options(fn($get) => Helpers::getStates($get('country')))
+                                ->reactive(),
+                            Select::make('city')
+                                ->label('City')
+                                ->placeholder('Select an city')
+                                ->options(fn($get) => Helpers::getCities($get('state')))
+                                ->reactive(),
+                            TextInput::make('pincode')
+                                ->numeric()
+                                ->required()
+                                ->placeholder('PIN code'),
+                        ]),
+                ]),
+            Section::make('Subscription & Invoice')
+                ->visibleOn('create')
+                ->schema([
+                    Repeater::make('subscriptions')
+                        ->relationship('subscriptions')
+                        ->itemLabel('')
+                        ->hiddenLabel()
+                        ->columnSpanFull()
+                        ->maxItems(1)
+                        ->deletable(false)
+                        ->extraAttributes(['class' => 'rmv_rept-space'])
+                        ->columns(3)
+                        ->schema(Subscription::getForm()),
+                ]),
         ];
     }
 
@@ -286,25 +294,20 @@ class Member extends Model
                 ->toggleable(isToggledHiddenByDefault: true),
             ImageColumn::make('photo')
                 ->circular()
-                ->defaultImageUrl(fn(Member $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name)
-                ->toggleable(isToggledHiddenByDefault: false),
+                ->defaultImageUrl(fn(Member $record): ?string => 'https://ui-avatars.com/api/?background=000&color=fff&name=' . $record->name),
             TextColumn::make('member_code')
-                ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->searchable(),
             TextColumn::make('name')
                 ->searchable()
                 ->label('Name'),
             TextColumn::make('email')
                 ->searchable()
-                ->toggleable(isToggledHiddenByDefault: false)
                 ->label('Email'),
             TextColumn::make('gender')
                 ->searchable()
-                ->toggleable(isToggledHiddenByDefault: false)
                 ->label('Gender'),
             TextColumn::make('contact')
                 ->searchable()
-                ->toggleable(isToggledHiddenByDefault: true)
                 ->label('Contact'),
             TextColumn::make('emergency_contact')
                 ->searchable()
@@ -316,17 +319,8 @@ class Member extends Model
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->label('Date'),
             TextColumn::make('status')
-                ->color(fn(string $state): string => match ($state) {
-                    'active' => 'success',
-                    'inactive' => 'danger',
-                })->badge()
-                ->label('Status')
-                ->toggleable(isToggledHiddenByDefault: false)
-                ->formatStateUsing(fn(string $state): string => match ($state) {
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                    default => ucfirst($state), // Fallback for any unexpected status
-                }),
+                ->badge()
+                ->label('Status'),
         ];
     }
 }

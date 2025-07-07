@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionResource\Pages;
+use App\Filament\Resources\SubscriptionResource\RelationManagers\InvoicesRelationManager;
 use App\Models\Member;
 use App\Models\Plan;
 use App\Models\Subscription;
@@ -14,11 +15,12 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class SubscriptionResource extends Resource
 {
@@ -126,7 +128,7 @@ class SubscriptionResource extends Resource
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-plus')
                     ->label('New subscription')
-                    ->visible(fn() => Member::exists() && Plan::exists() && !Subscription::exists()),
+                    ->visible(fn($livewire) => Member::exists() && Plan::exists() && (!Subscription::exists() || !$livewire->getOwnerRecord()->subscriptions()->exists())),
                 Tables\Actions\Action::make('create_member')
                     ->icon('heroicon-o-plus')
                     ->label('New member')
@@ -168,7 +170,7 @@ class SubscriptionResource extends Resource
                             ->label('Change Status')
                             ->disabled()
                             ->color('gray')
-                            ->hidden(fn($record) => $record->status == 'expired'),
+                            ->hidden(fn($record) => $record->status->value == 'expired'),
                         Tables\Actions\Action::make('mark_expiring')
                             ->label('Mark as expiring')
                             ->color('warning')
@@ -180,7 +182,7 @@ class SubscriptionResource extends Resource
                                     ->warning()
                                     ->send();
                             }))
-                            ->visible(fn($record) => $record->status == 'ongoing'),
+                            ->visible(fn($record) => $record->status->value == 'ongoing'),
                         Tables\Actions\Action::make('mark_expired')
                             ->label('Mark as expired')
                             ->color('danger')
@@ -192,17 +194,19 @@ class SubscriptionResource extends Resource
                                     ->danger()
                                     ->send();
                             }))
-                            ->visible(fn($record) => $record->status !== 'expired'),
+                            ->visible(fn($record) => $record->status->value !== 'expired'),
                     ])->dropdown(false),
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\Action::make('heading_actions')
                             ->label('Record Actions')
                             ->disabled()
                             ->color('gray'),
-                        Tables\Actions\ViewAction::make(),
+                        Tables\Actions\ViewAction::make()
+                            ->url(fn($record) => SubscriptionResource::getUrl('view', ['record' => $record])),
                         Tables\Actions\EditAction::make()
                             ->hiddenLabel()
-                            ->hidden(fn($record) => $record->status === 'expired'),
+                            ->hidden(fn($record) => $record->status->value === 'expired')
+                            ->url(fn($record) => SubscriptionResource::getUrl('edit', ['record' => $record])),
                         Tables\Actions\DeleteAction::make()->hiddenLabel(),
                     ])->dropdown(false),
                 ]),
@@ -213,7 +217,10 @@ class SubscriptionResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(fn(Builder $query) => $query->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]));
     }
 
     /**
@@ -226,14 +233,28 @@ class SubscriptionResource extends Resource
     {
         return $infolist
             ->schema([
-                Section::make('')
+                Section::make()
+                    ->heading(function (Subscription $record): HtmlString {
+                        $status = $record->status;
+                        $html = Blade::render(
+                            '<x-filament::badge class="inline-flex ml-2" :color="$color">
+                                {{ $label }}
+                            </x-filament::badge>',
+                            [
+                                'color' => $status->getColor(),
+                                'label' => $status->getLabel(),
+                            ]
+                        );
+                        return new HtmlString('Details ' . $html);
+                    })
                     ->schema([
-                        TextEntry::make('id'),
                         TextEntry::make('member')
                             ->label('Member')
+                            ->columnSpan(2)
                             ->formatStateUsing(fn($record): string => "{$record->member->code} – {$record->member->name}"),
                         TextEntry::make('plan')
                             ->label('Plan')
+                            ->columnSpan(2)
                             ->formatStateUsing(fn($record): string => "{$record->plan->code} – {$record->plan->name}"),
                         TextEntry::make('start_date')
                             ->label('Start Date')
@@ -241,19 +262,7 @@ class SubscriptionResource extends Resource
                         TextEntry::make('end_date')
                             ->label('End Date')
                             ->date(),
-                        TextEntry::make('status')
-                            ->badge()
-                            ->color(fn(string $state): string => match ($state) {
-                                'ongoing'  => 'success',
-                                'expiring' => 'warning',
-                                'expired'  => 'danger',
-                            })
-                            ->formatStateUsing(fn(string $state): string => match ($state) {
-                                'ongoing'  => 'Ongoing',
-                                'expiring' => 'Expiring',
-                                'expired'  => 'Expired',
-                            }),
-                    ])->columns(3),
+                    ])->columns(6),
             ]);
     }
 
@@ -265,7 +274,7 @@ class SubscriptionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            InvoicesRelationManager::class
         ];
     }
 
@@ -282,18 +291,5 @@ class SubscriptionResource extends Resource
             'view' => Pages\ViewSubscription::route('/{record}'),
             'edit' => Pages\EditSubscription::route('/{record}/edit'),
         ];
-    }
-
-    /**
-     * Get the Eloquent query builder for this resource, excluding global scopes.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 }

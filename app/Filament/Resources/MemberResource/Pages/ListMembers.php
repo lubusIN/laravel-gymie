@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MemberResource\Pages;
 
+use App\Enums\Status;
 use App\Filament\Resources\MemberResource;
 use App\Models\Member;
 use Filament\Actions;
@@ -28,12 +29,20 @@ class ListMembers extends ListRecords
             'all' => Tab::make('All'),
             'active' => Tab::make('Active')
                 ->badge(Member::query()->where('status', 'active')->count())
-                ->badgeColor('success')
+                ->badgeColor(Status::Active->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'active')),
             'inactive' => Tab::make('Inactive')
                 ->badge(Member::query()->where('status', 'inactive')->count())
-                ->badgeColor('danger')
+                ->badgeColor(Status::Inactive->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'inactive')),
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            MemberResource::getUrl('index')   => 'Members',
         ];
     }
 }
