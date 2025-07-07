@@ -159,6 +159,7 @@ class Member extends Model
                                 ->required()
                                 ->readOnly()
                                 ->disabled()
+                                ->dehydrated()
                                 ->default(fn(Get $get) => Helpers::generateLastNumber(
                                     'member',
                                     Member::class,
