@@ -39,7 +39,7 @@ class MarkSubscriptionsStatus extends Command
             ->update(['status' => 'expired']);
 
         // Mark those about to expire in next 7 days
-        $expiringCount = Subscription::whereBetween('start_date', [$now, $expiringThreshold])
+        $expiringCount = Subscription::whereBetween('end_date', [$now, $expiringThreshold])
             ->where('status', '!=', 'expiring')
             ->update(['status' => 'expiring']);
 
