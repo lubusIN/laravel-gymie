@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Plan;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Schema;
@@ -435,5 +436,25 @@ class Helpers
             storage_path(self::SETTINGS_PATH),
             json_encode($settings, JSON_PRETTY_PRINT)
         );
+    }
+
+    /**
+     * Given a subscription start date and a plan ID, return the Y-m-d end date
+     * (or empty string if no valid plan/days).
+     */
+    public static function calculateSubscriptionEndDate(?string $startDate, ?int $planId): string
+    {
+        if (! $startDate || ! $planId) {
+            return '';
+        }
+
+        $plan = Plan::find($planId);
+        if (! $plan || ! $plan->days) {
+            return '';
+        }
+
+        return Carbon::parse($startDate)
+            ->addDays($plan->days)
+            ->toDateString();
     }
 }
