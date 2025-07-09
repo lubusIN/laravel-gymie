@@ -86,10 +86,11 @@ class Subscription extends Model
     {
         return [
             Group::make()
-                ->columns(4)
+                ->columns(6)
                 ->columnSpanFull()
                 ->schema([
                     Select::make('member_id')
+                        ->columnSpan(2)
                         ->relationship('member', 'name')
                         ->placeholder('Select a member')
                         ->getOptionLabelFromRecordUsing(fn(Member $record): string => "{$record->code} - {$record->name}")
@@ -98,12 +99,20 @@ class Subscription extends Model
                     Select::make('plan_id')
                         ->columnSpan(fn($livewire) => ($livewire instanceof SubscriptionsRelationManager ||
                             $livewire instanceof CreateMember)
-                            ? 2
-                            : 1)
+                            ? 4
+                            : 2)
                         ->relationship('plan', 'name')
                         ->placeholder('Select a plan')
+                        ->searchable(['code', 'name'])
                         ->reactive()
-                        ->getOptionLabelFromRecordUsing(fn(Plan $record): string => "{$record->code} - {$record->name}")
+                        ->getOptionLabelFromRecordUsing(fn(Plan $record): string => sprintf(
+                            '%s – %s (%s%s | %d days)',
+                            $record->code,
+                            $record->name,
+                            Helpers::getCurrencySymbol(),
+                            round($record->amount),
+                            $record->days,
+                        ))
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             $plan    = \App\Models\Plan::find($get('plan_id'));
                             $fee     = round($plan->amount ?? 0);
@@ -125,18 +134,40 @@ class Subscription extends Model
                                 $set("invoices.{$index}.total_amount",     $total);
                                 $set("invoices.{$index}.due_amount",       $due);
                             }
+
+                            $set('end_date', Helpers::calculateSubscriptionEndDate(
+                                $get('start_date'),
+                                $get('plan_id'),
+                            ));
                         })
                         ->required(),
                     DatePicker::make('start_date')
                         ->label('Start Date')
                         ->live()
                         ->required()
-                        ->before('end_date'),
+                        ->default(now())
+                        ->before('end_date')
+                        ->reactive()                         // <— also reactive
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            $set('end_date', Helpers::calculateSubscriptionEndDate(
+                                $get('start_date'),
+                                $get('plan_id'),
+                            ));
+                        }),
                     DatePicker::make('end_date')
                         ->label('End Date')
                         ->live()
                         ->required()
-                        ->after('start_date'),
+                        ->after('start_date')
+                        ->disabled()
+                        ->dehydrated()
+                        ->reactive()
+                        ->afterStateHydrated(function (Get $get, Set $set) {
+                            $set('end_date', Helpers::calculateSubscriptionEndDate(
+                                $get('start_date'),
+                                $get('plan_id'),
+                            ));
+                        }),
                 ]),
             Section::make('Invoice Details')
                 ->visibleOn('create')
