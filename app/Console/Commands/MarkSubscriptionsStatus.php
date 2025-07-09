@@ -16,7 +16,9 @@ class MarkSubscriptionsStatus extends Command
      *
      * @var string
      */
-    protected $signature = 'subscriptions:mark-status';
+    protected $signature = 'gymie:subscriptions 
+                            {--mark-expired : Mark expired subscriptions} 
+                            {--mark-expiring : Mark subscriptions expiring within 7 days}';
 
     /**
      * The console command description.
@@ -32,30 +34,37 @@ class MarkSubscriptionsStatus extends Command
     {
         $now = Carbon::now();
         $expiringThreshold = $now->copy()->addDays(7);
+        $summary = [];
 
-        // Mark already expired
-        $expiredCount = Subscription::where('end_date', '<', $now)
-            ->where('status', '!=', 'expired')
-            ->update(['status' => 'expired']);
+        if ($this->option('mark-expired')) {
+            $expiredCount = Subscription::where('end_date', '<', $now)
+                ->where('status', '!=', 'expired')
+                ->update(['status' => 'expired']);
 
-        // Mark those about to expire in next 7 days
-        $expiringCount = Subscription::whereBetween('end_date', [$now, $expiringThreshold])
-            ->where('status', '!=', 'expiring')
-            ->update(['status' => 'expiring']);
+            $expiredLabel = Str::plural('subscription', $expiredCount);
+            $this->info("✅ Marked {$expiredCount} {$expiredLabel} as expired.");
+            $summary[] = "{$expiredCount} expired";
+        }
 
-        $expiredLabel  = Str::plural('subscription', $expiredCount);
-        $expiringLabel = Str::plural('subscription', $expiringCount);
+        if ($this->option('mark-expiring')) {
+            $expiringCount = Subscription::whereBetween('end_date', [$now, $expiringThreshold])
+                ->where('status', '!=', 'expiring')
+                ->update(['status' => 'expiring']);
 
-        $this->info("✅ Marked {$expiredCount} {$expiredLabel} as expired.");
-        $this->info("⏳ Marked {$expiringCount} {$expiringLabel} as expiring soon (within 7 days).");
+            $expiringLabel = Str::plural('subscription', $expiringCount);
+            $this->info("⏳ Marked {$expiringCount} {$expiringLabel} as expiring soon (within 7 days).");
+            $summary[] = "{$expiringCount} expiring soon";
+        }
 
-        $summary = "Subscriptions updated: {$expiredCount} expired, {$expiringCount} expiring soon.";
+        if (empty($summary)) {
+            $this->warn("⚠️ No options provided. Use --mark-expired or --mark-expiring.");
+            return;
+        }
 
         $admin = User::role('super_admin')->first();
-
         Notification::make()
             ->title('Subscription Status Update')
-            ->body($summary)
+            ->body('Subscriptions updated: ' . implode(', ', $summary) . '.')
             ->info()
             ->sendToDatabase($admin);
 

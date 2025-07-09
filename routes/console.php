@@ -8,5 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('subscriptions:mark-status')
-    ->dailyAt('00:00');
+// Mark subscriptions expired every day at 00:00
+Schedule::command('gymie:subscriptions --mark-expired')
+    ->everyMinute();
+
+// Mark subscriptions expiring soon every day at 00:05
+Schedule::command('gymie:subscriptions --mark-expiring')
+    ->everyMinute();
