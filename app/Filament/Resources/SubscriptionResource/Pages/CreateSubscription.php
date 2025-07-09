@@ -3,10 +3,24 @@
 namespace App\Filament\Resources\SubscriptionResource\Pages;
 
 use App\Filament\Resources\SubscriptionResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSubscription extends CreateRecord
 {
     protected static string $resource = SubscriptionResource::class;
+
+    protected static bool $canCreateAnother = false;
+
+    public function getTitle(): string
+    {
+        return 'New Subscription';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            SubscriptionResource::getUrl('index')   => 'Subscriptions',
+        ];
+    }
 }

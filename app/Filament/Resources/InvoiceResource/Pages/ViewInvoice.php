@@ -13,7 +13,7 @@ class ViewInvoice extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View Invoice No. #' . $this->record->number;
+        return 'Invoice No. #' . $this->record->number;
     }
 
     protected function getHeaderActions(): array
@@ -21,6 +21,15 @@ class ViewInvoice extends ViewRecord
         return [
             EditAction::make(),
             DeleteAction::make()
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Billing',
+            InvoiceResource::getUrl('index')   => 'Invoices',
+            $this->record->number
         ];
     }
 }

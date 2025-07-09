@@ -13,7 +13,7 @@ class ViewSubscription extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'View ' . ' Subscription: ' . $this->record->member->name;
+        return 'Subscription ' . $this->record->member->name;
     }
 
     protected function getHeaderActions(): array
@@ -21,6 +21,15 @@ class ViewSubscription extends ViewRecord
         return [
             EditAction::make(),
             DeleteAction::make()
+        ];
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            SubscriptionResource::getUrl('index')   => 'Subscriptions',
+            $this->record->member->name
         ];
     }
 }

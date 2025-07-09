@@ -11,16 +11,25 @@ class ViewMember extends ViewRecord
 {
     protected static string $resource = MemberResource::class;
 
-    public function getTitle(): string
-    {
-        return 'View ' . $this->record->name;
-    }
-
     protected function getHeaderActions(): array
     {
         return [
             EditAction::make(),
             DeleteAction::make()
+        ];
+    }
+
+    public function getTitle(): string
+    {
+        return 'Member ' . $this->record->name;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            'Memberships',
+            MemberResource::getUrl('index')   => 'Members',
+            $this->record->name
         ];
     }
 }
