@@ -10,8 +10,12 @@ Artisan::command('inspire', function () {
 
 // Mark subscriptions expired every day at 00:00
 Schedule::command('gymie:subscriptions --mark-expired')
-    ->everyMinute();
+    ->dailyAt('00:00');
 
 // Mark subscriptions expiring soon every day at 00:05
 Schedule::command('gymie:subscriptions --mark-expiring')
-    ->everyMinute();
+    ->dailyAt('00:00');
+
+// Mark invoices overdue every day at 00:00
+Schedule::command('gymie:invoices --mark-overdue')
+    ->dailyAt('00:00');
