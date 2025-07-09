@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Blade;
 
 class Enquiry extends Model
 {
@@ -148,7 +149,19 @@ class Enquiry extends Model
                         ->label('Lead Owner')
                         ->placeholder('Select lead owner')
                         ->relationship('user', 'name')
-                        ->required(),
+                        ->required()
+                        ->getOptionLabelFromRecordUsing(function (User $record): string {
+                            $name = html_entity_decode($record->name, ENT_QUOTES, 'UTF-8');
+                            $url  = !empty($record->photo) ? e($record->photo) : "https://ui-avatars.com/api/?background=000&color=fff&name={$name}";
+                            return Blade::render(
+                                '<div class="flex items-center gap-2 h-9">
+                                    <x-filament::avatar src="{{ $url }}" alt="{{ $name }}" size="sm" />
+                                    <span class="ml-2">{{ $name }}</span>
+                                 </div>',
+                                compact('url', 'name')
+                            );
+                        })
+                        ->allowHtml(),
                     DatePicker::make('start_by')
                         ->minDate(now())
                         ->placeholder(now()->format('d-m-Y')),
