@@ -129,14 +129,14 @@ class EnquiryResource extends Resource
                         Tables\Actions\Action::make('heading_actions')
                             ->label('Status')
                             ->disabled()
-                            ->visible(fn($record) => in_array($record->status, ['lead']))
+                            ->visible(fn($record) => in_array($record->status->value, ['lead']))
                             ->color('gray'),
                         Tables\Actions\Action::make('convert_to_member')
                             ->label('Convert to Member')
                             ->icon('heroicon-m-arrows-right-left')
                             ->color('success')
                             ->requiresConfirmation()
-                            ->visible(fn(Enquiry $record) => $record->status === 'lead')
+                            ->visible(fn(Enquiry $record) => $record->status->value === 'lead')
                             ->url(fn(Enquiry $record) => MemberResource::getUrl(
                                 'create',
                                 ['enquiry_id' => $record->id],
@@ -155,7 +155,7 @@ class EnquiryResource extends Resource
                                     ->iconColor('danger')
                                     ->send();
                             }))
-                            ->visible(fn($record) => $record->status === 'lead'),
+                            ->visible(fn($record) => $record->status->value === 'lead'),
                     ])->dropdown(false),
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\Action::make('heading_actions')

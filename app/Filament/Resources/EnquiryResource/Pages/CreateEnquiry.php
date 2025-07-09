@@ -11,7 +11,7 @@ class CreateEnquiry extends CreateRecord
 
     public function getTitle(): string
     {
-        return 'New enquiry';
+        return 'New Enquiry';
     }
 
     public function getBreadcrumbs(): array
