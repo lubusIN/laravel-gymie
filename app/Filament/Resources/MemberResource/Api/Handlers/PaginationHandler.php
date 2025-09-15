@@ -13,8 +13,6 @@ class PaginationHandler extends Handlers
     public static string | null $uri = '/';
     public static string | null $resource = MemberResource::class;
 
-    public  static bool $public = true;
-
     /**
      * List of Member
      *
