@@ -9,6 +9,15 @@
 <a href="https://github.com/lubusin/laravel-gymie/blob/master/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
 </p>
 
+> [!WARNING]
+> **This branch is no longer maintained.**
+>
+> The **`master`** and **`develop`** branches have been officially deprecated as the project moves toward **Gymie v3**.
+>
+> ✅ Active development is now happening in the **`3.x-alpha`** branch. Please switch to `3.x-alpha` to get the latest features, improvements, and future updates.
+>
+> ⚡ v3 is currently in **Alpha**, and we are preparing for the upcoming stable release.
+
 <center>
 <a href="https://lubus.in/">
 <img src="https://user-images.githubusercontent.com/1039236/40877801-3fa8ccf6-66a4-11e8-8f42-19ed4e883ce9.png" />
