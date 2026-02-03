@@ -10,12 +10,7 @@
 </p>
 
 > [!WARNING]
-> **This branch is no longer maintained.**
->
-> The **`master`** and **`develop`** branches have been officially deprecated as the project moves toward **Gymie v3**.
->
-> ✅ Active development is now happening in the **`3.x-alpha`** branch. Please switch to `3.x-alpha` to get the latest features, improvements, and future updates.
->
+> **v1 is no longer maintained.**
 > ⚡ v3 is currently in **Alpha**, and we are preparing for the upcoming stable release.
 
 <center>
