@@ -2,11 +2,8 @@
 
 <p align="center">
 <a href="https://github.com/lubusIN/laravel-gymie/releases"><img src="https://img.shields.io/github/release/lubusIN/laravel-gymie.svg?style=flat-square" alt="Latest Stable Version"></a>
-<a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie/build-status/master"><img src="https://img.shields.io/scrutinizer/build/g/lubusIN/laravel-gymie.svg?style=flat-square" alt="Build Status"></a>
-<a href="https://styleci.io/repos/123349662"><img src="https://styleci.io/repos/123349662/shield" alt="StyleCI Status"></a>
-<a href="https://scrutinizer-ci.com/g/lubusIN/laravel-gymie"><img src="https://img.shields.io/scrutinizer/g/lubusin/laravel-gymie.svg?style=flat-square" alt="Scrutinizer Code Quality"></a>
-<a href="https://github.com/lubusIN/laravel-gymie/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
-<a href="https://github.com/lubusin/laravel-gymie/blob/master/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
+<a href="https://github.com/lubusIN/laravel-gymie/blob/v1/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
+<a href="https://github.com/lubusin/laravel-gymie/blob/v1/contributing.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs"></a>
 </p>
 
 > [!WARNING]
@@ -47,8 +44,8 @@ Laravel based web application for gym & club management. Currently being used by
 Improper permission on `storage` & `public` folder will lead to server & application errors
 
 ##  Installation
-1. Clone to your server root `git clone -b master git@github.com:lubusIN/laravel-gymie.git`
-> For faster updates and bleeding edge features, or if you want to help test the next version, use the `develop` branch instead of the `master` branch.
+1. Clone to your server root `git clone -b v1 git@github.com:lubusIN/laravel-gymie.git`
+> For faster updates and bleeding edge features, or if you want to help test the next version, use the `develop` branch instead of the `v1` branch.
 2. Run `composer install` to install all dependencies
 3. Create `.env` in application root 
 ```cp .env.example .env```
