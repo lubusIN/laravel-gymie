@@ -10,12 +10,6 @@
 > **v1 is no longer maintained.**
 > ⚡ v3 is currently in **Alpha**, and we are preparing for the upcoming stable release.
 
-<center>
-<a href="https://lubus.in/">
-<img src="https://user-images.githubusercontent.com/1039236/40877801-3fa8ccf6-66a4-11e8-8f42-19ed4e883ce9.png" />
-</a>
-</center>
-
 # Gymie
 
 Laravel based web application for gym & club management. Currently being used by many fitness centers. For more information, visit - https://www.gymie.in
@@ -103,15 +97,13 @@ Check the development tasklist [here](https://github.com/lubusIN/laravel-gymie/p
 ##  Security Vulnerabilities
 If you discover a security vulnerability within Laravel, please send an e-mail at info@lubus.in. All security vulnerabilities will be promptly addressed.  
 
-##  Support Us
+## Meet Your Artisans
 
-<a href="https://www.patreon.com/lubus">
-<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become A Patron"/>
+[LUBUS](http://lubus.in) is a web design agency based in Mumbai.
+
+<a href="https://cal.com/lubus">
+<img src="https://raw.githubusercontent.com/lubusIN/.github/refs/heads/main/profile/banner.png" />
 </a>
-
-[LUBUS](http://lubus.in) is a web design agency based in Mumbai, India.
-
-You can pledge on [patreon](https://www.patreon.com/lubus) to support the development & maintenance of various [opensource](https://github.com/lubusIN/) stuff we are building.
 
 ## License
 
