@@ -2,18 +2,20 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
 use App\Filament\Pages\Settings;
-use App\Filament\Resources\EnquiryResource;
-use App\Filament\Resources\FollowUpResource;
-use App\Filament\Resources\InvoiceResource;
-use App\Filament\Resources\MemberResource;
-use App\Filament\Resources\PlanResource;
-use App\Filament\Resources\RoleResource;
-use App\Filament\Resources\ServiceResource;
-use App\Filament\Resources\SubscriptionResource;
-use App\Filament\Resources\UserResource;
+use App\Filament\Resources\Enquiries\EnquiryResource;
+use App\Filament\Resources\FollowUps\FollowUpResource;
+use App\Filament\Resources\Invoices\InvoiceResource;
+use App\Filament\Resources\Members\MemberResource;
+use App\Filament\Resources\Plans\PlanResource;
+use App\Filament\Resources\Services\ServiceResource;
+use App\Filament\Resources\Subscriptions\SubscriptionResource;
+use App\Filament\Resources\Users\UserResource;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -24,14 +26,12 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Rupadana\ApiService\ApiServicePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +48,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('/')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->passwordReset()
             ->brandName('Gymie')
@@ -63,13 +64,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                FilamentInfoWidget::class,
             ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
-                ApiServicePlugin::make()
-            ])
+            ->plugins([FilamentShieldPlugin::make()
+                ->navigationIcon(fn(): null => null)
+                ->activeNavigationIcon(fn(): null => null)])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -84,6 +84,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->databaseNotifications()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
     }
@@ -146,17 +147,17 @@ class AdminPanelProvider extends PanelProvider
     {
         return [
             'primary' => [
-                50 => '240, 253, 250',   // #F0FDFA - very light teal
-                100 => '204, 251, 241',  // #CCFBF1
-                200 => '153, 246, 228',  // #99F6E4
-                300 => '94, 234, 212',   // #5EEAD4
-                400 => '45, 212, 191',   // #2DD4BF
-                500 => '20, 184, 166',   // #14B8A6 - main teal
-                600 => '13, 148, 136',   // #0D9488
-                700 => '15, 118, 110',   // #0F766E
-                800 => '17, 94, 89',     // #115E59
-                900 => '19, 78, 74',     // #134E4A
-                950 => '4, 47, 46',      // #042F2E - very dark teal
+                50 => '#b3fefc',
+                100 => '#37f2ee',
+                200 => '#2dcdc9',
+                300 => '#24adaa',
+                400 => '#1c908d',
+                500 => '#157573',
+                600 => '#0e5c5a',
+                700 => '#084543',
+                800 => '#042f2e',
+                900 => '#021f1e',
+                950 => '#011413',
             ],
             'danger' => Color::Rose,
             'gray' => Color::Gray,

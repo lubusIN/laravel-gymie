@@ -3,19 +3,11 @@
 namespace App\Models;
 
 use App\Enums\Status;
-use App\Helpers\Helpers;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Get;
-use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 
 class Plan extends Model
 {
@@ -53,7 +45,7 @@ class Plan extends Model
     /**
      * Get the sevice for the plan.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function service()
     {
@@ -63,7 +55,7 @@ class Plan extends Model
     /**
      * Get the subscriptions for the plan.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function subscriptions()
     {
@@ -92,103 +84,5 @@ class Plan extends Model
                 }
             }
         });
-    }
-
-    /**
-     * Get the Filament form schema for the plans.
-     *
-     * @return array
-     */
-    public static function getForm(): array
-    {
-        return [
-            Fieldset::make()
-                ->label(function (Get $get): HtmlString {
-                    $rawStatus = $get('status');
-                    $status = Status::tryFrom($rawStatus) ?? Status::Active;
-                    $html = Blade::render(
-                        '<x-filament::badge class="inline-flex ml-2" :color="$color">
-                                {{ $label }}
-                            </x-filament::badge>',
-                        [
-                            'color' => $status->getColor(),
-                            'label' => $status->getLabel(),
-                        ]
-                    );
-                    return new HtmlString($html);
-                })
-                ->schema([
-                    TextInput::make('name')
-                        ->label('Name')
-                        ->placeholder('Name of the plan')
-                        ->unique(ignoreRecord: true,)
-                        ->required()
-                        ->columnSpanFull(),
-                    TextInput::make('code')
-                        ->placeholder('Code for the plan')
-                        ->label('Code')
-                        ->unique(ignoreRecord: true)
-                        ->required(),
-                    Select::make('service_id')
-                        ->label('Service')
-                        ->relationship(name: 'service', titleAttribute: 'name')
-                        ->placeholder('Select service')
-                        ->required()
-                        ->columnSpan(2),
-                    TextInput::make('days')
-                        ->required()
-                        ->placeholder('Number of days for the plan')
-                        ->numeric()
-                        ->label('Days')
-                        ->columnSpan(1),
-                    TextInput::make('amount')
-                        ->placeholder('Enter amount of the plan')
-                        ->numeric()
-                        ->prefix(Helpers::getCurrencySymbol())
-                        ->label('Amount')
-                        ->required()
-                        ->columnSpan(2),
-                    TextInput::make('description')
-                        ->placeholder('Brief description of the plan')
-                        ->label('Description')
-                        ->columnSpanFull()
-                ])->columns(3)
-        ];
-    }
-
-    /**
-     * Get the Filament table columns for the plans list view.
-     *
-     * @return array
-     */
-    public static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('id')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('code')
-                ->searchable()
-                ->label('Code'),
-            TextColumn::make('name')
-                ->searchable()
-                ->label('Name'),
-            TextColumn::make('description')
-                ->searchable()
-                ->label('Description'),
-            TextColumn::make('service.name')
-                ->searchable()
-                ->label('Service'),
-            TextColumn::make('days')
-                ->searchable()
-                ->label('Days'),
-            TextColumn::make('amount')
-                ->searchable()
-                ->label('Amount')
-                ->money(Helpers::getCurrencyCode()),
-            TextColumn::make('status')
-                ->badge()
-                ->label('Status'),
-        ];
     }
 }

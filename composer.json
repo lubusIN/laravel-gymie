@@ -11,14 +11,13 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
-        "bezhansalleh/filament-shield": "^3.3",
-        "filament/filament": "^3.3",
+        "bezhansalleh/filament-shield": "^4.0",
+        "filament/filament": "^5.0",
         "flowframe/laravel-trend": "^0.4.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "nnjeim/world": "^1.1",
-        "rupadana/filament-api-service": "^3.4"
+        "nnjeim/world": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

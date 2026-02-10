@@ -2,21 +2,22 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
+use RuntimeException;
 use App\Helpers\Helpers;
 use Carbon\Carbon;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -29,7 +30,7 @@ class Settings extends Page implements HasForms
     protected static ?string $title = 'Settings';
 
     /** @var string View file for the settings page */
-    protected static string $view = 'filament.pages.settings';
+    protected string $view = 'filament.pages.settings';
 
     /** @var array|null Stores the settings data */
     public ?array $data = [];
@@ -261,13 +262,13 @@ class Settings extends Page implements HasForms
     /**
      * Configures a form instance by setting its schema and state path.
      *
-     * @param Form $form The form instance to configure.
-     * @return Form The configured form instance.
+     * @param Schema $schema The form instance to configure.
+     * @return Schema The configured form instance.
      */
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema($this->getFormSchema())
+        return $schema
+            ->components($this->getFormSchema())
             ->statePath('data');
     }
 
@@ -326,7 +327,7 @@ class Settings extends Page implements HasForms
 
         // Save updated data
         if (file_put_contents($jsonPath, json_encode($jsonData, JSON_PRETTY_PRINT)) === false) {
-            throw new \RuntimeException("Failed to write to settings file.");
+            throw new RuntimeException("Failed to write to settings file.");
         }
 
         // Update the form state
