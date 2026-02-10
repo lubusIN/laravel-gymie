@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteBulkAction;
+use Illuminate\Support\Collection;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -10,25 +13,14 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction as TableDeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Command as ArtisanCommand;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
     /**
      * Bootstrap any application services.
      */
@@ -110,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDeletionPrevention(): void
     {
         $map = config('prevent-deletion', []);
-        TableDeleteAction::configureUsing(function (TableDeleteAction $action) use ($map): TableDeleteAction {
+        DeleteAction::configureUsing(function (DeleteAction $action) use ($map): DeleteAction {
             return $action
                 ->requiresConfirmation(function (Action $action, $record) use ($map) {
                     $class = get_class($record);
@@ -138,7 +130,7 @@ class AppServiceProvider extends ServiceProvider
 
         DeleteBulkAction::configureUsing(function (DeleteBulkAction $action) use ($map): DeleteBulkAction {
             return $action
-                ->requiresConfirmation(function (DeleteBulkAction $action, \Illuminate\Support\Collection $records) use ($map) {
+                ->requiresConfirmation(function (DeleteBulkAction $action, Collection $records) use ($map) {
                     foreach ($records as $record) {
                         $class = get_class($record);
                         $action->modalIcon('heroicon-o-trash');

@@ -2,21 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\Status;
-use App\Filament\Resources\SubscriptionResource\RelationManagers\InvoicesRelationManager;
 use App\Helpers\Helpers;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,8 +48,8 @@ class Invoice extends Model
 
     /**
      * The member who owns this invoice.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
+     * @return BelongsTo
      */
     public function member()
     {
@@ -70,8 +58,8 @@ class Invoice extends Model
 
     /**
      * The subscription this invoice is for.
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
+     * @return BelongsTo
      */
     public function subscription()
     {
@@ -135,214 +123,5 @@ class Invoice extends Model
             $invoice->due_amount = $dueAmount;
             $invoice->status = $status;
         });
-    }
-
-    /**
-     * Get the Filament form schema for the invoice.
-     *
-     * @return array
-     */
-    public static function getForm(): array
-    {
-        return [
-            Section::make('')
-                ->columns(4)
-                ->schema([
-                    Group::make()
-                        ->columns(3)
-                        ->columnSpan(3)
-                        ->schema([
-                            TextInput::make('number')
-                                ->label('Invoice No.')
-                                ->required()
-                                ->readOnly()
-                                ->disabled()
-                                ->dehydrated()
-                                ->unique('invoices', 'number')
-                                ->default(fn(Get $get) => Helpers::generateLastNumber(
-                                    'invoice',
-                                    Invoice::class,
-                                    $get('date')
-                                )),
-                            Select::make('subscription_id')
-                                ->label('Subscription')
-                                ->reactive()
-                                ->relationship('subscription', 'id')
-                                ->hiddenOn(InvoicesRelationManager::class)
-                                ->getOptionLabelFromRecordUsing(fn(Subscription $record): string => "{$record->member->code} - {$record->member->name}")
-                                ->afterStateUpdated(
-                                    function (Get $get, Set $set) {
-                                        $sub = $get('subscription_id')
-                                            ? Subscription::with('plan')->find($get('subscription_id'))
-                                            : null;
-
-                                        if ($sub) {
-                                            $fee     = $sub->plan->amount;
-                                            $taxRate = Helpers::getTaxRate() ?: 0;
-                                            $tax     = ($fee * $taxRate) / 100;
-                                            $discountAmount = $get('discount_amount') ?: 0;
-                                            $total   = $fee + $tax - $discountAmount;
-
-                                            $fee   = round($fee);
-                                            $tax   = round($tax);
-                                            $total = round($fee + $tax - $discountAmount);
-                                            $due   = round($total - ($get('paid_amount') ?: 0));
-
-                                            $set('subscription_fee', $fee);
-                                            $set('tax',              $tax);
-                                            $set('total_amount',     $total);
-                                            $set('due_amount',       $due);
-                                        } else {
-                                            $set('subscription_fee', 0);
-                                            $set('tax',              0);
-                                            $set('total_amount',     0);
-                                            $set('discount_amount',  0);
-                                            $set('due_amount',       0);
-                                        }
-                                    }
-                                )
-                                ->required(),
-                            DatePicker::make('date')
-                                ->label('Date')
-                                ->required()
-                                ->reactive()
-                                ->default(now()),
-                            DatePicker::make('due_date')
-                                ->label('Due Date')
-                                ->required()
-                                ->reactive(),
-                            Select::make('discount')
-                                ->label('Discount')
-                                ->options(Helpers::getDiscounts())
-                                ->native(false)
-                                ->live()
-                                ->reactive()
-                                ->placeholder('Select Discount')
-                                ->afterStateUpdated(
-                                    function (Get $get, Set $set) {
-                                        $fee           = $get('subscription_fee') ?: 0;
-                                        $tax           = $get('tax') ?: 0;
-                                        $discountPct   = (int) $get('discount');
-                                        $discountAmount = Helpers::getDiscountAmount($discountPct, $fee);
-                                        $total         = $fee + $tax - $discountAmount;
-
-                                        $set('discount_amount', round($discountAmount));
-                                        $set('total_amount', round($total));
-                                        $set('due_amount', max($total - $get('paid_amount'), 0));
-                                    }
-                                ),
-                            TextInput::make('discount_amount')
-                                ->label('Discount Amount')
-                                ->numeric()
-                                ->debounce(300)
-                                ->default(0)
-                                ->prefix(Helpers::getCurrencySymbol())
-                                ->maxValue(fn(Get $get): float => $get('subscription_fee') ?: 0)
-                                ->afterStateUpdated(
-                                    function (Get $get, Set $set, $livewire, TextInput $component) {
-                                        $livewire->validateOnly($component->getStatePath());
-
-                                        $fee            = $get('subscription_fee') ?: 0;
-                                        $entered        = $get('discount_amount') ?: 0;
-                                        $clamped        = min(max($entered, 0), $fee);
-                                        $tax            = $get('tax') ?: 0;
-                                        $total          = $fee + $tax - $clamped;
-
-                                        $set('total_amount', round($total));
-                                        $set('due_amount', max($total - $get('paid_amount'), 0));
-                                    }
-                                ),
-                            Textarea::make('discount_note')
-                                ->label('Discount Note')
-                                ->placeholder('E.g. introductory offer'),
-                            Radio::make('payment_method')
-                                ->label('Payment Method')
-                                ->options([
-                                    'cash'   => 'Cash',
-                                    'cheque' => 'Cheque',
-                                ])
-                                ->default('cash')
-                                ->inline()
-                                ->inlineLabel(false)
-                                ->required(),
-                        ]),
-                    Fieldset::make('Summary')
-                        ->columnSpan(1)
-                        ->columns(1)
-                        ->schema([
-                            TextInput::make('subscription_fee')
-                                ->label('Subscription Fee')
-                                ->numeric()
-                                ->readOnly()
-                                ->disabled()
-                                ->dehydrated()
-                                ->default(0)
-                                ->prefix(Helpers::getCurrencySymbol())
-                                ->required(),
-                            TextInput::make('tax')
-                                ->label('Tax (' . Helpers::getTaxRate() . '%)')
-                                ->numeric()
-                                ->disabled()
-                                ->dehydrated()
-                                ->default(0)
-                                ->prefix(Helpers::getCurrencySymbol())
-                                ->readOnly(),
-                            TextInput::make('total_amount')
-                                ->label('Total Amount')
-                                ->numeric()
-                                ->readOnly()
-                                ->disabled()
-                                ->dehydrated()
-                                ->default(0)
-                                ->prefix(Helpers::getCurrencySymbol())
-                                ->required(),
-                        ]),
-                ]),
-        ];
-    }
-
-    /**
-     * Get the Filament table columns for the invoice list view.
-     *
-     * @return array
-     */
-    public static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('id')
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('number')
-                ->label('Invoice No.')
-                ->sortable(),
-            TextColumn::make('subscription.member.name')
-                ->label('Subscription')
-                ->description(fn($record): string => $record->subscription->member->code),
-            TextColumn::make('date')
-                ->label('Date')
-                ->date()
-                ->sortable(),
-            TextColumn::make('due_date')
-                ->label('Due Date')
-                ->date()
-                ->sortable(),
-            TextColumn::make('subscription_fee')
-                ->label('Fee')
-                ->formatStateUsing(fn($state): string => Helpers::formatCurrency($state)),
-            TextColumn::make('paid_amount')
-                ->label('Paid')
-                ->formatStateUsing(fn($state): string => Helpers::formatCurrency($state)),
-            TextColumn::make('tax')
-                ->label('Tax')
-                ->formatStateUsing(fn($state): string => Helpers::formatCurrency($state)),
-            TextColumn::make('total_amount')
-                ->label('Total')
-                ->formatStateUsing(fn($state): string => Helpers::formatCurrency($state)),
-            TextColumn::make('due_amount')
-                ->label('Due')
-                ->formatStateUsing(fn($state): string => Helpers::formatCurrency($state)),
-            TextColumn::make('status')
-                ->badge(),
-        ];
     }
 }

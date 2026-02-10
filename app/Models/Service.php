@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Relations\hasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -36,7 +34,7 @@ class Service extends Model
     /**
      * Get the plans for the service.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return hasMany
      */
     public function plans()
     {
@@ -65,49 +63,5 @@ class Service extends Model
                 }
             }
         });
-    }
-
-    /**
-     * Get the Filament form schema for the services.
-     *
-     * @return array
-     */
-    public static function getForm(): array
-    {
-        return [
-            TextInput::make('name')
-                ->label('Name')
-                ->placeholder('Service name')
-                ->required(),
-            Textarea::make('description')
-                ->placeholder('Brief description of the service')
-                ->label('Description')
-                ->required(),
-        ];
-    }
-
-    /**
-     * Get the Filament table columns for the services list view.
-     *
-     * @return array
-     */
-    public static function getTableColumns(): array
-    {
-        return [
-            TextColumn::make('id')
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('name')
-                ->searchable()
-                ->label('Name')
-                ->sortable(),
-            TextColumn::make('description')
-                ->searchable()
-                ->label('Description'),
-            TextColumn::make('created_at')
-                ->searchable()
-                ->date('d-m-Y')
-                ->toggleable(isToggledHiddenByDefault: true),
-        ];
     }
 }

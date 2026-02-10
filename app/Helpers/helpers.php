@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use NumberFormatter;
 use App\Models\Plan;
 use Carbon\Carbon;
 use Exception;
@@ -262,8 +263,8 @@ class Helpers
     public static function getCurrencySymbol(): string
     {
         $currencyCode = self::getCurrencyCode();
-        $formatter = new \NumberFormatter('en' . "@currency=$currencyCode", \NumberFormatter::CURRENCY);
-        return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL) ?: '';
+        $formatter = new NumberFormatter('en' . "@currency=$currencyCode", NumberFormatter::CURRENCY);
+        return $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL) ?: '';
     }
 
     /**
