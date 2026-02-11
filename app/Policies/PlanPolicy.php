@@ -1,108 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
-use App\Models\User;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Plan;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PlanPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return $user->can('view_any_plan');
+        return $authUser->can('ViewAny:Plan');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Plan $plan): bool
+    public function view(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('view_plan');
+        return $authUser->can('View:Plan');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->can('create_plan');
+        return $authUser->can('Create:Plan');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Plan $plan): bool
+    public function update(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('update_plan');
+        return $authUser->can('Update:Plan');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Plan $plan): bool
+    public function delete(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('delete_plan');
+        return $authUser->can('Delete:Plan');
     }
 
-    /**
-     * Determine whether the user can bulk delete.
-     */
-    public function deleteAny(User $user): bool
+    public function restore(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('delete_any_plan');
+        return $authUser->can('Restore:Plan');
     }
 
-    /**
-     * Determine whether the user can permanently delete.
-     */
-    public function forceDelete(User $user, Plan $plan): bool
+    public function forceDelete(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('force_delete_plan');
+        return $authUser->can('ForceDelete:Plan');
     }
 
-    /**
-     * Determine whether the user can permanently bulk delete.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->can('force_delete_any_plan');
+        return $authUser->can('ForceDeleteAny:Plan');
     }
 
-    /**
-     * Determine whether the user can restore.
-     */
-    public function restore(User $user, Plan $plan): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->can('restore_plan');
+        return $authUser->can('RestoreAny:Plan');
     }
 
-    /**
-     * Determine whether the user can bulk restore.
-     */
-    public function restoreAny(User $user): bool
+    public function replicate(AuthUser $authUser, Plan $plan): bool
     {
-        return $user->can('restore_any_plan');
+        return $authUser->can('Replicate:Plan');
     }
 
-    /**
-     * Determine whether the user can replicate.
-     */
-    public function replicate(User $user, Plan $plan): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->can('replicate_plan');
+        return $authUser->can('Reorder:Plan');
     }
 
-    /**
-     * Determine whether the user can reorder.
-     */
-    public function reorder(User $user): bool
-    {
-        return $user->can('reorder_plan');
-    }
 }
