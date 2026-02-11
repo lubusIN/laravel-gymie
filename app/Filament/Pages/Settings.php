@@ -70,6 +70,7 @@ class Settings extends Page implements HasForms
                     $this->invoiceTab(),
                     $this->memberTab(),
                     $this->chargesTab(),
+                    $this->expensesTab(),
                 ])
         ];
     }
@@ -255,6 +256,23 @@ class Settings extends Page implements HasForms
                             ->placeholder('Type discount %')
                             ->separator(','),
                     ]),
+            ])
+        );
+    }
+
+    /**
+     * Expenses Tab Schema.
+     */
+    private function expensesTab()
+    {
+        return (
+            Tab::make('Expenses')->icon('heroicon-m-banknotes')
+            ->schema([
+                TagsInput::make('expenses.categories')
+                    ->label('Categories')
+                    ->hint('Press Enter to add')
+                    ->placeholder('Type category name')
+                    ->separator(','),
             ])
         );
     }

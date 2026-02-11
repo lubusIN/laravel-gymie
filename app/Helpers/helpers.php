@@ -17,6 +17,17 @@ class Helpers
     private const DEFAULT_FY_END   = '03-31';
     private const DEFAULT_CURRENCY = 'INR';
     private const SETTINGS_PATH    = 'data/settingsData.json';
+    private const DEFAULT_EXPENSE_CATEGORIES = [
+        'Rent',
+        'Utilities',
+        'Supplies',
+        'Maintenance',
+        'Marketing',
+        'Equipment',
+        'Payroll',
+        'Travel',
+        'Other',
+    ];
 
     /** 
      * If non-null, generateLastNumber() and updateLastNumber() will use
@@ -56,6 +67,7 @@ class Helpers
                     "invoice" => [],
                     "member" => [],
                     "charges" => [],
+                    "expenses" => [],
                 ], JSON_PRETTY_PRINT));
             }
         }
@@ -192,6 +204,62 @@ class Helpers
         $settings = self::getSettings();
         $currency = $settings['general']['currency'] ?? null;
         return filled($currency) ? $currency : self::DEFAULT_CURRENCY;
+    }
+
+    /**
+     * Get expense categories from settings (fallback to defaults).
+     *
+     * @return array<int, string>
+     */
+    public static function getExpenseCategories(): array
+    {
+        $settings = self::getSettings();
+        $categories = $settings['expenses']['categories'] ?? null;
+
+        if (! is_array($categories) || empty($categories)) {
+            return self::DEFAULT_EXPENSE_CATEGORIES;
+        }
+
+        $normalized = [];
+        foreach ($categories as $category) {
+            $category = trim((string) $category);
+            if ($category === '') {
+                continue;
+            }
+            $normalized[$category] = $category;
+        }
+
+        return array_values($normalized);
+    }
+
+    /**
+     * Get expense category options for selects.
+     *
+     * @return array<string, string>
+     */
+    public static function getExpenseCategoryOptions(): array
+    {
+        $options = [];
+        foreach (self::getExpenseCategories() as $category) {
+            $key = Str::slug($category);
+
+            if ($key === '') {
+                continue;
+            }
+
+            $options[$key] = $category;
+        }
+
+        return $options;
+    }
+
+    public static function getExpenseCategoryLabel(?string $key): ?string
+    {
+        if (blank($key)) {
+            return null;
+        }
+
+        return self::getExpenseCategoryOptions()[$key] ?? $key;
     }
 
     /**

@@ -10,6 +10,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
@@ -83,6 +84,17 @@ class AppServiceProvider extends ServiceProvider
                 ->native(false)
                 ->placeholder('01-01-2001')
                 ->displayFormat('d/m/Y')
+                ->prefixIcon('heroicon-o-calendar-days');
+        });
+
+        /**
+         * Configure the DateTimePicker component globally to use a specific format and placeholder.
+         */
+        DateTimePicker::configureUsing(function (DateTimePicker $datePicker) {
+            $datePicker
+                ->native(false)
+                ->placeholder('01-01-2001 12:00')
+                ->displayFormat('d/m/Y H:i A')
                 ->prefixIcon('heroicon-o-calendar-days');
         });
 
