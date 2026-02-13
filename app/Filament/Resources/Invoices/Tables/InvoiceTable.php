@@ -2,29 +2,25 @@
 
 namespace App\Filament\Resources\Invoices\Tables;
 
-use Carbon\Carbon;
 use App\Helpers\Helpers;
 use App\Models\Invoice;
 use App\Models\Subscription;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\CreateAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\Invoices\InvoiceResource;
+use Illuminate\Support\Carbon;
 
 class InvoiceTable
 {
@@ -74,7 +70,6 @@ class InvoiceTable
                     ->badge(),
             ])
             ->filters([
-                TrashedFilter::make(),
                 Filter::make('date')
                     ->schema([
                         DatePicker::make('date_from'),
@@ -168,10 +163,6 @@ class InvoiceTable
                     ->url(fn() => route('filament.admin.resources.subscriptions.create'))
                     ->icon('heroicon-o-plus')
                     ->hidden(fn() => Subscription::exists()),
-                CreateAction::make()
-                    ->icon('heroicon-o-plus')
-                    ->label('New invoice')
-                    ->visible(fn() => Subscription::exists() && !Invoice::exists()),
             ])
             ->recordActions([
                 ActionGroup::make([
@@ -180,90 +171,153 @@ class InvoiceTable
                             ->label('Manage Invoice')
                             ->disabled()
                             ->color('gray')
-                            ->visible(fn($record) => in_array($record->status->value, ['issued', 'partial', 'overdue'])),
-                        Action::make('mark_partially_paid')
+                            ->visible(fn(Invoice $record): bool => !in_array($record->status->value, ['refund', 'cancelled'], true)),
+                        Action::make('add_payment')
                             ->label('Add Payment')
                             ->color('info')
                             ->icon('heroicon-s-banknotes')
+                            ->modalWidth('md')
                             ->schema([
                                 TextInput::make('amount')
                                     ->label("Amount (" . Helpers::getCurrencyCode() . ")")
                                     ->required()
                                     ->numeric()
                                     ->reactive()
+                                    ->default(fn(Invoice $record): float => (float) ($record->due_amount ?? 0))
                                     ->placeholder('Enter amount')
                                     ->validationAttribute('amount')
-                                    ->helperText(fn(Invoice $record) => "Due Amount: " . ($record->total_amount - $record->paid_amount))
-                                    ->maxValue(fn(Invoice $record) => $record->total_amount - $record->paid_amount)
-                                    ->minValue(0)
+                                    ->helperText(fn(Invoice $record): string => 'Due Amount: ' . Helpers::formatCurrency($record->due_amount))
+                                    ->maxValue(fn(Invoice $record): float => max((float) $record->due_amount, 0))
+                                    ->minValue(0.01)
                                     ->afterStateUpdated(function ($livewire, TextInput $component) {
                                         $livewire->validateOnly($component->getStatePath());
                                     }),
+                                DateTimePicker::make('occurred_at')
+                                    ->label('Paid at')
+                                    ->seconds(false)
+                                    ->timezone(config('app.timezone'))
+                                    ->default(fn(): string => now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
+                                    ->required(),
+                                Select::make('payment_method')
+                                    ->label('Payment Method')
+                                    ->options([
+                                        'cash' => 'Cash',
+                                        'cheque' => 'Cheque',
+                                    ])
+                                    ->default(fn(Invoice $record): ?string => $record->payment_method ?: 'cash')
+                                    ->nullable(),
+                                Textarea::make('note')
+                                    ->label('Note')
+                                    ->rows(2)
+                                    ->placeholder('Optional note…'),
                             ])
                             ->action(function (Invoice $record, array $data) {
-                                $entered       = $data['amount'];
-                                $newPaid       = $record->paid_amount + $entered;
-                                $newDue        = max($record->total_amount - $newPaid, 0.0);
-                                $newStatus     = $newPaid >= $record->total_amount ? 'paid' : 'partial';
-                                $formatedValue = Helpers::formatCurrency($newPaid, Helpers::getCurrencyCode());
+                                $amount = (float) ($data['amount'] ?? 0);
+                                $amount = min(max($amount, 0), (float) ($record->due_amount ?? 0));
 
-                                $record->update([
-                                    'paid_amount' => $newPaid,
-                                    'due_amount'  => $newDue,
-                                    'status'      => $newStatus,
-                                ]);
-
-                                if ($record->status->value == 'paid') {
+                                if ($amount <= 0) {
                                     Notification::make()
-                                        ->title('Invoice Paid')
-                                        ->success()
-                                        ->body("Invoice #{$record->number} has been fully Paid with amount {$formatedValue}.")
+                                        ->title('Invalid payment amount')
+                                        ->danger()
                                         ->send();
+
+                                    return;
                                 }
 
-                                if ($record->status->value == 'partial') {
-                                    Notification::make()
-                                        ->title('Invoice Partially Paid')
-                                        ->warning()
-                                        ->body("Invoice #{$record->number} has been marked as Partial with amount {$formatedValue}.")
-                                        ->send();
-                                }
-                            })
-                            ->visible(fn($record) => in_array($record->status, ['issued', 'overdue', 'partial'])),
-                        Action::make('mark_paid')
-                            ->label('Mark as Paid')
-                            ->color('success')
-                            ->icon('heroicon-s-check-circle')
-                            ->requiresConfirmation()
-                            ->action(function (Invoice $record) {
-                                $record->update([
-                                    'status' => 'paid',
+                                $record->transactions()->create([
+                                    'type' => 'payment',
+                                    'amount' => $amount,
+                                    'occurred_at' => $data['occurred_at'] ?? now()->timezone(config('app.timezone')),
+                                    'payment_method' => $data['payment_method'] ?? null,
+                                    'note' => $data['note'] ?? null,
+                                    'created_by' => auth()->id(),
                                 ]);
+
+                                $record->refresh();
+
+                                $paidLabel = Helpers::formatCurrency($record->paid_amount);
+
                                 Notification::make()
-                                    ->title('Invoice Paid')
+                                    ->title($record->status->value === 'paid' ? 'Invoice paid' : 'Payment added')
                                     ->success()
-                                    ->body("Invoice #{$record->number} has been fully paid with amount ₹{$record->paid_amount}.")
+                                    ->body("Invoice #{$record->number} paid total: {$paidLabel}.")
                                     ->send();
                             })
-                            ->visible(fn($record) => in_array($record->status->value, ['issued', 'partial', 'overdue'])),
-                        Action::make('mark_refund')
+                            ->visible(fn(Invoice $record): bool => in_array($record->status->value, ['issued', 'overdue', 'partial'], true) && (float) $record->due_amount > 0),
+                        Action::make('refund')
                             ->label('Refund')
                             ->color('warning')
                             ->icon('heroicon-s-arrow-path')
-                            ->action(fn(Invoice $record) => tap($record, function ($record) {
-                                $record->update(['status' => 'refund']);
+                            ->modalWidth('md')
+                            ->schema([
+                                TextInput::make('amount')
+                                    ->label("Refund Amount (" . Helpers::getCurrencyCode() . ")")
+                                    ->required()
+                                    ->numeric()
+                                    ->reactive()
+                                    ->placeholder('Enter amount')
+                                    ->helperText(fn(Invoice $record): string => 'Refundable: ' . Helpers::formatCurrency($record->paid_amount))
+                                    ->maxValue(fn(Invoice $record): float => max((float) $record->paid_amount, 0))
+                                    ->minValue(0.01)
+                                    ->afterStateUpdated(function ($livewire, TextInput $component) {
+                                        $livewire->validateOnly($component->getStatePath());
+                                    }),
+                                DateTimePicker::make('occurred_at')
+                                    ->label('Refunded at')
+                                    ->seconds(false)
+                                    ->timezone(config('app.timezone'))
+                                    ->default(fn(): string => now()->timezone(config('app.timezone'))->format('Y-m-d H:i:s'))
+                                    ->required(),
+                                Textarea::make('note')
+                                    ->label('Note')
+                                    ->rows(2)
+                                    ->placeholder('Optional note…'),
+                            ])
+                            ->action(function (Invoice $record, array $data) {
+                                $amount = (float) ($data['amount'] ?? 0);
+                                $amount = min(max($amount, 0), (float) ($record->paid_amount ?? 0));
+
+                                if ($amount <= 0) {
+                                    Notification::make()
+                                        ->title('Invalid refund amount')
+                                        ->danger()
+                                        ->send();
+
+                                    return;
+                                }
+
+                                $record->transactions()->create([
+                                    'type' => 'refund',
+                                    'amount' => $amount,
+                                    'occurred_at' => $data['occurred_at'] ?? now()->timezone(config('app.timezone')),
+                                    'note' => $data['note'] ?? null,
+                                    'created_by' => auth()->id(),
+                                ]);
+
+                                $record->refresh();
+
                                 Notification::make()
-                                    ->title('Invoice Updated')
+                                    ->title('Invoice refunded')
                                     ->warning()
-                                    ->body("Invoice #{$record->number} has been refunded.")
+                                    ->body("Invoice #{$record->number} refunded and closed.")
                                     ->send();
-                            }))
-                            ->visible(fn($record) => in_array($record->status->value, ['paid', 'partial', 'overdue'])),
+                            })
+                            ->visible(fn(Invoice $record): bool => (float) $record->paid_amount > 0 && !in_array($record->status->value, ['refund', 'cancelled'], true)),
                         Action::make('cancel_invoice')
                             ->label('Cancel')
                             ->color('danger')
                             ->icon('heroicon-s-x-circle')
                             ->action(fn(Invoice $record) => tap($record, function ($record) {
+                                if ($record->transactions()->where('type', 'payment')->exists()) {
+                                    Notification::make()
+                                        ->title('Cannot cancel')
+                                        ->danger()
+                                        ->body("Invoice #{$record->number} has payments. Use refund instead.")
+                                        ->send();
+
+                                    return;
+                                }
+
                                 $record->update(['status' => 'cancelled']);
                                 Notification::make()
                                     ->title('Invoice Cancelled')
@@ -271,7 +325,7 @@ class InvoiceTable
                                     ->body("Invoice #{$record->number} has been cancelled.")
                                     ->send();
                             }))
-                            ->visible(fn($record) => !in_array($record->status->value, ['cancelled', 'paid', 'refund'])),
+                            ->visible(fn(Invoice $record): bool => !in_array($record->status->value, ['cancelled', 'refund'], true) && !$record->transactions()->where('type', 'payment')->exists()),
                     ])
                         ->dropdown(false),
 
@@ -285,16 +339,9 @@ class InvoiceTable
                         EditAction::make()
                             ->hidden(fn($record) => $record->status->value !== 'issued')
                             ->url(fn($record) => InvoiceResource::getUrl('edit', ['record' => $record])),
-                        DeleteAction::make(),
                     ])->dropdown(false)
                 ]),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions([]);
     }
 }

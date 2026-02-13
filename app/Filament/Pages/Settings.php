@@ -71,6 +71,7 @@ class Settings extends Page implements HasForms
                     $this->memberTab(),
                     $this->chargesTab(),
                     $this->expensesTab(),
+                    $this->subscriptionsTab(),
                 ])
         ];
     }
@@ -273,6 +274,24 @@ class Settings extends Page implements HasForms
                     ->hint('Press Enter to add')
                     ->placeholder('Type category name')
                     ->separator(','),
+            ])
+        );
+    }
+
+    /**
+     * Subscriptions Tab Schema.
+     */
+    private function subscriptionsTab()
+    {
+        return (
+            Tab::make('Subscriptions')->icon('heroicon-m-ticket')
+            ->schema([
+                TextInput::make('subscriptions.expiring_days')
+                    ->label('Expiring soon window (days)')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(7)
+                    ->required(),
             ])
         );
     }

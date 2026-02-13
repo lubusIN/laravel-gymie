@@ -21,7 +21,7 @@ class SubscriptionFactory extends Factory
             'plan_id' => \App\Models\Plan::factory(),
             'start_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'end_date' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'status' => $this->faker->randomElement(['ongoing', 'expiring', 'expired']),
+            'status' => $this->faker->randomElement(['upcoming', 'ongoing', 'expiring', 'expired', 'renewed']),
         ];
     }
 }

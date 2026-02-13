@@ -26,5 +26,11 @@
         "admission_fee": "",
         "taxes": "",
         "discounts": []
+    },
+    "expenses": {
+        "categories": []
+    },
+    "subscriptions": {
+        "expiring_days": 7
     }
 }

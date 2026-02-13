@@ -3,9 +3,7 @@
 namespace App\Filament\Resources\Subscriptions\RelationManagers;
 
 use Filament\Schemas\Schema;
-use Filament\Actions\CreateAction;
 use App\Filament\Resources\Invoices\InvoiceResource;
-use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
 
@@ -45,13 +43,6 @@ class InvoicesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return InvoiceResource::table($table)
-            ->headerActions([
-                CreateAction::make()
-                    ->icon('heroicon-s-plus')
-                    ->modalHeading('New Invoice')
-                    ->modalWidth('6xl')
-                    ->closeModalByClickingAway(false)
-                    ->createAnother(false)
-            ]);;
+            ->headerActions([]);
     }
 }

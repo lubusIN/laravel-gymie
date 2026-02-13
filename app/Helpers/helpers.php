@@ -68,10 +68,28 @@ class Helpers
                     "member" => [],
                     "charges" => [],
                     "expenses" => [],
+                    "subscriptions" => [],
                 ], JSON_PRETTY_PRINT));
             }
         }
-        return json_decode(file_get_contents($filePath), true) ?? [];
+        $settings = json_decode(file_get_contents($filePath), true) ?? [];
+
+        foreach (
+            [
+                'general',
+                'invoice',
+                'member',
+                'charges',
+                'expenses',
+                'subscriptions',
+            ] as $key
+        ) {
+            if (! array_key_exists($key, $settings) || ! is_array($settings[$key])) {
+                $settings[$key] = [];
+            }
+        }
+
+        return $settings;
     }
 
     /**
@@ -204,6 +222,23 @@ class Helpers
         $settings = self::getSettings();
         $currency = $settings['general']['currency'] ?? null;
         return filled($currency) ? $currency : self::DEFAULT_CURRENCY;
+    }
+
+    /**
+     * Get the number of days before a subscription is considered expiring.
+     *
+     * @return int
+     */
+    public static function getSubscriptionExpiringDays(): int
+    {
+        $settings = self::getSettings();
+        $days = $settings['subscriptions']['expiring_days'] ?? 7;
+
+        if (! is_numeric($days)) {
+            return 7;
+        }
+
+        return max(1, (int) $days);
     }
 
     /**

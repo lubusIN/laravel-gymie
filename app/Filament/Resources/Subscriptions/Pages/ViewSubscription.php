@@ -19,7 +19,8 @@ class ViewSubscription extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->hidden(fn (): bool => in_array($this->record->status->value, ['expired', 'renewed'])),
             DeleteAction::make()
         ];
     }

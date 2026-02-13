@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\hasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +19,7 @@ class Subscription extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'renewed_from_subscription_id',
         'member_id',
         'plan_id',
         'start_date',
@@ -29,7 +30,7 @@ class Subscription extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date'   => 'date',
-        'status'     => Status::class
+        'status'     => Status::class,
     ];
 
     protected $dates = ['deleted_at', 'start_date', 'end_date'];
@@ -42,6 +43,26 @@ class Subscription extends Model
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    /**
+     * Get the subscription that this subscription was renewed from, if any.
+     *
+     * @return BelongsTo
+     */
+    public function renewedFrom(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'renewed_from_subscription_id');
+    }
+
+    /**
+     * Get the subscriptions that were renewed from this subscription.
+     *
+     * @return HasMany
+     */
+    public function renewals(): HasMany
+    {
+        return $this->hasMany(self::class, 'renewed_from_subscription_id');
     }
 
     /**

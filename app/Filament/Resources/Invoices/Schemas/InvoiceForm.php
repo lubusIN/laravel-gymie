@@ -17,6 +17,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\Subscriptions\RelationManagers\InvoicesRelationManager;
+use Illuminate\Database\Eloquent\Builder;
 
 class InvoiceForm
 {
@@ -45,7 +46,6 @@ class InvoiceForm
                                     ->readOnly()
                                     ->disabled()
                                     ->dehydrated()
-                                    ->unique('invoices', 'number')
                                     ->default(fn(Get $get) => Helpers::generateLastNumber(
                                         'invoice',
                                         Invoice::class,
@@ -54,9 +54,16 @@ class InvoiceForm
                                 Select::make('subscription_id')
                                     ->label('Subscription')
                                     ->reactive()
-                                    ->relationship('subscription', 'id')
+                                    ->relationship(
+                                        name: 'subscription',
+                                        titleAttribute: 'id',
+                                        modifyQueryUsing: fn(Builder $query) => $query
+                                            ->with(['member', 'plan'])
+                                            ->orderByDesc('start_date'),
+                                    )
                                     ->hiddenOn(InvoicesRelationManager::class)
-                                    ->getOptionLabelFromRecordUsing(fn(Subscription $record): string => "{$record->member->code} - {$record->member->name}")
+                                    ->getOptionLabelFromRecordUsing(fn(Subscription $record): string => self::formatSubscriptionOptionLabel($record))
+                                    ->searchable()
                                     ->afterStateUpdated(
                                         function (Get $get, Set $set) {
                                             $sub = $get('subscription_id')
@@ -186,5 +193,24 @@ class InvoiceForm
                             ]),
                     ]),
             ]);
+    }
+
+    /**
+     * Format the subscription option label for display in the select input.
+     *
+     * @param Subscription $subscription The subscription record to format.
+     * @return string The formatted label for the subscription option.
+     */
+    private static function formatSubscriptionOptionLabel(Subscription $subscription): string
+    {
+        $memberCode = $subscription->member?->code ?? '—';
+        $memberName = $subscription->member?->name ?? '—';
+        $planCode = $subscription->plan?->code ?? '—';
+        $planName = $subscription->plan?->name ?? '—';
+        $start = $subscription->start_date?->format('d-m-Y') ?? '—';
+        $end = $subscription->end_date?->format('d-m-Y') ?? '—';
+        $status = $subscription->status?->getLabel() ?? '—';
+
+        return "#{$subscription->id} — {$memberCode} {$memberName} • {$planCode} {$planName} • {$start} → {$end} • {$status}";
     }
 }

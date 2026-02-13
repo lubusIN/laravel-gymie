@@ -9,11 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Mark subscriptions expired every day at 00:00
-Schedule::command('gymie:subscriptions --mark-expired')
-    ->dailyAt('00:00');
-
-// Mark subscriptions expiring soon every day at 00:05
-Schedule::command('gymie:subscriptions --mark-expiring')
+Schedule::command('gymie:subscriptions')
     ->dailyAt('00:00');
 
 // Mark invoices overdue every day at 00:00

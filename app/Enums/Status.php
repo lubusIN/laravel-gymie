@@ -7,6 +7,7 @@ use Filament\Support\Contracts\HasLabel;
 
 enum Status: string implements HasColor, HasLabel
 {
+    case Upcoming  = 'upcoming';
     case Pending   = 'pending';
     case Done      = 'done';
     case Active    = 'active';
@@ -20,11 +21,13 @@ enum Status: string implements HasColor, HasLabel
     case Ongoing   = 'ongoing';
     case Expiring  = 'expiring';
     case Expired   = 'expired';
+    case Renewed   = 'renewed';
     case Lead      = 'lead';
     case Lost      = 'lost';
     case Member    = 'member';
 
     private const COLORS = [
+        self::Upcoming->value   => 'gray',
         self::Pending->value    => 'warning',
         self::Done->value       => 'success',
         self::Active->value     => 'success',
@@ -38,6 +41,7 @@ enum Status: string implements HasColor, HasLabel
         self::Ongoing->value    => 'info',
         self::Expiring->value   => 'warning',
         self::Expired->value    => 'danger',
+        self::Renewed->value    => 'success',
         self::Lead->value       => 'info',
         self::Lost->value       => 'danger',
         self::Member->value     => 'success',

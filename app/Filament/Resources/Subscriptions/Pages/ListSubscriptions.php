@@ -27,6 +27,10 @@ class ListSubscriptions extends ListRecords
     {
         return [
             'all' => Tab::make('All'),
+            'upcoming' => Tab::make('Upcoming')
+                ->badge(Subscription::query()->where('status', 'upcoming')->count())
+                ->badgeColor(Status::Upcoming->getColor())
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'upcoming')),
             'ongoing' => Tab::make('Ongoing')
                 ->badge(Subscription::query()->where('status', 'ongoing')->count())
                 ->badgeColor(Status::Ongoing->getColor())
@@ -39,6 +43,10 @@ class ListSubscriptions extends ListRecords
                 ->badge(Subscription::query()->where('status', 'expired')->count())
                 ->badgeColor(Status::Expired->getColor())
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'expired')),
+            'renewed' => Tab::make('Renewed')
+                ->badge(Subscription::query()->where('status', 'renewed')->count())
+                ->badgeColor(Status::Renewed->getColor())
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', 'renewed')),
         ];
     }
 

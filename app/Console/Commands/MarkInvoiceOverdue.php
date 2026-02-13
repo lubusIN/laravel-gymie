@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Invoice;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class MarkInvoiceOverdue extends Command
 {
@@ -26,10 +27,23 @@ class MarkInvoiceOverdue extends Command
      */
     public function handle()
     {
-        $updatedCount = Invoice::where('status', 'issue')
-            ->whereDate('due_date', '<=', now())
+        if (!$this->option('mark-overdue')) {
+            $this->info('No operation selected.');
+
+            return self::SUCCESS;
+        }
+
+        $today = Carbon::today(config('app.timezone'));
+
+        $updatedCount = Invoice::query()
+            ->whereIn('status', ['issued', 'partial'])
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', $today)
+            ->where('due_amount', '>', 0)
             ->update(['status' => 'overdue']);
 
         $this->info("{$updatedCount} invoice(s) marked as overdue.");
+
+        return self::SUCCESS;
     }
 }

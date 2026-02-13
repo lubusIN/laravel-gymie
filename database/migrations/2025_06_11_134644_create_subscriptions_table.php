@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('renewed_from_subscription_id')
+                ->nullable()
+                ->constrained('subscriptions')
+                ->nullOnDelete();
             $table->foreignId('member_id')
                 ->constrained('members')
                 ->onDelete('cascade');
@@ -21,7 +25,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status', ['ongoing', 'expiring', 'expired'])
+            $table->enum('status', ['upcoming', 'ongoing', 'expiring', 'expired', 'renewed'])
                 ->default('ongoing');
             $table->softDeletes();
             $table->timestamps();

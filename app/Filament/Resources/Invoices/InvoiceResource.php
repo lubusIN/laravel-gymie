@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Invoices;
 
 use Filament\Schemas\Schema;
 use App\Filament\Resources\Invoices\Pages\ListInvoices;
-use App\Filament\Resources\Invoices\Pages\CreateInvoice;
 use App\Filament\Resources\Invoices\Pages\ViewInvoice;
 use App\Filament\Resources\Invoices\Pages\EditInvoice;
+use App\Filament\Resources\Invoices\RelationManagers\InvoiceTransactionsRelationManager;
 use App\Filament\Resources\Invoices\Schemas\InvoiceForm;
 use App\Filament\Resources\Invoices\Schemas\InvoiceInfolist;
 use App\Filament\Resources\Invoices\Tables\InvoiceTable;
@@ -19,6 +19,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     /**
      * Define the form schema for the resource.
@@ -50,11 +55,22 @@ class InvoiceResource extends Resource
         return InvoiceInfolist::configure($schema);
     }
 
+    /**
+     * Get the relation managers for the resource.
+     *
+     * @return array
+     */
+    public static function getRelations(): array
+    {
+        return [
+            InvoiceTransactionsRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => ListInvoices::route('/'),
-            'create' => CreateInvoice::route('/create'),
             'view' => ViewInvoice::route('/{record}'),
             'edit' => EditInvoice::route('/{record}/edit'),
         ];

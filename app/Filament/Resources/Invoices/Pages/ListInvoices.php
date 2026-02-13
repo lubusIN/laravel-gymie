@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Invoices\Pages;
 
-use Filament\Actions\CreateAction;
 use Filament\Schemas\Components\Tabs\Tab;
 use App\Enums\Status;
 use App\Filament\Resources\Invoices\InvoiceResource;
@@ -17,10 +16,7 @@ class ListInvoices extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->visible(Invoice::exists()),
-        ];
+        return [];
     }
 
     public function getTabs(): array
