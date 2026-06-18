@@ -24,13 +24,13 @@ To set up Gymie, follow these steps:
 Clone the repository to your local system:
 
 ```bash
-git clone git@github.com:lubusIN/laravel-gymie.git
+git clone git@github.com:lubusIN/gymie.git
 ```
 
 ### 2. Go to folder
 
 ```bash
-cd laravel-gymie
+cd gymie
 ```
 
 ### 3. Install dependencies
@@ -60,7 +60,7 @@ This will:
 -   Update other relevant configuration values.
 -   Set your application URL:
     ```env
-    APP_URL=https://laravel-gymie.test
+    APP_URL=https://gymie.test
     ```
 
 ### 6. Database Setup
