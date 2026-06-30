@@ -64,6 +64,10 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->brandName('Gymie')
+            ->brandLogo(asset('images/logo.svg'))
+            ->darkModeBrandLogo(asset('images/logo-dark-mode.svg'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/favicon.svg'))
             ->unsavedChangesAlerts()
             ->colors($this->colors())
             ->defaultThemeMode(ThemeMode::Light)
@@ -94,7 +98,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->databaseNotifications()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->renderHook(
