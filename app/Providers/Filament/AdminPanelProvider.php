@@ -99,7 +99,8 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                 fn (): HtmlString => new HtmlString(
-                    Blade::render('@include("filament.auth.dev-credentials-banner")')
+                    // TODO: restore file
+                    // Blade::render('@include("filament.auth.dev-credentials-banner")')
                 ),
             )
             ->renderHook(
