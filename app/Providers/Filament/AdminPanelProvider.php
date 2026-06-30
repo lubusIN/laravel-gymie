@@ -35,6 +35,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Enums\ThemeMode;
 
 /**
  * Filament panel provider for the main admin panel.
@@ -65,7 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Gymie')
             ->unsavedChangesAlerts()
             ->colors($this->colors())
-            ->darkMode(false)
+            ->defaultThemeMode(ThemeMode::Light)
             ->sidebarWidth('12rem')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
