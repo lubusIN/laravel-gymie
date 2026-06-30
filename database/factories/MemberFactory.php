@@ -17,7 +17,8 @@ class MemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'photo' => $this->faker->imageUrl(),
+            // Leave `photo` null so the UI/Table falls back to the default image URL
+            'photo' => null,
             'code' => $this->faker->unique()->bothify('MEM###'),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
