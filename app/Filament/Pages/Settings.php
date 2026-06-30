@@ -185,7 +185,7 @@ class Settings extends Page implements HasForms
                                     ->email()
                                     ->prefixIcon('heroicon-o-envelope'),
                                 TextInput::make('general.gym_contact')
-                                    ->numeric()
+                                    ->tel()
                                     ->prefixIcon('heroicon-o-phone')
                                     ->label(__('app.settings.fields.contact_no')),
                             ]),
