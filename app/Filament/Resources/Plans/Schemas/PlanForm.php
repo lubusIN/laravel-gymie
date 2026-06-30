@@ -3,7 +3,9 @@
 namespace App\Filament\Resources\Plans\Schemas;
 
 use App\Enums\Status;
+use App\Filament\Resources\Services\Schemas\ServiceForm;
 use App\Helpers\Helpers;
+use App\Models\Service;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
@@ -55,6 +57,11 @@ class PlanForm
                             ->relationship(name: 'service', titleAttribute: 'name')
                             ->placeholder(__('app.placeholders.select_service'))
                             ->required()
+                            ->createOptionModalHeading(__('app.actions.new', ['resource' => __('app.resources.services.singular')]))
+                            ->createOptionForm(fn (Schema $schema): Schema => ServiceForm::configure($schema))
+                            ->createOptionUsing(function (array $data): int {
+                                return Service::create($data)->getKey();
+                            })
                             ->columnSpan(2),
                         TextInput::make('days')
                             ->required()
