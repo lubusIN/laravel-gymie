@@ -82,6 +82,48 @@ class Helpers
     }
 
     /**
+     * Get the phone placeholder with country code based on settings, falling back to local translation.
+     */
+    public static function getPhonePlaceholder(): string
+    {
+        $fallback = __('app.placeholders.example_phone');
+
+        try {
+            $settings = self::getSettings();
+            $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
+            $countryName = $general['country'] ?? null;
+
+            if (blank($countryName)) {
+                return $fallback;
+            }
+
+            $countryResponse = self::worldResponse('countries', [
+                'fields' => 'id,name,phone_code',
+                'filters' => ['name' => $countryName],
+            ]);
+
+            if (! $countryResponse->success || empty($countryResponse->data)) {
+                return $fallback;
+            }
+
+            $phoneCode = trim((string) collect($countryResponse->data)->pluck('phone_code')->first());
+            $phoneCode = ltrim($phoneCode, '+');
+
+            if (blank($phoneCode)) {
+                return $fallback;
+            }
+
+            if (preg_match('/^\+\d+/', $fallback)) {
+                return (string) preg_replace('/^\+\d+/', '+' . $phoneCode, $fallback);
+            }
+
+            return '+' . $phoneCode . ' ' . $fallback;
+        } catch (\Throwable $e) {
+            return $fallback;
+        }
+    }
+
+    /**
      * Get a list of states for a specific country.
      *
      * @param  string|null  $countryName  The name of the country

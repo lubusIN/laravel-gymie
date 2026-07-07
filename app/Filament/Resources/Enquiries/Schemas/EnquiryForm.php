@@ -43,8 +43,7 @@ class EnquiryForm
                         TextInput::make('contact')
                             ->label(__('app.fields.contact'))
                             ->tel()
-                            ->required()
-                            ->placeholder(__('app.placeholders.example_phone')),
+                            ->required(),
                         DatePicker::make('dob')
                             ->required()
                             ->label(__('app.fields.dob')),

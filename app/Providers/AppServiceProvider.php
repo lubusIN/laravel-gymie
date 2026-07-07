@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\SequenceRepository;
 use App\Contracts\SettingsRepository;
+use App\Helpers\Helpers;
 use App\Models\Invoice;
 use App\Models\InvoiceTransaction;
 use App\Observers\InvoiceObserver;
@@ -20,6 +21,7 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables\Columns\TextColumn;
@@ -130,6 +132,19 @@ class AppServiceProvider extends ServiceProvider
          */
         TextColumn::configureUsing(function (TextColumn $column) {
             $column->toggleable(isToggledHiddenByDefault: false);
+        });
+
+        /**
+         * Configure the TextInput component globally to automatically set dynamic phone placeholder on telephone inputs.
+         */
+        TextInput::configureUsing(function (TextInput $component) {
+            $component->placeholder(function (TextInput $component): ?string {
+                if ($component->isTel()) {
+                    return Helpers::getPhonePlaceholder();
+                }
+
+                return null;
+            });
         });
 
         $this->configureDeletionPrevention();

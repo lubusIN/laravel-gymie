@@ -78,7 +78,6 @@ class MemberForm
                                 TextInput::make('contact')
                                     ->label(__('app.fields.contact'))
                                     ->tel()
-                                    ->placeholder(__('app.placeholders.example_phone'))
                                     ->maxLength(20)
                                     ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
                                     ->required()
@@ -87,7 +86,6 @@ class MemberForm
                                 TextInput::make('emergency_contact')
                                     ->label(__('app.fields.emergency_contact'))
                                     ->tel()
-                                    ->placeholder(__('app.placeholders.example_phone'))
                                     ->maxLength(20)
                                     ->regex('/^\+?[0-9\s\-\(\)]+$/') // Allows +, digits, spaces, dashes, and parentheses
                                     ->hintIcon('heroicon-m-question-mark-circle')
