@@ -116,7 +116,6 @@ class EnquiryForm
                                     ->reactive(),
                                 TextInput::make('pincode')
                                     ->label(__('app.fields.pincode'))
-                                    ->numeric()
                                     ->required()
                                     ->placeholder(__('app.placeholders.pincode')),
                             ])->columns(4),

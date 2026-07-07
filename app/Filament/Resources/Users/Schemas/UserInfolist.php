@@ -74,7 +74,8 @@ class UserInfolist
                                 TextEntry::make('city')
                                     ->label(__('app.fields.city'))
                                     ->placeholder(__('app.placeholders.na')),
-                                TextEntry::make('pincode')->label(__('app.fields.pincode')),
+                                TextEntry::make('pincode')
+                                    ->label(__('app.fields.pincode')),
                             ])
                             ->columns(4),
                     ]),

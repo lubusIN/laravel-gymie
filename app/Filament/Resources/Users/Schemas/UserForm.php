@@ -135,7 +135,6 @@ class UserForm
                                     ->searchable()
                                     ->reactive(),
                                 TextInput::make('pincode')
-                                    ->numeric()
                                     ->label(__('app.fields.pincode'))
                                     ->placeholder(__('app.placeholders.pincode')),
                             ])->columns(4),

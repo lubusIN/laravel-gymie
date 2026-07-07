@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->text('pincode')->nullable();
+            $table->string('pincode')->nullable();
             $table->enum('status', ['lead', 'member', 'lost'])->default('lead')->nullable();
             $table->json('interested_in')->nullable();
             $table->string('source')->nullable();

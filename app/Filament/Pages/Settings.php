@@ -187,7 +187,6 @@ class Settings extends Page implements HasForms
                                     ->reactive(),
                                 TextInput::make('general.zip')
                                     ->label(__('app.settings.fields.zip'))
-                                    ->numeric()
                                     ->maxLength(10),
                             ]),
                     ])

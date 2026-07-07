@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->integer('pincode')->nullable();
+            $table->string('pincode')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

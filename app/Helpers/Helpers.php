@@ -82,6 +82,34 @@ class Helpers
     }
 
     /**
+     * Get the phone code for a specific country name.
+     */
+    public static function getCountryPhoneCode(?string $countryName): ?string
+    {
+        if (blank($countryName)) {
+            return null;
+        }
+
+        try {
+            $countryResponse = self::worldResponse('countries', [
+                'fields' => 'id,name,phone_code',
+                'filters' => ['name' => $countryName],
+            ]);
+
+            if (! $countryResponse->success || empty($countryResponse->data)) {
+                return null;
+            }
+
+            $phoneCode = trim((string) collect($countryResponse->data)->pluck('phone_code')->first());
+            $phoneCode = ltrim($phoneCode, '+');
+
+            return blank($phoneCode) ? null : $phoneCode;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
      * Get the phone placeholder with country code based on settings, falling back to local translation.
      */
     public static function getPhonePlaceholder(): string
@@ -93,21 +121,7 @@ class Helpers
             $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
             $countryName = $general['country'] ?? null;
 
-            if (blank($countryName)) {
-                return $fallback;
-            }
-
-            $countryResponse = self::worldResponse('countries', [
-                'fields' => 'id,name,phone_code',
-                'filters' => ['name' => $countryName],
-            ]);
-
-            if (! $countryResponse->success || empty($countryResponse->data)) {
-                return $fallback;
-            }
-
-            $phoneCode = trim((string) collect($countryResponse->data)->pluck('phone_code')->first());
-            $phoneCode = ltrim($phoneCode, '+');
+            $phoneCode = self::getCountryPhoneCode($countryName);
 
             if (blank($phoneCode)) {
                 return $fallback;
