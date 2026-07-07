@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust all proxies so file uploads and HTTPS work correctly behind Docker/reverse proxies
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(prepend: [
             \App\Http\Middleware\SetAppLocale::class,
         ]);
