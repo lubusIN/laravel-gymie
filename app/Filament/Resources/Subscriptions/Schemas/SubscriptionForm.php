@@ -67,7 +67,7 @@ class SubscriptionForm
                             ->relationship('plan', 'name')
                             ->placeholder(__('app.placeholders.select_plan'))
                             ->searchable(['code', 'name'])
-                            ->reactive()
+                            ->live()
                             ->getOptionLabelFromRecordUsing(fn (Plan $record): string => self::formatPlanOptionLabel($record))
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $plan = self::planFromState($get);
@@ -107,8 +107,6 @@ class SubscriptionForm
                             ->live()
                             ->required()
                             ->default(now())
-                            ->before('end_date')
-                            ->reactive()                         // <— also reactive
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $set('end_date', Helpers::calculateSubscriptionEndDate(
                                     self::stringState($get, 'start_date'),
@@ -118,11 +116,12 @@ class SubscriptionForm
                         DatePicker::make('end_date')
                             ->label(__('app.fields.end_date'))
                             ->live()
-                            ->required()
-                            ->after('start_date')
                             ->disabled()
                             ->dehydrated()
-                            ->reactive()
+                            ->default(fn (Get $get): string => Helpers::calculateSubscriptionEndDate(
+                                self::stringState($get, 'start_date'),
+                                self::intState($get, 'plan_id'),
+                            ))
                             ->afterStateHydrated(function (Get $get, Set $set) {
                                 $set('end_date', Helpers::calculateSubscriptionEndDate(
                                     self::stringState($get, 'start_date'),
@@ -167,17 +166,16 @@ class SubscriptionForm
                                             DatePicker::make('date')
                                                 ->label(__('app.fields.date'))
                                                 ->required()
-                                                ->reactive()
+                                                ->live()
                                                 ->default(now()),
                                             DatePicker::make('due_date')
                                                 ->label(__('app.fields.due_date'))
                                                 ->required()
-                                                ->reactive(),
+                                                ->live(),
                                             Select::make('discount')
                                                 ->label(__('app.fields.discount'))
                                                 ->options(Helpers::getDiscounts())
                                                 ->live()
-                                                ->reactive()
                                                 ->placeholder(__('app.placeholders.select_discount'))
                                                 ->afterStateUpdated(
                                                     function (Get $get, Set $set) {
@@ -229,7 +227,7 @@ class SubscriptionForm
                                                 ->default('cash')
                                                 ->inline()
                                                 ->inlineLabel(false)
-                                                ->reactive()
+                                                ->live()
                                                 ->afterStateUpdated(function (Get $get, Set $set, ?string $state): void {
                                                     if (PaymentMethod::isOnline($state)) {
                                                         $set('paid_amount', 0);
@@ -400,7 +398,6 @@ class SubscriptionForm
                                 ->label(__('app.fields.discount'))
                                 ->options(Helpers::getDiscounts())
                                 ->live()
-                                ->reactive()
                                 ->placeholder(__('app.placeholders.select_discount'))
                                 ->afterStateUpdated(function (Get $get, Set $set): void {
                                     $plan = self::planFromState($get);
@@ -446,7 +443,7 @@ class SubscriptionForm
                                 ->default('cash')
                                 ->inline()
                                 ->inlineLabel(false)
-                                ->reactive()
+                                ->live()
                                 ->afterStateUpdated(function (Get $get, Set $set, ?string $state): void {
                                     if (PaymentMethod::isOnline($state)) {
                                         $set('paid_amount', 0);
