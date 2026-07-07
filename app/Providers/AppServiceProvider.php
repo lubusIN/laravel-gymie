@@ -20,8 +20,12 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables\Columns\TextColumn;
@@ -59,6 +63,24 @@ class AppServiceProvider extends ServiceProvider
         FilamentAsset::register([
             Css::make('gymie-styles', __DIR__.'/../../resources/css/custom.css'),
         ]);
+
+        /**
+         * Configure form components globally to sync state and natively clear validation errors.
+         */
+        $resetError = function (mixed $livewire, mixed $component): void {
+            if ($livewire && method_exists($livewire, 'resetValidation')) {
+                $livewire->resetValidation($component->getStatePath());
+            }
+        };
+
+        TextInput::configureUsing(fn (TextInput $field) => $field->live(onBlur: true)->afterStateUpdated($resetError));
+        Textarea::configureUsing(fn (Textarea $field) => $field->live(onBlur: true)->afterStateUpdated($resetError));
+        Select::configureUsing(fn (Select $field) => $field->live()->afterStateUpdated($resetError));
+        DatePicker::configureUsing(fn (DatePicker $field) => $field->live()->afterStateUpdated($resetError));
+        DateTimePicker::configureUsing(fn (DateTimePicker $field) => $field->live()->afterStateUpdated($resetError));
+        Radio::configureUsing(fn (Radio $field) => $field->live()->afterStateUpdated($resetError));
+        Toggle::configureUsing(fn (Toggle $field) => $field->live()->afterStateUpdated($resetError));
+        TagsInput::configureUsing(fn (TagsInput $field) => $field->live()->afterStateUpdated($resetError));
 
         /**
          * Configure the CreateAction globally to use a specific icon.
