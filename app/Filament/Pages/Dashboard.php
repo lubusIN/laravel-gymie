@@ -166,27 +166,44 @@ class Dashboard extends \Filament\Pages\Dashboard
     }
 
     /**
-     * Initialize the filters for first-time visits where there is no persisted state.
-     *
-     * This is called from the header view using `wire:init`, so the select field
-     * always has a valid value without relying on mount-ordering details.
+     * Initialize dashboard state and filters on component mount.
      */
-    public function ensureDefaultFilters(): void
+    public function mount(): void
     {
+        if (method_exists(parent::class, 'mount')) {
+            parent::mount();
+        }
+
         $period = is_string($this->filters['period'] ?? null) ? $this->filters['period'] : '';
 
         if ($period === 'ytd') {
             $this->filters['period'] = 'year';
             $this->updatedFilters();
-
-            return;
+        } elseif ($period === '') {
+            $this->applyPresetRange('7days');
         }
 
-        if ($period !== '') {
-            return;
+        if (! is_array($this->filters) || ! isset($this->filters['period'])) {
+            $today = CarbonImmutable::today(\App\Support\AppConfig::timezone());
+            $this->filters = array_merge([
+                'period' => '7days',
+                'startDate' => $today->subDays(6)->toDateString(),
+                'endDate' => $today->toDateString(),
+            ], is_array($this->filters) ? $this->filters : []);
         }
+    }
 
-        $this->applyPresetRange('7days');
+    /**
+     * Initialize the filters for visits where there is no persisted state.
+     */
+    public function ensureDefaultFilters(): void
+    {
+        if (! is_array($this->filters) || ! isset($this->filters['period']) || $this->filters['period'] === '') {
+            $this->applyPresetRange('7days');
+        } elseif ($this->filters['period'] === 'ytd') {
+            $this->filters['period'] = 'year';
+            $this->updatedFilters();
+        }
     }
 
     /**
