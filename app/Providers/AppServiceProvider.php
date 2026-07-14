@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Contracts\SequenceRepository;
 use App\Contracts\SettingsRepository;
+use App\Contracts\TenantContext;
 use App\Models\Invoice;
 use App\Models\InvoiceTransaction;
 use App\Observers\InvoiceObserver;
 use App\Observers\InvoiceTransactionObserver;
 use App\Services\JsonSequenceRepository;
 use App\Services\JsonSettingsRepository;
+use App\Services\NullTenantContext;
 use App\Support\Data;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(SettingsRepository::class, JsonSettingsRepository::class);
         $this->app->singleton(SequenceRepository::class, JsonSequenceRepository::class);
+        $this->app->singletonIf(TenantContext::class, NullTenantContext::class);
     }
 
     /**
