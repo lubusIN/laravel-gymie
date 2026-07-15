@@ -65,6 +65,9 @@ it('dispatches the invoice issued email job when enabled in settings', function 
     Queue::assertPushed(SendInvoiceIssuedEmail::class, function (SendInvoiceIssuedEmail $job) use ($invoice, $member): bool {
         return $job->invoiceId === $invoice->id
             && $job->toEmail === $member->email
+            && $job->tries === 3
+            && $job->timeout === 60
+            && $job->backoff === [10, 60, 300]
             && $job->afterCommit === true;
     });
 });

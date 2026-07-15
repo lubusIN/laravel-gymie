@@ -27,6 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->dontReportDuplicates();
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request, Throwable $exception): bool => $request->is('api/*') || $request->expectsJson(),
+        );
+
         $exceptions->render(function (InvalidQuery $exception, Request $request) {
             $errors = ['query' => [$exception->getMessage()]];
 

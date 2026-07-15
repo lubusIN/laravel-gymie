@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Send the "invoice issued" email (queued).
@@ -22,6 +23,11 @@ class SendInvoiceIssuedEmail implements ShouldQueue
      * Number of times the job may be attempted.
      */
     public int $tries = 3;
+
+    public int $timeout = 60;
+
+    /** @var list<int> */
+    public array $backoff = [10, 60, 300];
 
     /**
      * Create a new job instance.
@@ -50,5 +56,14 @@ class SendInvoiceIssuedEmail implements ShouldQueue
                 'missing' => $exception->viewData['missing'] ?? [],
             ]);
         }
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        Log::error('Invoice issued email job failed permanently.', [
+            'invoice_id' => $this->invoiceId,
+            'actor_id' => $this->actorId,
+            'exception' => $exception,
+        ]);
     }
 }
