@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Contracts\TenantContext;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -17,6 +19,7 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     public $status;
+
     public $gender;
 
     /**
@@ -29,7 +32,7 @@ class UserFactory extends Factory
         $this->status = $this->faker->randomElement(['active', 'inactive']);
         $this->gender = $this->faker->randomElement(['male', 'female', 'other']);
 
-        return [
+        $attributes = [
             'name' => $this->faker->company,
             'contact' => $this->faker->numerify('+##-##########'),
             'address' => $this->faker->address,
@@ -45,6 +48,14 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+
+        if (Schema::hasColumn('users', 'gym_id')) {
+            $attributes['gym_id'] = app()->bound(TenantContext::class)
+                ? app(TenantContext::class)->gymId()
+                : null;
+        }
+
+        return $attributes;
     }
 
     /**
@@ -52,7 +63,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

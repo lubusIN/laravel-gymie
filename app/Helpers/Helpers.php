@@ -9,6 +9,7 @@ use App\Services\JsonSettingsRepository;
 use App\Support\Billing\Currency;
 use App\Support\Billing\Discounts;
 use App\Support\Billing\TaxRate;
+use App\Support\Data;
 use App\Support\Dates\FiscalYear;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Lang;
@@ -65,19 +66,26 @@ class Helpers
      */
     public static function getCountries(): array
     {
-        if (app()->runningUnitTests()) {
-            return [];
-        }
-
-        $response = self::worldResponse('countries');
-
-        if (! $response->success) {
-            return [];
-        }
-
-        return collect($response->data)
+        return collect(self::fallbackCountries())
             ->pluck('name', 'name')
             ->mapWithKeys(fn (mixed $name, mixed $key): array => [\App\Support\Data::string($key) => \App\Support\Data::string($name)])
+            ->sortKeys()
+            ->all();
+    }
+
+    /**
+     * Get a list of all countries keyed by ISO2 code.
+     *
+     * @return array<string, string>
+     */
+    public static function getCountriesWithCodes(): array
+    {
+        return collect(self::fallbackCountries())
+            ->mapWithKeys(fn (mixed $country): array => [
+                \App\Support\Data::string(data_get($country, 'iso2')) => \App\Support\Data::string(data_get($country, 'name')),
+            ])
+            ->filter(fn (mixed $name, mixed $code): bool => \App\Support\Data::string($code) !== '' && \App\Support\Data::string($name) !== '')
+            ->sort()
             ->all();
     }
 
@@ -397,6 +405,35 @@ class Helpers
         $response = app(WorldHelper::class)->__call($method, [$parameters]);
 
         return $response;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function fallbackCountries(): array
+    {
+        $path = base_path('vendor/nnjeim/world/resources/json/countries.json');
+
+        if (! is_file($path)) {
+            return [];
+        }
+
+        /** @var mixed $countries */
+        $countries = json_decode((string) file_get_contents($path), true);
+
+        if (! is_array($countries)) {
+            return [];
+        }
+
+        $filteredCountries = [];
+
+        foreach ($countries as $country) {
+            if (is_array($country)) {
+                $filteredCountries[] = Data::map($country);
+            }
+        }
+
+        return $filteredCountries;
     }
 
     /**
