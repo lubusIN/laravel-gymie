@@ -56,7 +56,7 @@ class SendInvoicePaymentReceiptEmail implements ShouldQueue
             Log::warning('Skipping payment receipt email: missing required invoice data.', [
                 'invoice_id' => $this->invoiceId,
                 'invoice_transaction_id' => $this->invoiceTransactionId,
-                'missing' => $exception->viewData['missing'] ?? [],
+                'missing' => $exception->viewData['missing'],
             ]);
         }
     }
