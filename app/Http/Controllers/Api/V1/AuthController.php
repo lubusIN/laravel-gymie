@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Contracts\TenantContext;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\V1\UserResource;
 use App\Models\User;
@@ -21,13 +22,17 @@ class AuthController extends ApiController
      *
      * @unauthenticated
      */
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request, TenantContext $tenantContext): JsonResponse
     {
         $user = User::query()
             ->where('email', $request->string('email')->toString())
             ->first();
 
-        if (! $user || ! Hash::check(Data::string($request->input('password')), Data::string($user->password))) {
+        if (
+            ! $user
+            || ($tenantContext->gymId() && Data::int($user->gym_id) !== $tenantContext->gymId())
+            || ! Hash::check(Data::string($request->input('password')), Data::string($user->password))
+        ) {
             throw ValidationException::withMessages([
                 'email' => ['These credentials do not match our records.'],
             ]);

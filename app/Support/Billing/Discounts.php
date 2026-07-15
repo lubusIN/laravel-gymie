@@ -16,19 +16,20 @@ final class Discounts
      * Build discount select options from settings.
      *
      * @param  array<string, mixed>  $settings
-     * @return array<string, string>
+     * @return array<array-key, string>
      */
     public static function optionsFromSettings(array $settings): array
     {
-        $discounts = $settings['charges']['discounts'] ?? [];
+        $charges = is_array($settings['charges'] ?? null) ? $settings['charges'] : [];
+        $discounts = $charges['discounts'] ?? [];
         if (! is_array($discounts)) {
             return [];
         }
 
         $options = [];
         foreach ($discounts as $value) {
-            $value = (string) $value;
-            $options[$value] = Number::percentage($value);
+            $value = \App\Support\Data::float($value);
+            $options[(string) $value] = (string) Number::percentage($value);
         }
 
         return $options;
