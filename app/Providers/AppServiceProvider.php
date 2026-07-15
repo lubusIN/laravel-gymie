@@ -4,14 +4,19 @@ namespace App\Providers;
 
 use App\Contracts\SequenceRepository;
 use App\Contracts\SettingsRepository;
+use App\Contracts\TenantContext;
 use App\Helpers\Helpers;
 use App\Models\Invoice;
 use App\Models\InvoiceTransaction;
 use App\Observers\InvoiceObserver;
 use App\Observers\InvoiceTransactionObserver;
+use App\Services\Api\Docs\AddIndexQueryParametersTransformer;
 use App\Services\JsonSequenceRepository;
 use App\Services\JsonSettingsRepository;
+use App\Services\NullTenantContext;
 use App\Support\Data;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -32,11 +37,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(SettingsRepository::class, JsonSettingsRepository::class);
         $this->app->singleton(SequenceRepository::class, JsonSequenceRepository::class);
+        $this->app->singletonIf(TenantContext::class, NullTenantContext::class);
     }
 
     /**
@@ -54,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('production', 'staging') || str_starts_with((string) config('app.url'), 'https://') || $this->app->request->header('X-Forwarded-Proto') === 'https') {
+        if (str_starts_with((string) config('app.url'), 'https://') || $this->app->request->isSecure()) {
             URL::forceScheme('https');
         }
         $this->configureApiRateLimiting();
@@ -180,27 +187,27 @@ class AppServiceProvider extends ServiceProvider
      */
     private function configureScrambleApiDocs(): void
     {
-        if (! class_exists(\Dedoc\Scramble\Scramble::class)) {
+        if (! class_exists(Scramble::class)) {
             return;
         }
 
-        $config = \Dedoc\Scramble\Scramble::configure();
+        $config = Scramble::configure();
 
-        $config->routes(static function (\Illuminate\Routing\Route $route): bool {
+        $config->routes(static function (Route $route): bool {
             return str_starts_with($route->uri, 'api/v1/');
         });
 
         $config->withOperationTransformers([
-            \App\Services\Api\Docs\AddIndexQueryParametersTransformer::class,
+            AddIndexQueryParametersTransformer::class,
         ]);
 
-        if (class_exists(\Dedoc\Scramble\Support\Generator\SecurityScheme::class)) {
+        if (class_exists(SecurityScheme::class)) {
             $config->withDocumentTransformers(static function (mixed $openApi): void {
                 if (! is_object($openApi) || ! method_exists($openApi, 'secure')) {
                     return;
                 }
 
-                $openApi->secure(\Dedoc\Scramble\Support\Generator\SecurityScheme::http('bearer'));
+                $openApi->secure(SecurityScheme::http('bearer'));
             });
         }
     }

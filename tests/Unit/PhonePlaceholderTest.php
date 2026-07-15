@@ -3,12 +3,20 @@
 use App\Helpers\Helpers;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Nnjeim\World\Actions\SeedAction;
+use Nnjeim\World\Models\Country;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
-    $this->seed(SeedAction::class);
+    Country::query()->create([
+        'iso2' => 'IN',
+        'iso3' => 'IND',
+        'name' => 'India',
+        'phone_code' => '91',
+        'region' => 'Asia',
+        'subregion' => 'Southern Asia',
+        'status' => 1,
+    ]);
 });
 
 it('returns fallback phone placeholder when no country is configured', function (): void {

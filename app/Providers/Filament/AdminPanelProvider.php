@@ -16,6 +16,7 @@ use App\Filament\Resources\Users\UserResource;
 use App\Http\Middleware\SetAppLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -35,7 +36,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Enums\ThemeMode;
 
 /**
  * Filament panel provider for the main admin panel.
@@ -100,13 +100,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->databaseNotifications()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->renderHook(
-                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): HtmlString => new HtmlString(
-                    // TODO: restore file
-                    // Blade::render('@include("filament.auth.dev-credentials-banner")')
-                ),
-            )
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn (): HtmlString => new HtmlString(

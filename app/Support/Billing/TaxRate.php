@@ -14,7 +14,8 @@ final class TaxRate
      */
     public static function fromSettings(array $settings): float
     {
-        $taxRate = $settings['charges']['taxes'] ?? 0.0;
+        $charges = is_array($settings['charges'] ?? null) ? $settings['charges'] : [];
+        $taxRate = $charges['taxes'] ?? 0.0;
 
         return is_numeric($taxRate) ? (float) $taxRate : 0.0;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Support\Billing;
 
+use App\Support\Data;
 use Illuminate\Support\Number;
 use NumberFormatter;
 
@@ -17,9 +18,10 @@ final class Currency
      */
     public static function codeFromSettings(array $settings, string $defaultCode = 'INR'): string
     {
-        $currency = $settings['general']['currency'] ?? null;
+        $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
+        $currency = $general['currency'] ?? null;
 
-        return filled($currency) ? (string) $currency : $defaultCode;
+        return filled($currency) ? Data::string($currency, $defaultCode) : $defaultCode;
     }
 
     /**
@@ -27,7 +29,7 @@ final class Currency
      */
     public static function format(?float $value, string $currencyCode): string
     {
-        return Number::currency($value ?? 0, $currencyCode, null, 0);
+        return (string) Number::currency($value ?? 0, $currencyCode, null, 0);
     }
 
     /**

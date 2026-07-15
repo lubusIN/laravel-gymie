@@ -8,4 +8,16 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-gymie-50: #cffae8;
+    --color-gymie-100: #84efc8;
+    --color-gymie-200: #70cba9;
+    --color-gymie-300: #5eac8f;
+    --color-gymie-400: #4d9078;
+    --color-gymie-500: #3e7662;
+    --color-gymie-600: #305e4d;
+    --color-gymie-700: #23473a;
+    --color-gymie-800: #173228;
+    --color-gymie-900: #0c1f18;
+    --color-gymie-950: #06130e;
 }

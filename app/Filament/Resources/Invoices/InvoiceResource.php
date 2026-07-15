@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+/** @extends resource<Invoice> */
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;

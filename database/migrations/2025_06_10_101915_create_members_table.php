@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
-            $table->string('pincode')->nullable();
+            $table->text('pincode')->nullable();
             $table->string('source')->default('promotions')->nullable();
             $table->string('goal')->default('fitness')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->nullable();

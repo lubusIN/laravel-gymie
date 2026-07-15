@@ -39,8 +39,8 @@ it('persists settings via the settings repository when saving', function (): voi
     Livewire::test(Settings::class)
         ->set('data', [
             'general' => [
-                'financial_year_start' => '2026-04-01',
-                'financial_year_end' => '2027-03-31',
+                'financial_year_start' => '2026-04-15',
+                'financial_year_end' => null,
                 'gym_logo' => ['images/logo.png'],
             ],
             'invoice' => [],
@@ -61,4 +61,3 @@ it('persists settings via the settings repository when saving', function (): voi
         ->and($repository->lastPut['general']['financial_year_end'])->toBe('2027-03-31')
         ->and($repository->lastPut['general']['gym_logo'])->toBe('images/logo.png');
 });
-
