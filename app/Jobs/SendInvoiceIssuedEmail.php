@@ -53,7 +53,7 @@ class SendInvoiceIssuedEmail implements ShouldQueue
         } catch (InvoiceDocumentNotRenderable $exception) {
             Log::warning('Skipping invoice email: missing required invoice data.', [
                 'invoice_id' => $this->invoiceId,
-                'missing' => $exception->viewData['missing'] ?? [],
+                'missing' => $exception->viewData['missing'],
             ]);
         }
     }

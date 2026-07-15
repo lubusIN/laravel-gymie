@@ -138,7 +138,7 @@ class InvoicesController extends ApiController
         } catch (InvoiceDocumentNotRenderable $exception) {
             return response()->json([
                 'message' => 'Invoice can’t be generated.',
-                'missing' => $exception->viewData['missing'] ?? [],
+                'missing' => $exception->viewData['missing'],
             ], 422);
         }
 
@@ -162,7 +162,7 @@ class InvoicesController extends ApiController
         } catch (InvoiceDocumentNotRenderable $exception) {
             return response()->json([
                 'message' => 'Invoice can’t be generated.',
-                'missing' => $exception->viewData['missing'] ?? [],
+                'missing' => $exception->viewData['missing'],
             ], 422);
         }
 
