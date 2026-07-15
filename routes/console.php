@@ -17,17 +17,29 @@ Artisan::command('inspire', function () {
 if ((bool) config('gymie-tenancy.enabled', false)) {
     // Mark subscriptions expired every day at 00:00
     Schedule::command('gymie:tenants:subscriptions')
+        ->name('gymie-tenants-subscriptions')
+        ->withoutOverlapping(30)
+        ->onOneServer()
         ->dailyAt('00:00');
 
     // Mark invoices overdue every day at 00:00
     Schedule::command('gymie:tenants:invoices --mark-overdue')
+        ->name('gymie-tenants-invoices-overdue')
+        ->withoutOverlapping(30)
+        ->onOneServer()
         ->dailyAt('00:00');
 } else {
     // Mark subscriptions expired every day at 00:00
     Schedule::command('gymie:subscriptions')
+        ->name('gymie-subscriptions')
+        ->withoutOverlapping(30)
+        ->onOneServer()
         ->dailyAt('00:00');
 
     // Mark invoices overdue every day at 00:00
     Schedule::command('gymie:invoices --mark-overdue')
+        ->name('gymie-invoices-overdue')
+        ->withoutOverlapping(30)
+        ->onOneServer()
         ->dailyAt('00:00');
 }

@@ -39,6 +39,9 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Audit PHP dependencies
+        run: composer audit --locked --no-interaction
+
       - name: Prepare application
         run: |
           cp .env.example .env

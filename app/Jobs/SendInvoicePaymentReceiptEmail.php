@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Send the "payment received" receipt email (queued).
@@ -22,6 +23,11 @@ class SendInvoicePaymentReceiptEmail implements ShouldQueue
      * Number of times the job may be attempted.
      */
     public int $tries = 3;
+
+    public int $timeout = 60;
+
+    /** @var list<int> */
+    public array $backoff = [10, 60, 300];
 
     /**
      * Create a new job instance.
@@ -53,5 +59,15 @@ class SendInvoicePaymentReceiptEmail implements ShouldQueue
                 'missing' => $exception->viewData['missing'] ?? [],
             ]);
         }
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        Log::error('Invoice payment receipt email job failed permanently.', [
+            'invoice_id' => $this->invoiceId,
+            'invoice_transaction_id' => $this->invoiceTransactionId,
+            'actor_id' => $this->actorId,
+            'exception' => $exception,
+        ]);
     }
 }
