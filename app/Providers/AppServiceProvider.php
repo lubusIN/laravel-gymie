@@ -31,6 +31,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component as SchemaComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables\Columns\TextColumn;
@@ -43,6 +44,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Livewire\Component as LivewireComponent;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -59,9 +61,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Request $request): void
     {
-        if (str_starts_with((string) config('app.url'), 'https://') || $this->app->request->isSecure()) {
+        if (str_starts_with(Data::string(config('app.url')), 'https://') || $request->isSecure()) {
             URL::forceScheme('https');
         }
         $this->configureApiRateLimiting();
@@ -74,10 +76,8 @@ class AppServiceProvider extends ServiceProvider
         /**
          * Configure form components globally to sync state and natively clear validation errors.
          */
-        $resetError = function (mixed $livewire, mixed $component): void {
-            if ($livewire && method_exists($livewire, 'resetValidation')) {
-                $livewire->resetValidation($component->getStatePath());
-            }
+        $resetError = function (LivewireComponent $livewire, SchemaComponent $component): void {
+            $livewire->resetValidation($component->getStatePath());
         };
 
         TextInput::configureUsing(fn (TextInput $field) => $field->live(onBlur: true)->afterStateUpdated($resetError));
