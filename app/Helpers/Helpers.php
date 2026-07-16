@@ -109,10 +109,15 @@ class Helpers
                 return null;
             }
 
-            $phoneCode = trim((string) collect($countryResponse->data)->pluck('phone_code')->first());
+            $phoneCode = Data::nullableString(collect($countryResponse->data)->pluck('phone_code')->first());
+
+            if ($phoneCode === null) {
+                return null;
+            }
+
             $phoneCode = ltrim($phoneCode, '+');
 
-            return blank($phoneCode) ? null : $phoneCode;
+            return $phoneCode !== '' ? $phoneCode : null;
         } catch (\Throwable $e) {
             return null;
         }
@@ -123,12 +128,12 @@ class Helpers
      */
     public static function getPhonePlaceholder(): string
     {
-        $fallback = __('app.placeholders.example_phone');
+        $fallback = Data::string(__('app.placeholders.example_phone'));
 
         try {
             $settings = self::getSettings();
             $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
-            $countryName = $general['country'] ?? null;
+            $countryName = Data::nullableString($general['country'] ?? null);
 
             $phoneCode = self::getCountryPhoneCode($countryName);
 
@@ -137,7 +142,7 @@ class Helpers
             }
 
             if (preg_match('/^\+\d+/', $fallback)) {
-                return (string) preg_replace('/^\+\d+/', '+'.$phoneCode, $fallback);
+                return preg_replace('/^\+\d+/', '+'.$phoneCode, $fallback) ?? $fallback;
             }
 
             return '+'.$phoneCode.' '.$fallback;

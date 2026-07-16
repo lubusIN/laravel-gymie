@@ -67,7 +67,7 @@ class PlanForm
                             ->createOptionUsing(function (array $data): int {
                                 Gate::authorize('create', Service::class);
 
-                                return Service::query()->create($data)->getKey();
+                                return Data::int(Service::query()->create($data)->getKey());
                             })
                             ->columnSpan(2),
                         TextInput::make('days')
