@@ -3,16 +3,20 @@
 namespace Database\Factories;
 
 use App\Contracts\TenantContext;
+use App\Models\User;
+use Database\Factories\Concerns\WithSynchronizedLocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
+    use WithSynchronizedLocation;
+
     /**
      * The current password being used by the factory.
      */
@@ -31,15 +35,16 @@ class UserFactory extends Factory
     {
         $this->status = $this->faker->randomElement(['active', 'inactive']);
         $this->gender = $this->faker->randomElement(['male', 'female', 'other']);
+        $location = $this->synchronizedLocation();
 
         $attributes = [
             'name' => $this->faker->company,
-            'contact' => $this->faker->numerify('+##-##########'),
-            'address' => $this->faker->address,
-            'country' => $this->faker->country,
-            'state' => $this->faker->state,
-            'city' => $this->faker->city,
-            'pincode' => $this->faker->randomNumber(6, 0),
+            'contact' => $location['contact'],
+            'address' => $location['address'],
+            'country' => $location['country'],
+            'state' => $location['state'],
+            'city' => $location['city'],
+            'pincode' => $location['pincode'],
             'gender' => $this->gender,
             'status' => $this->status,
             'dob' => $this->faker->date(),

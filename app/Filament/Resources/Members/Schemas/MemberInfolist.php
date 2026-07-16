@@ -84,7 +84,8 @@ class MemberInfolist
                                 TextEntry::make('city')
                                     ->label(__('app.fields.city'))
                                     ->placeholder(__('app.placeholders.na')),
-                                TextEntry::make('pincode')->label(__('app.fields.pincode')),
+                                TextEntry::make('pincode')
+                                    ->label(__('app.fields.pincode')),
                             ])
                             ->columnSpan(2)
                             ->columns(4),

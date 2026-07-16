@@ -6,3 +6,7 @@
 .rmv_rept-space .fi-fo-repeater-item-content {
     padding: 0px;
 }
+
+div[wire\:partial*="form.guard_name"] {
+    display: none !important;
+}

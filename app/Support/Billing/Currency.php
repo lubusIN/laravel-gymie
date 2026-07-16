@@ -2,6 +2,7 @@
 
 namespace App\Support\Billing;
 
+use App\Support\Data;
 use Illuminate\Support\Number;
 use NumberFormatter;
 
@@ -20,7 +21,7 @@ final class Currency
         $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
         $currency = $general['currency'] ?? null;
 
-        return filled($currency) ? \App\Support\Data::string($currency, $defaultCode) : $defaultCode;
+        return filled($currency) ? Data::string($currency, $defaultCode) : $defaultCode;
     }
 
     /**

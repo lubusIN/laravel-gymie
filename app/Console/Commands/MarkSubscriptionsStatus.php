@@ -5,9 +5,12 @@ namespace App\Console\Commands;
 use App\Helpers\Helpers;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Support\AppConfig;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class MarkSubscriptionsStatus extends Command
 {
@@ -32,7 +35,7 @@ class MarkSubscriptionsStatus extends Command
      */
     public function handle(): int
     {
-        $timezone = \App\Support\AppConfig::timezone();
+        $timezone = AppConfig::timezone();
         $today = Carbon::today($timezone);
         $expiringDays = Helpers::getSubscriptionExpiringDays();
         $expiringThreshold = $today->copy()->addDays($expiringDays);
@@ -44,11 +47,10 @@ class MarkSubscriptionsStatus extends Command
         $runAll = ! $runExpiredOnly && ! $runExpiringOnly;
 
         if ($runAll || $runExpiredOnly) {
-            $expiredCount = Subscription::query()
+            $expiredCount = $this->updateStatusInChunks(Subscription::query()
                 ->whereDate('end_date', '<', $today)
                 ->whereNotIn('status', ['expired', 'renewed'])
-                ->whereDoesntHave('renewals')
-                ->update(['status' => 'expired']);
+                ->whereDoesntHave('renewals'), 'expired');
 
             if ($expiredCount > 0) {
                 $summary[] = "{$expiredCount} expired";
@@ -56,11 +58,10 @@ class MarkSubscriptionsStatus extends Command
         }
 
         if ($runAll || $runExpiredOnly) {
-            $renewedCount = Subscription::query()
+            $renewedCount = $this->updateStatusInChunks(Subscription::query()
                 ->whereDate('end_date', '<', $today)
                 ->where('status', '!=', 'renewed')
-                ->whereHas('renewals')
-                ->update(['status' => 'renewed']);
+                ->whereHas('renewals'), 'renewed');
 
             if ($renewedCount > 0) {
                 $summary[] = "{$renewedCount} renewed";
@@ -125,5 +126,30 @@ class MarkSubscriptionsStatus extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * @param  Builder<Subscription>  $query
+     */
+    private function updateStatusInChunks(Builder $query, string $status): int
+    {
+        $updatedCount = 0;
+        $model = $query->getModel();
+
+        $query
+            ->select($model->getQualifiedKeyName())
+            ->chunkById(
+                500,
+                /** @param Collection<int, Subscription> $subscriptions */
+                function (Collection $subscriptions) use (&$updatedCount, $status): void {
+                    $updatedCount += Subscription::query()
+                        ->whereKey($subscriptions->modelKeys())
+                        ->update(['status' => $status]);
+                },
+                column: $model->getQualifiedKeyName(),
+                alias: $model->getKeyName(),
+            );
+
+        return $updatedCount;
     }
 }

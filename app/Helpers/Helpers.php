@@ -6,6 +6,7 @@ use App\Contracts\SequenceRepository;
 use App\Contracts\SettingsRepository;
 use App\Models\Plan;
 use App\Services\JsonSettingsRepository;
+use App\Support\AppConfig;
 use App\Support\Billing\Currency;
 use App\Support\Billing\Discounts;
 use App\Support\Billing\TaxRate;
@@ -55,7 +56,7 @@ class Helpers
 
     public static function appTimezone(): string
     {
-        return \App\Support\AppConfig::timezone();
+        return AppConfig::timezone();
     }
 
     /**
@@ -68,7 +69,7 @@ class Helpers
     {
         return collect(self::fallbackCountries())
             ->pluck('name', 'name')
-            ->mapWithKeys(fn (mixed $name, mixed $key): array => [\App\Support\Data::string($key) => \App\Support\Data::string($name)])
+            ->mapWithKeys(fn (mixed $name, mixed $key): array => [Data::string($key) => Data::string($name)])
             ->sortKeys()
             ->all();
     }
@@ -82,11 +83,67 @@ class Helpers
     {
         return collect(self::fallbackCountries())
             ->mapWithKeys(fn (mixed $country): array => [
-                \App\Support\Data::string(data_get($country, 'iso2')) => \App\Support\Data::string(data_get($country, 'name')),
+                Data::string(data_get($country, 'iso2')) => Data::string(data_get($country, 'name')),
             ])
-            ->filter(fn (mixed $name, mixed $code): bool => \App\Support\Data::string($code) !== '' && \App\Support\Data::string($name) !== '')
+            ->filter(fn (mixed $name, mixed $code): bool => Data::string($code) !== '' && Data::string($name) !== '')
             ->sort()
             ->all();
+    }
+
+    /**
+     * Get the phone code for a specific country name.
+     */
+    public static function getCountryPhoneCode(?string $countryName): ?string
+    {
+        if (blank($countryName)) {
+            return null;
+        }
+
+        try {
+            $countryResponse = self::worldResponse('countries', [
+                'fields' => 'id,name,phone_code',
+                'filters' => ['name' => $countryName],
+            ]);
+
+            if (! $countryResponse->success || empty($countryResponse->data)) {
+                return null;
+            }
+
+            $phoneCode = trim((string) collect($countryResponse->data)->pluck('phone_code')->first());
+            $phoneCode = ltrim($phoneCode, '+');
+
+            return blank($phoneCode) ? null : $phoneCode;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get the phone placeholder with country code based on settings, falling back to local translation.
+     */
+    public static function getPhonePlaceholder(): string
+    {
+        $fallback = __('app.placeholders.example_phone');
+
+        try {
+            $settings = self::getSettings();
+            $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
+            $countryName = $general['country'] ?? null;
+
+            $phoneCode = self::getCountryPhoneCode($countryName);
+
+            if (blank($phoneCode)) {
+                return $fallback;
+            }
+
+            if (preg_match('/^\+\d+/', $fallback)) {
+                return (string) preg_replace('/^\+\d+/', '+'.$phoneCode, $fallback);
+            }
+
+            return '+'.$phoneCode.' '.$fallback;
+        } catch (\Throwable $e) {
+            return $fallback;
+        }
     }
 
     /**
@@ -133,7 +190,7 @@ class Helpers
 
         return collect($stateResponse->data)
             ->pluck('name', 'name')
-            ->mapWithKeys(fn (mixed $name, mixed $key): array => [\App\Support\Data::string($key) => \App\Support\Data::string($name)])
+            ->mapWithKeys(fn (mixed $name, mixed $key): array => [Data::string($key) => Data::string($name)])
             ->all();
     }
 
@@ -181,7 +238,7 @@ class Helpers
 
         return collect($cityResponse->data)
             ->pluck('name', 'name')
-            ->mapWithKeys(fn (mixed $name, mixed $key): array => [\App\Support\Data::string($key) => \App\Support\Data::string($name)])
+            ->mapWithKeys(fn (mixed $name, mixed $key): array => [Data::string($key) => Data::string($name)])
             ->all();
     }
 
@@ -207,7 +264,7 @@ class Helpers
 
         return collect($currencyResponse->data)
             ->pluck('name', 'code')
-            ->mapWithKeys(fn (mixed $name, mixed $key): array => [\App\Support\Data::string($key) => \App\Support\Data::string($name)])
+            ->mapWithKeys(fn (mixed $name, mixed $key): array => [Data::string($key) => Data::string($name)])
             ->all();
     }
 
@@ -252,7 +309,7 @@ class Helpers
 
         $normalized = [];
         foreach ($categories as $category) {
-            $category = trim(\App\Support\Data::string($category));
+            $category = trim(Data::string($category));
             if ($category === '') {
                 continue;
             }

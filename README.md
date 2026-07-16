@@ -1,6 +1,6 @@
-<p align="center"><img width="250" src=".github/logo.svg"></p>
+<p align="center"><img width="250" src=".github/assets/logo.svg"></p>
 
-![Gymie](.github/gymie.png)
+![Gymie](.github/assets/banner.png)
 
 ## Overview
 Laravel based web application for gym & club management. Currently being used by many fitness centers. For more information, visit - https://www.gymie.in

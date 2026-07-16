@@ -16,6 +16,7 @@ use App\Filament\Resources\Users\UserResource;
 use App\Http\Middleware\SetAppLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -63,9 +64,13 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->brandName('Gymie')
+            ->brandLogo('/images/logo.svg')
+            ->darkModeBrandLogo('/images/logo-dark-mode.svg')
+            ->brandLogoHeight('2.5rem')
+            ->favicon('/images/favicon.svg')
             ->unsavedChangesAlerts()
             ->colors($this->colors())
-            ->darkMode(false)
+            ->defaultThemeMode(ThemeMode::Light)
             ->sidebarWidth('12rem')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -93,15 +98,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->databaseNotifications()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->renderHook(
-                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn (): HtmlString => new HtmlString(
-                    Blade::render('@include("filament.auth.dev-credentials-banner")')
-                ),
-            )
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn (): HtmlString => new HtmlString(

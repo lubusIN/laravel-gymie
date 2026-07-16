@@ -3,13 +3,18 @@
 namespace App\Filament\Resources\Plans\Schemas;
 
 use App\Enums\Status;
+use App\Filament\Resources\Services\Schemas\ServiceForm;
 use App\Helpers\Helpers;
+use App\Models\Service;
+use App\Support\Data;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\HtmlString;
 
 class PlanForm
@@ -25,7 +30,7 @@ class PlanForm
                 Fieldset::make()
                     ->label(function (Get $get): HtmlString {
                         $rawStatus = $get('status');
-                        $status = Status::tryFrom(\App\Support\Data::string($rawStatus, Status::Active->value)) ?? Status::Active;
+                        $status = Status::tryFrom(Data::string($rawStatus, Status::Active->value)) ?? Status::Active;
                         $html = Blade::render(
                             '<x-filament::badge class="inline-flex ml-2" :color="$color">
                                 {{ $label }}
@@ -55,6 +60,15 @@ class PlanForm
                             ->relationship(name: 'service', titleAttribute: 'name')
                             ->placeholder(__('app.placeholders.select_service'))
                             ->required()
+                            ->createOptionModalHeading(__('app.actions.new', ['resource' => __('app.resources.services.singular')]))
+                            ->createOptionForm(fn (Schema $schema): Schema => ServiceForm::configure($schema))
+                            ->createOptionAction(fn (Action $action): Action => $action
+                                ->authorize(fn (): bool => Gate::allows('create', Service::class)))
+                            ->createOptionUsing(function (array $data): int {
+                                Gate::authorize('create', Service::class);
+
+                                return Service::query()->create($data)->getKey();
+                            })
                             ->columnSpan(2),
                         TextInput::make('days')
                             ->required()

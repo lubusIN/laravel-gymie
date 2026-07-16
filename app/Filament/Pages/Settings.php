@@ -129,12 +129,29 @@ class Settings extends Page implements HasForms
                                     ->native(false)
                                     ->label(__('app.settings.fields.financial_year_start'))
                                     ->suffixIcon('heroicon-o-calendar-days')
-                                    ->displayFormat('d/m/Y'),
+                                    ->displayFormat('d/m/Y')
+                                    ->helperText('Rounded to the first day of that month.')
+                                    ->reactive()
+                                    ->afterStateUpdated(function (?string $state, callable $set): void {
+                                        if (filled($state)) {
+                                            $start = Carbon::parse($state)
+                                                ->startOfMonth();
+
+                                            $set('general.financial_year_start', $start->toDateString());
+                                            $set('general.financial_year_end', $start->copy()->addYear()->subDay()->toDateString());
+
+                                            return;
+                                        }
+
+                                        $set('general.financial_year_end', null);
+                                    }),
                                 DatePicker::make('general.financial_year_end')
                                     ->native(false)
                                     ->label(__('app.settings.fields.financial_year_end'))
                                     ->suffixIcon('heroicon-o-calendar-days')
-                                    ->displayFormat('d/m/Y'),
+                                    ->displayFormat('d/m/Y')
+                                    ->helperText('Auto calculated based on the start month.')
+                                    ->readOnly(),
                             ]),
                     ])
                     ->columnSpan(3),
@@ -170,7 +187,6 @@ class Settings extends Page implements HasForms
                                     ->reactive(),
                                 TextInput::make('general.zip')
                                     ->label(__('app.settings.fields.zip'))
-                                    ->numeric()
                                     ->maxLength(10),
                             ]),
                     ])
@@ -185,7 +201,7 @@ class Settings extends Page implements HasForms
                                     ->email()
                                     ->prefixIcon('heroicon-o-envelope'),
                                 TextInput::make('general.gym_contact')
-                                    ->numeric()
+                                    ->tel()
                                     ->prefixIcon('heroicon-o-phone')
                                     ->label(__('app.settings.fields.contact_no')),
                             ]),
@@ -356,10 +372,13 @@ class Settings extends Page implements HasForms
         $general = is_array($settings['general'] ?? null) ? $settings['general'] : [];
 
         if (! empty($general['financial_year_start']) && is_string($general['financial_year_start'])) {
-            $general['financial_year_start'] =
-                Carbon::parse($general['financial_year_start'])
-                    ->toDateString();
+            $start = Carbon::parse($general['financial_year_start'])
+                ->startOfMonth();
+
+            $general['financial_year_start'] = $start->toDateString();
+            $general['financial_year_end'] = $start->copy()->addYear()->subDay()->toDateString();
         }
+
         if (! empty($general['financial_year_end']) && is_string($general['financial_year_end'])) {
             $general['financial_year_end'] =
                 Carbon::parse($general['financial_year_end'])

@@ -313,6 +313,7 @@ return [
         'en' => 'انگلیسی (English)',
         'fr' => 'فرانسوی (French)',
         'ar' => 'عربی (Arabic)',
+        'fa' => 'فارسی (Farsi)',
     ],
     'settings' => [
         'title' => 'تنظیمات',

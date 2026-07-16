@@ -43,8 +43,7 @@ class EnquiryForm
                         TextInput::make('contact')
                             ->label(__('app.fields.contact'))
                             ->tel()
-                            ->required()
-                            ->placeholder(__('app.placeholders.example_phone')),
+                            ->required(),
                         DatePicker::make('dob')
                             ->required()
                             ->label(__('app.fields.dob')),
@@ -117,7 +116,6 @@ class EnquiryForm
                                     ->reactive(),
                                 TextInput::make('pincode')
                                     ->label(__('app.fields.pincode'))
-                                    ->numeric()
                                     ->required()
                                     ->placeholder(__('app.placeholders.pincode')),
                             ])->columns(4),

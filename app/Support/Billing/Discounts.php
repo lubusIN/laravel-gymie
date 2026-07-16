@@ -2,6 +2,7 @@
 
 namespace App\Support\Billing;
 
+use App\Support\Data;
 use Illuminate\Support\Number;
 
 /**
@@ -28,7 +29,7 @@ final class Discounts
 
         $options = [];
         foreach ($discounts as $value) {
-            $value = \App\Support\Data::float($value);
+            $value = Data::float($value);
             $options[(string) $value] = (string) Number::percentage($value);
         }
 
