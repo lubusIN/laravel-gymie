@@ -1,4 +1,4 @@
-<p align="center"><img width="250" src=".github/assets/logo.svg"></p>
+<p align="center"><img width="160" src=".github/assets/logo.svg"></p>
 
 ![Gymie](.github/assets/banner.png)
 
