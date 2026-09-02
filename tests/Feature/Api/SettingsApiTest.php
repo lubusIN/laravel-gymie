@@ -5,6 +5,9 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
+
 uses(RefreshDatabase::class);
 
 afterEach(function (): void {
@@ -12,7 +15,12 @@ afterEach(function (): void {
 });
 
 it('reads and updates settings via the API', function (): void {
+    app(PermissionRegistrar::class)->forgetCachedPermissions();
+    Permission::findOrCreate('View:Settings', 'web');
+    Permission::findOrCreate('Update:Settings', 'web');
+
     $user = User::factory()->create();
+    $user->givePermissionTo(['View:Settings', 'Update:Settings']);
 
     Sanctum::actingAs($user);
 
