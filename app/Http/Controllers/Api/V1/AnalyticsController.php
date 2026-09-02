@@ -20,6 +20,8 @@ class AnalyticsController extends ApiController
      */
     public function financial(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $range = AnalyticsDateRange::fromFilters($request->all());
         $metrics = app(AnalyticsService::class)->financialMetrics($range);
 
@@ -39,6 +41,8 @@ class AnalyticsController extends ApiController
      */
     public function membership(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $range = AnalyticsDateRange::fromFilters($request->all());
         $metrics = app(AnalyticsService::class)->membershipMetrics($range);
 
@@ -58,6 +62,8 @@ class AnalyticsController extends ApiController
      */
     public function cashflowTrend(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $range = AnalyticsDateRange::fromFilters($request->all());
         $service = app(AnalyticsService::class);
 
@@ -104,6 +110,8 @@ class AnalyticsController extends ApiController
      */
     public function expenseCategories(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $range = AnalyticsDateRange::fromFilters($request->all());
         $rows = app(AnalyticsService::class)->expenseBreakdownByCategory($range, 10);
 
@@ -117,6 +125,8 @@ class AnalyticsController extends ApiController
      */
     public function topPlans(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $range = AnalyticsDateRange::fromFilters($request->all());
         $rows = app(AnalyticsService::class)->topPlansByCollected($range, 5);
 
@@ -130,6 +140,8 @@ class AnalyticsController extends ApiController
      */
     public function recentTransactions(Request $request): AnonymousResourceCollection
     {
+        $this->requirePermission($request, 'ViewAny:Analytics');
+
         $limit = (int) $request->query('limit', 5);
         $limit = $limit > 0 ? min($limit, 50) : 5;
 

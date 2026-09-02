@@ -17,6 +17,8 @@ class SettingsController extends ApiController
      */
     public function show(Request $request): JsonResponse
     {
+        $this->requirePermission($request, 'View:Settings');
+
         $settings = app(SettingsRepository::class)->get();
 
         return response()->json([
@@ -29,6 +31,8 @@ class SettingsController extends ApiController
      */
     public function update(SettingsUpdateRequest $request): JsonResponse
     {
+        $this->requirePermission($request, 'Update:Settings');
+
         $repo = app(SettingsRepository::class);
         $existing = $repo->get();
         $validated = $request->validated();
