@@ -33,7 +33,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $this->status = $this->faker->randomElement(['active', 'inactive']);
+        $this->status = 'active';
         $this->gender = $this->faker->randomElement(['male', 'female', 'other']);
         $location = $this->synchronizedLocation();
 
@@ -70,6 +70,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'inactive',
         ]);
     }
 }

@@ -28,6 +28,12 @@ class AuthController extends ApiController
             ->where('email', $request->string('email')->toString())
             ->first();
 
+        if ($user && $user->status?->value === 'inactive') {
+            throw ValidationException::withMessages([
+                'email' => ['This account has been deactivated.'],
+            ]);
+        }
+
         if (
             ! $user
             || ($tenantContext->gymId() && Data::int($user->gym_id) !== $tenantContext->gymId())
