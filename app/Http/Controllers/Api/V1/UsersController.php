@@ -10,6 +10,7 @@ use App\Services\Api\QueryFilters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -52,10 +53,7 @@ class UsersController extends ApiController
 
         $user = User::create($data);
 
-        if (is_array($roleIds) && $roleIds !== []) {
-            $roles = Role::query()->whereIn('id', $roleIds)->get();
-            $user->syncRoles($roles);
-        }
+        $this->syncUserRoles($request, $user, $roleIds);
 
         $user->load('roles');
 
@@ -95,10 +93,7 @@ class UsersController extends ApiController
 
         $user->update($data);
 
-        if (is_array($roleIds)) {
-            $roles = Role::query()->whereIn('id', $roleIds)->get();
-            $user->syncRoles($roles);
-        }
+        $this->syncUserRoles($request, $user, $roleIds);
 
         $user->load('roles');
 
@@ -132,5 +127,36 @@ class UsersController extends ApiController
         $this->forceDeleteSoftDeleted($request, 'ForceDeleteAny:User', User::class, $user);
 
         return $this->noContent();
+    }
+
+    /**
+     * Sync roles for a user securely.
+     */
+    private function syncUserRoles(Request $request, User $user, ?array $roleIds): void
+    {
+        if (! is_array($roleIds)) {
+            return;
+        }
+
+        $this->requirePermission($request, 'Update:Role');
+
+        $superAdminRoleId = Role::whereName('super_admin')->first()?->id;
+
+        if (! $request->user()->hasRole('super_admin') && in_array($superAdminRoleId, $roleIds)) {
+            throw ValidationException::withMessages([
+                'role_ids' => ['You cannot assign the super_admin role.'],
+            ]);
+        }
+
+        $actorRoles = $request->user()->roles->pluck('id')->toArray();
+        $allowedRoleIds = array_intersect($roleIds, $actorRoles);
+        
+        // Super admins can assign any role they request
+        if ($request->user()->hasRole('super_admin')) {
+            $allowedRoleIds = $roleIds;
+        }
+
+        $roles = Role::query()->whereIn('id', $allowedRoleIds)->get();
+        $user->syncRoles($roles);
     }
 }
