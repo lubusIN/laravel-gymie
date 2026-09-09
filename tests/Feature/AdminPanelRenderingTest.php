@@ -2,8 +2,11 @@
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-it('renders the admin login page', function (): void {
+beforeEach(function () {
     $this->withoutVite();
+});
+
+it('renders the admin login page', function (): void {
 
     $this->get(route('filament.admin.auth.login'))
         ->assertOk()
