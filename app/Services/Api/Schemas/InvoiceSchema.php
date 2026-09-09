@@ -79,7 +79,13 @@ final class InvoiceSchema
             'discount_amount' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'discount_note' => ['sometimes', 'nullable', 'string'],
             'paid_amount' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'subscription_fee' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            // subscription_fee is intentionally excluded from update rules.
+            // It is set once at invoice creation from the subscription plan and
+            // must never be modified afterward. Allowing it here would let any
+            // user with Update:Invoice permission zero-out a member's outstanding
+            // balance via syncFromTransactions() without recording a payment.
+            // The Filament admin panel enforces the same constraint with readOnly()
+            // + disabled() on the invoice edit form.
         ];
     }
 
